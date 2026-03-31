@@ -1,3 +1,93 @@
+type SectionConfig = {
+  href: string;
+  title: string;
+  bg: string;
+  Icon: () => JSX.Element;
+};
+
+const sections: SectionConfig[] = [
+  {
+    href: "/content-type",
+    title: "Content type",
+    bg: "bg-[#e3f0ff]", // light Ukrainian blue
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#c5e0ff] text-lg">
+        🎯
+      </span>
+    ),
+  },
+  {
+    href: "/implied-violence",
+    title: "Implied violence",
+    bg: "bg-[#c5e0ff]", // medium Ukrainian blue
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#a7d0ff] text-lg">
+        ⚠️
+      </span>
+    ),
+  },
+  {
+    href: "/gamification",
+    title: "Gamification",
+    bg: "bg-[#a7d0ff]", // stronger Ukrainian blue
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#89c0ff] text-lg">
+        🎮
+      </span>
+    ),
+  },
+  {
+    href: "/dehumanization",
+    title: "Dehumanization",
+    bg: "bg-[#89c0ff]", // deepest Ukrainian blue in row
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#72b3ff] text-lg">
+        🧱
+      </span>
+    ),
+  },
+  {
+    href: "/aestheticization",
+    title: "Aestheticization",
+    bg: "bg-[#fff7d1]", // light Ukrainian yellow
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffefad] text-lg">
+        ✨
+      </span>
+    ),
+  },
+  {
+    href: "/narrative-framing",
+    title: "Narrative framing",
+    bg: "bg-[#ffefad]", // medium Ukrainian yellow
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffe789] text-lg">
+        📣
+      </span>
+    ),
+  },
+  {
+    href: "/technical-framing",
+    title: "Technical framing",
+    bg: "bg-[#ffe789]", // stronger Ukrainian yellow
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffdf65] text-lg">
+        🛠️
+      </span>
+    ),
+  },
+  {
+    href: "/methodology",
+    title: "Methodology",
+    bg: "bg-[#ffdf65]", // deepest Ukrainian yellow in row
+    Icon: () => (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f7d34f] text-lg">
+        📊
+      </span>
+    ),
+  },
+];
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
@@ -18,28 +108,21 @@ export default function Home() {
         </header>
 
         <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { href: "/content-type", title: "Content type" },
-            { href: "/implied-violence", title: "Implied violence" },
-            { href: "/gamification", title: "Gamification" },
-            { href: "/dehumanization", title: "Dehumanization" },
-            { href: "/aestheticization", title: "Aestheticization" },
-            { href: "/narrative-framing", title: "Narrative framing" },
-            { href: "/technical-framing", title: "Technical framing" },
-            { href: "/methodology", title: "Methodology" },
-          ].map((section) => (
+          {sections.map(({ href, title, Icon, bg }) => (
             <a
-              key={section.href}
-              href={section.href}
-              className="group flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+              key={href}
+              href={href}
+              className="group flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm ring-0 transition hover:-translate-y-1 hover:shadow-md hover:ring-1 hover:ring-zinc-200"
             >
-              <div className="mb-6 h-10 w-10 rounded-xl bg-zinc-100" />
-              <div className="space-y-1">
-                <h2 className="text-base font-medium">{section.title}</h2>
-                <p className="text-sm text-zinc-600">
-                  Open the analytical chapter on {section.title.toLowerCase()}.
-                </p>
+              <div className={`mb-4 inline-flex items-center gap-3 rounded-2xl p-2 ${bg}`}>
+                <Icon />
+                <div className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold italic text-zinc-900 ${bg}`}>
+                  {title}
+                </div>
               </div>
+              <p className="text-sm text-zinc-600">
+                Open the analytical chapter on {title.toLowerCase()}.
+              </p>
             </a>
           ))}
         </section>
