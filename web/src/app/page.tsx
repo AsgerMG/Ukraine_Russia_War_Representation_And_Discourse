@@ -127,6 +127,42 @@ export default function Home() {
           ))}
         </section>
 
+        {/* ── 2D Visual Map ── */}
+        <section className="space-y-4">
+          <div className="flex items-end justify-between">
+            <div className="space-y-1">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                Corpus explorer
+              </p>
+              <h2 className="text-lg font-semibold text-zinc-900">
+                2D visual map
+              </h2>
+              <p className="text-sm text-zinc-600">
+                CLIP embeddings of the 400-image sample projected into 2D via
+                t-SNE. Drag to pan, scroll to zoom.
+              </p>
+            </div>
+            <a
+              href="/visual-map.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50"
+            >
+              Open full map ↗
+            </a>
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-900 shadow-md"
+               style={{ height: "480px" }}>
+            <iframe
+              src="/visual-map.html"
+              className="absolute inset-0 h-full w-full"
+              title="2D visual embedding map"
+              loading="lazy"
+            />
+          </div>
+        </section>
+
         <section className="max-w-3xl space-y-4 text-sm text-zinc-600">
           <h2 className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
             How to read this

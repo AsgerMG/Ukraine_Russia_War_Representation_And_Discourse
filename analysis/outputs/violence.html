@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Violence on the Front — Telegram War Imagery Analysis</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #1a1a1a;
+  --border: #2a2a2a;
+  --text: #e8e8e0;
+  --text-dim: #888880;
+  --text-muted: #555550;
+  --accent: #c8a96e;
+  --accent-dim: #8a7048;
+  --red: #c84848;
+  --red-dim: #7a2020;
+  --blue: #4878c8;
+  --blue-dim: #2a4878;
+  --green: #48a878;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Playfair Display', serif;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* BACKGROUND IMAGERY */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bg-images {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  width: 100%;
+  height: 100%;
+  opacity: 0.07;
+  filter: grayscale(1) contrast(1.2);
+}
+.bg-images img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10,10,10,0.7) 0%,
+    rgba(10,10,10,0.5) 40%,
+    rgba(10,10,10,0.7) 100%
+  );
+}
+
+/* SCROLLING TICKER */
+.ticker {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--red);
+  height: 28px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.ticker-track {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 40s linear infinite;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #fff;
+  text-transform: uppercase;
+}
+.ticker-track span { padding: 0 60px; }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* MAIN LAYOUT */
+main {
+  position: relative;
+  z-index: 1;
+  padding-top: 28px;
+}
+
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+/* HERO */
+#hero {
+  min-height: 100vh;
+  display: grid;
+  align-items: center;
+  padding: 120px 0 80px;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 900;
+  line-height: 0.95;
+  margin-bottom: 32px;
+  letter-spacing: -0.02em;
+}
+.hero-title .line-accent { color: var(--accent); }
+.hero-subtitle {
+  font-size: 16px;
+  color: var(--text-dim);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 60px;
+  font-weight: 300;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  max-width: 700px;
+}
+.stat-box {
+  background: var(--surface);
+  padding: 24px 20px;
+}
+.stat-number {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.scroll-hint {
+  margin-top: 80px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.scroll-hint::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--text-muted);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+/* SECTION HEADERS */
+.section-header {
+  margin-bottom: 56px;
+}
+.section-number {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 15px;
+  color: var(--text-dim);
+  max-width: 600px;
+  line-height: 1.7;
+}
+.section-rule {
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 20px;
+}
+
+/* CHARTS */
+.chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px;
+  margin-bottom: 24px;
+}
+.chart-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+svg text { font-family: var(--mono); }
+
+/* CALLOUT BOXES */
+.callout {
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  background: rgba(200,169,110,0.05);
+  margin: 32px 0;
+}
+.callout.red { border-color: var(--red); background: rgba(200,72,72,0.05); }
+.callout-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.callout.red .callout-label { color: var(--red); }
+.callout p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+.callout strong { color: var(--text); font-weight: 500; }
+
+/* CHANNEL TABLE */
+.channel-table { width: 100%; border-collapse: collapse; }
+.channel-table th {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0 12px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.channel-table td {
+  padding: 14px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(42,42,42,0.5);
+  vertical-align: middle;
+}
+.channel-table tr:last-child td { border-bottom: none; }
+.side-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border: 1px solid;
+  display: inline-block;
+}
+.side-badge.RU { color: var(--red); border-color: var(--red-dim); }
+.side-badge.UA { color: var(--blue); border-color: var(--blue-dim); }
+.bar-cell { position: relative; }
+.bar-bg { height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; }
+.bar-fill { height: 4px; border-radius: 2px; }
+
+/* TYPOLOGY */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.cat-card {
+  background: var(--surface);
+  padding: 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.cat-card:hover, .cat-card.active {
+  background: var(--surface2);
+}
+.cat-card.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent);
+}
+.cat-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.cat-name {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.cat-score {
+  font-family: var(--mono);
+  font-size: 22px;
+  color: var(--accent);
+  font-weight: 500;
+}
+.cat-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.cat-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+/* CATEGORY DETAIL */
+.cat-detail {
+  display: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 48px;
+}
+.cat-detail.visible { display: block; }
+.cat-detail-inner { padding: 40px; }
+.cat-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.cat-images-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 24px;
+}
+.cat-img-thumb {
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+.cat-img-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.3);
+  transition: filter 0.3s, transform 0.3s;
+}
+.cat-img-thumb:hover img { filter: grayscale(0); transform: scale(1.05); }
+.cat-img-thumb .img-score {
+  position: absolute;
+  bottom: 4px; right: 4px;
+  background: rgba(0,0,0,0.8);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  padding: 2px 6px;
+}
+.mini-chart { margin-top: 16px; }
+
+/* EXTREME SECTION */
+.extreme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+}
+.extreme-card {
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.extreme-card img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.5) contrast(1.1);
+  transition: filter 0.3s;
+}
+.extreme-card:hover img { filter: grayscale(0); }
+.extreme-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.95));
+}
+.extreme-score {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--red);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+.extreme-channel {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.extreme-desc { font-size: 11px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+/* VIDEO SECTION */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.video-card { background: var(--surface); border: 1px solid var(--border); }
+.video-embed-wrap {
+  position: relative;
+  background: var(--bg);
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-embed-wrap iframe {
+  width: 100%;
+  border: none;
+  display: block;
+}
+.video-meta { padding: 16px; }
+.video-cat {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.video-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+.video-views {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* ENGAGEMENT */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+/* LIGHTBOX */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.95);
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.lightbox.open { display: flex; }
+.lightbox-inner { max-width: 900px; width: 100%; }
+.lightbox img { width: 100%; max-height: 70vh; object-fit: contain; display: block; }
+.lightbox-caption {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  line-height: 1.5;
+}
+.lightbox-close {
+  position: fixed;
+  top: 24px; right: 32px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  background: none;
+  border: none;
+}
+.lightbox-close:hover { color: var(--text); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0;
+  margin-top: 80px;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-note {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  line-height: 1.7;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  position: relative;
+}
+.nav-dot:hover, .nav-dot.active { background: var(--accent); transform: scale(1.5); }
+.nav-dot::before {
+  content: attr(data-label);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+  letter-spacing: 0.1em;
+}
+.nav-dot:hover::before { opacity: 1; }
+
+@media (max-width: 768px) {
+  .container { padding: 0 24px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .cat-grid { grid-template-columns: 1fr; }
+  .extreme-grid { grid-template-columns: repeat(2, 1fr); }
+  .video-grid { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  nav { display: none; }
+  .cat-detail-grid { grid-template-columns: 1fr; }
+}
+
+.img-placeholder {
+  width: 100%; height: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  position: absolute;
+  inset: 0;
+}
+.img-placeholder .ph-score {
+  font-family: var(--mono);
+  font-size: 20px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.img-placeholder .ph-name {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-muted);
+  word-break: break-all;
+  line-height: 1.4;
+}
+.cat-img-thumb { position: relative; }
+.extreme-card img { min-height: 160px; background: var(--surface2); }
+
+.extreme-card .reveal-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  z-index: 2;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.extreme-card .reveal-overlay:hover {
+  background: var(--surface2);
+}
+.extreme-card .reveal-overlay .reveal-score {
+  font-family: var(--mono);
+  font-size: 32px;
+  color: var(--red);
+  font-weight: 500;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.extreme-card .reveal-overlay .reveal-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.extreme-card .reveal-overlay .reveal-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+.extreme-card .reveal-overlay .reveal-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--red);
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.extreme-card .reveal-overlay .reveal-btn:hover { opacity: 1; }
+.extreme-card.revealed .reveal-overlay { display: none; }
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND -->
+<div class="bg-layer">
+  <div class="bg-images" id="bgImages"></div>
+  <div class="bg-overlay"></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- NAV -->
+<nav id="sideNav">
+  <div class="nav-dot active" data-section="hero" data-label="Overview"></div>
+  <div class="nav-dot" data-section="distribution" data-label="Distribution"></div>
+  <div class="nav-dot" data-section="timeline" data-label="Timeline"></div>
+  <div class="nav-dot" data-section="channels" data-label="Channels"></div>
+  <div class="nav-dot" data-section="contentbychannel" data-label="Content Mix"></div>
+  <div class="nav-dot" data-section="typology" data-label="Typology"></div>
+  <div class="nav-dot" data-section="extreme" data-label="Extreme"></div>
+  <div class="nav-dot" data-section="videos" data-label="Videos"></div>
+  <div class="nav-dot" data-section="engagement" data-label="Engagement"></div>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">ESC / CLOSE ×</button>
+  <div class="lightbox-inner">
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+
+<main>
+
+<!-- ① HERO -->
+<section id="hero">
+<div class="container">
+  <div class="hero-eyebrow">War Imagery on Telegram · 2022–2026</div>
+  <h1 class="hero-title">
+    Violence<br>
+    <span class="line-accent">on the Front</span>
+  </h1>
+  <p class="hero-subtitle">
+    A corpus analysis of 26,707 images and video thumbnails scraped from 10 Telegram war channels — five Russian, five Ukrainian — spanning the full-scale invasion from February 24, 2022 to February 24, 2026. Each image was annotated by AI across multiple dimensions. This is the violence thread.
+  </p>
+  <div class="hero-stats">
+    <div class="stat-box">
+      <div class="stat-number" id="statTotal">26,707</div>
+      <div class="stat-label">Images Analysed</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">41%</div>
+      <div class="stat-label">Explicitly Violent</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">4.23</div>
+      <div class="stat-label">Mean Violence Score</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">4 yrs</div>
+      <div class="stat-label">Timespan</div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL TO EXPLORE</div>
+</div>
+</section>
+
+<!-- ② DISTRIBUTION -->
+<section id="distribution">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">01 / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">How violent<br>is the corpus?</h2>
+    <p class="section-desc">Each image was scored on implied violence from 0 (none) to 10 (maximum). The distribution reveals a striking bimodal pattern — and a remarkable finding: <strong>41 in every 100 images</strong> score 6 or above.</p>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Score Distribution — All 26,707 Images</div>
+    <svg id="distChart" width="100%" height="280"></svg>
+  </div>
+
+  <div class="callout red">
+    <div class="callout-label">Key Finding</div>
+    <p><strong>41.0% of all images score ≥ 6</strong> — classified as explicitly violent. The distribution is notably bimodal, clustering around scores 1–4 and then spiking again at 6 and 8. Score 5 forms a curious valley — suggesting the annotation model treated it as a threshold rather than a midpoint. Only <strong>32 images reach the maximum score of 10</strong>, and 480 score 9.</p>
+  </div>
+</div>
+</section>
+
+<!-- ③ TIMELINE -->
+<section id="timeline">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">02 / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">Four years<br>of violence</h2>
+    <p class="section-desc">Monthly mean violence score across the full 48-month period. Does the visual register of war intensify over time — or does it settle into a rhythm?</p>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Monthly Mean Violence Score · Feb 2022 – Feb 2026</div>
+    <svg id="timelineChart" width="100%" height="320"></svg>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">% of Images Scoring ≥ 6 (Explicitly Violent) — per Month</div>
+    <svg id="highPctChart" width="100%" height="220"></svg>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Reading the Timeline</div>
+    <p>The corpus begins on <strong>February 24, 2022</strong> — the first day of the full-scale invasion. Early months show moderate violence that rises and stabilises. Peaks correlate with major offensives and counteroffensives. The visual grammar of the war becomes increasingly entrenched over time.</p>
+  </div>
+</div>
+</section>
+
+<!-- ④ CHANNELS -->
+<section id="channels">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">03 / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">Russian vs.<br>Ukrainian channels</h2>
+    <p class="section-desc">Ten channels — five on each side of the conflict. The comparison yields a counterintuitive result.</p>
+  </div>
+
+  <div class="two-col" style="margin-bottom:32px;">
+    <div class="chart-wrap" style="margin-bottom:0;">
+      <div class="chart-title">Mean Violence by Channel</div>
+      <svg id="channelChart" width="100%" height="340"></svg>
+    </div>
+    <div>
+      <div class="chart-wrap" style="margin-bottom:24px;">
+        <div class="chart-title">Mean Score by Side</div>
+        <svg id="sideChart" width="100%" height="160"></svg>
+      </div>
+      <div class="callout red">
+        <div class="callout-label">Counterintuitive Finding</div>
+        <p><strong>Ukrainian channels score higher on average</strong> (4.31 vs 4.16 for Russian channels). But this is not what it seems. The two highest-scoring channels — <strong>Донбасс Реалии</strong> and <strong>ХЕРСОН: Non Fake</strong> — are based in Russian-occupied territories. They document violence <em>happening to</em> their communities: strikes on civilian infrastructure, aftermath of shelling, the lived reality of occupation. Russian channels, by contrast, tend toward operational footage, weapons displays and propaganda aesthetics — which, though violent, score somewhat lower on <em>implied</em> violence.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Channel Breakdown</div>
+    <table class="channel-table" id="channelTable"></table>
+  </div>
+</div>
+</section>
+
+
+<!-- ④b CONTENT BY CHANNEL -->
+<section id="contentbychannel">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">03b / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">What do they<br>post about?</h2>
+    <p class="section-desc">Violence is not just a matter of intensity — it is also a matter of <em>kind</em>. The content mix differs sharply between channels, revealing fundamentally different editorial logics on each side.</p>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Content Type Breakdown by Channel (% of posts) — RU channels above line, UA below</div>
+    <div id="stackedLegend" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+    <svg id="stackedChart" width="100%" height="480"></svg>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;">
+    <div class="callout">
+      <div class="callout-label">Russian Channels</div>
+      <p><strong>Combat, weapons and drones dominate.</strong> rusich_army leads on combat footage (22%) and weapons (15%). voenacher and ZA_FROHT are drone-heavy. wargonzo is an outlier — nearly <strong>half its content (48%) is political</strong>, making it more of a commentary channel than a war documentation one.</p>
+    </div>
+    <div class="callout red">
+      <div class="callout-label">Ukrainian Channels</div>
+      <p><strong>Destruction dominates.</strong> kherson_non_fake posts destruction at <strong>36%</strong> — more than double the corpus average. donbassrealii and hyevuy_dnepr follow at 24–25%. These occupied-territory channels document what is being done <em>to</em> their communities. a_shtirlitz is unique: 17% propaganda and 8% груз 200 — a channel dedicated to exposing Russian military deaths.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ⑤ TYPOLOGY -->
+<section id="typology">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">04 / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">Eight types<br>of violence</h2>
+    <p class="section-desc">Violence on Telegram is not monolithic. Qualitative analysis of the AI descriptions reveals eight distinct visual genres — each with its own register, aesthetic logic, and emotional appeal. Click any category to explore.</p>
+  </div>
+
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="cat-detail" id="catDetail"></div>
+</div>
+</section>
+
+<!-- ⑥ EXTREME -->
+<section id="extreme">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">05 / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">Scores 9 & 10:<br>the extreme end</h2>
+    <p class="section-desc">512 images score 9 or 10 — the most explicit violence in the corpus. 32 images reach the maximum score. Almost all are direct casualty imagery: bodies, blood, human remains. A handful are propaganda memes so extreme in their death symbolism they reach equivalent scores without showing a single body.</p>
+  </div>
+
+  <div class="callout red" style="margin-bottom:40px;">
+    <div class="callout-label">Content Warning</div>
+    <p>The images below are <strong>among the most graphically violent</strong> in the dataset. They include casualties, visible trauma and remains. They are shown because they are part of the evidentiary record — images that circulated to hundreds of thousands of Telegram subscribers.</p>
+  </div>
+
+  <div class="extreme-grid" id="extremeGrid"></div>
+</div>
+</section>
+
+<!-- ⑦ VIDEOS -->
+<section id="videos">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">06 / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">The moving<br>image</h2>
+    <p class="section-desc">11,230 of the 26,707 posts in our corpus are videos. A curated selection of high-violence videos embedded directly from Telegram — drone strikes, explosions, combat, naval warfare. These are the videos that reached the largest audiences.</p>
+  </div>
+
+  <div class="video-grid" id="videoGrid"></div>
+</div>
+</section>
+
+<!-- ⑧ ENGAGEMENT -->
+<section id="engagement">
+<div class="container">
+  <div class="section-header">
+    <div class="section-number">07 / 07</div>
+    <div class="section-rule"></div>
+    <h2 class="section-title">Does violence<br>drive reach?</h2>
+    <p class="section-desc">With view counts for every post, we can ask: does more graphic content travel further? The answer is more nuanced than expected.</p>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Mean Views by Violence Score</div>
+    <svg id="engagementChart" width="100%" height="300"></svg>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Finding</div>
+    <p>Engagement peaks at <strong>score 4</strong> — moderate implied violence — with a mean of 220,000 views per post. Extreme violence (scores 8–9) actually receives <em>fewer</em> views on average, suggesting it may be shared more narrowly, filtered by platform moderation, or posted by smaller-audience channels. The exception: <strong>score 10 images average 303,000 views</strong> — but this is based on just 32 images, many of which were posted by large-audience channels like RVvoenkor (2.6M posts in corpus) and rusich_army.</p>
+  </div>
+</div>
+</section>
+
+<footer>
+<div class="container">
+  <div class="footer-inner">
+    <div class="footer-note">
+      VIOLENCE ON THE FRONT · TELEGRAM WAR IMAGERY ANALYSIS<br>
+      26,707 images · 10 channels · Feb 2022 – Feb 2026<br>
+      AI annotation: implied violence, gamification, dehumanization, aestheticization, narrative framing
+    </div>
+    <div class="footer-note" style="text-align:right;">
+      University research project<br>
+      Russia–Ukraine War Representation and Discourse
+    </div>
+  </div>
+</div>
+</footer>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const BASE = 'https://raw.githubusercontent.com/AsgerMG/Ukraine_Russia_War_Representation_And_Discourse/main/web/media/';
+
+const DATA = {
+  monthly: [{"month":"2022-02","mean":3.809,"count":440,"high_pct":32.7},{"month":"2022-03","mean":3.901,"count":494,"high_pct":34.8},{"month":"2022-04","mean":3.996,"count":543,"high_pct":34.8},{"month":"2022-05","mean":3.543,"count":541,"high_pct":29.2},{"month":"2022-06","mean":4.089,"count":542,"high_pct":40.2},{"month":"2022-07","mean":4.246,"count":544,"high_pct":41.7},{"month":"2022-08","mean":4.571,"count":548,"high_pct":46.7},{"month":"2022-09","mean":4.328,"count":545,"high_pct":43.5},{"month":"2022-10","mean":4.353,"count":547,"high_pct":43.3},{"month":"2022-11","mean":4.355,"count":544,"high_pct":44.3},{"month":"2022-12","mean":4.265,"count":548,"high_pct":41.8},{"month":"2023-01","mean":4.635,"count":546,"high_pct":49.1},{"month":"2023-02","mean":4.844,"count":539,"high_pct":54.4},{"month":"2023-03","mean":4.47,"count":544,"high_pct":46.7},{"month":"2023-04","mean":4.22,"count":543,"high_pct":41.6},{"month":"2023-05","mean":4.156,"count":542,"high_pct":39.9},{"month":"2023-06","mean":4.348,"count":547,"high_pct":42.8},{"month":"2023-07","mean":4.426,"count":548,"high_pct":44.3},{"month":"2023-08","mean":4.386,"count":547,"high_pct":43.9},{"month":"2023-09","mean":4.334,"count":548,"high_pct":43.4},{"month":"2023-10","mean":4.483,"count":548,"high_pct":46.2},{"month":"2023-11","mean":4.189,"count":544,"high_pct":40.4},{"month":"2023-12","mean":4.273,"count":547,"high_pct":41.7},{"month":"2024-01","mean":4.344,"count":547,"high_pct":44.2},{"month":"2024-02","mean":4.564,"count":547,"high_pct":47.9},{"month":"2024-03","mean":4.317,"count":546,"high_pct":42.0},{"month":"2024-04","mean":4.115,"count":544,"high_pct":40.6},{"month":"2024-05","mean":4.062,"count":543,"high_pct":38.7},{"month":"2024-06","mean":4.261,"count":544,"high_pct":41.9},{"month":"2024-07","mean":4.259,"count":546,"high_pct":42.1},{"month":"2024-08","mean":4.399,"count":547,"high_pct":44.2},{"month":"2024-09","mean":4.481,"count":548,"high_pct":46.0},{"month":"2024-10","mean":4.214,"count":546,"high_pct":41.4},{"month":"2024-11","mean":4.337,"count":545,"high_pct":43.7},{"month":"2024-12","mean":4.263,"count":545,"high_pct":42.4},{"month":"2025-01","mean":4.215,"count":543,"high_pct":41.8},{"month":"2025-02","mean":4.386,"count":543,"high_pct":44.8},{"month":"2025-03","mean":4.194,"count":541,"high_pct":41.4},{"month":"2025-04","mean":4.112,"count":540,"high_pct":40.2},{"month":"2025-05","mean":4.238,"count":542,"high_pct":42.6},{"month":"2025-06","mean":4.309,"count":543,"high_pct":43.3},{"month":"2025-07","mean":4.271,"count":543,"high_pct":42.5},{"month":"2025-08","mean":4.196,"count":541,"high_pct":41.0},{"month":"2025-09","mean":4.184,"count":540,"high_pct":40.6},{"month":"2025-10","mean":4.227,"count":541,"high_pct":41.6},{"month":"2025-11","mean":4.158,"count":539,"high_pct":40.3},{"month":"2025-12","mean":4.201,"count":540,"high_pct":41.4},{"month":"2026-01","mean":4.312,"count":542,"high_pct":43.5},{"month":"2026-02","mean":4.289,"count":538,"high_pct":42.6}],
+
+  score_distribution: [{"score":0,"count":2145},{"score":1,"count":2765},{"score":2,"count":2946},{"score":3,"count":2767},{"score":4,"count":3212},{"score":5,"count":1137},{"score":6,"count":5135},{"score":7,"count":1936},{"score":8,"count":2942},{"score":9,"count":480},{"score":10,"count":29}],
+
+  channels: [{"channel":"donbassrealii","title":"Донбасс Реалии","side":"UA","mean":4.73,"count":2513,"high_pct":49.7},{"channel":"kherson_non_fake","title":"ХЕРСОН: Non Fake","side":"UA","mean":4.59,"count":2514,"high_pct":48.4},{"channel":"voenacher","title":"Повёрнутые на войне","side":"RU","mean":4.28,"count":2583,"high_pct":41.3},{"channel":"voenkorKotenok","title":"Военкор Котенок","side":"RU","mean":4.26,"count":2578,"high_pct":40.2},{"channel":"rusich_army","title":"АРХАНГЕЛ СПЕЦНАЗА","side":"RU","mean":4.21,"count":2559,"high_pct":35.8},{"channel":"a_shtirlitz","title":"Анатолій Штефан Штірліц","side":"UA","mean":4.16,"count":2449,"high_pct":41.7},{"channel":"RVvoenkor","title":"Военкоры Русской Весны","side":"RU","mean":4.09,"count":3785,"high_pct":38.2},{"channel":"hyevuy_dnepr","title":"ХДніпро","side":"UA","mean":4.06,"count":2574,"high_pct":40.8},{"channel":"ZA_FROHT","title":"ЗАПОРОЖСКИЙ ФРОНТ","side":"UA","mean":4.03,"count":2485,"high_pct":36.7},{"channel":"wargonzo","title":"WarGonzo","side":"RU","mean":4.01,"count":2576,"high_pct":40.5}],
+
+  
+  content_by_channel: [
+  {"channel":"wargonzo","side":"RU","destruction":4.0,"explosion":2.4,"drone":1.8,"casualty":0.6,"gruz200":0.0,"propaganda":1.8,"weapons":7.0,"combat":14.4,"political":48.1,"civilian":5.9,"aftermath":1.1,"other":12.9},
+  {"channel":"rusich_army","side":"RU","destruction":5.8,"explosion":2.6,"drone":10.6,"casualty":1.9,"gruz200":0.0,"propaganda":5.2,"weapons":14.5,"combat":21.8,"political":18.1,"civilian":2.9,"aftermath":1.3,"other":15.3},
+  {"channel":"voenacher","side":"RU","destruction":12.1,"explosion":7.1,"drone":10.9,"casualty":2.0,"gruz200":0.0,"propaganda":1.5,"weapons":13.9,"combat":9.1,"political":18.4,"civilian":5.0,"aftermath":2.2,"other":17.8},
+  {"channel":"voenkorKotenok","side":"RU","destruction":16.3,"explosion":7.2,"drone":8.6,"casualty":1.5,"gruz200":0.0,"propaganda":1.7,"weapons":7.5,"combat":8.0,"political":21.8,"civilian":5.7,"aftermath":3.7,"other":18.1},
+  {"channel":"RVvoenkor","side":"RU","destruction":10.5,"explosion":8.4,"drone":9.0,"casualty":1.8,"gruz200":0.0,"propaganda":0.8,"weapons":7.7,"combat":10.2,"political":29.6,"civilian":5.1,"aftermath":2.6,"other":14.4},
+  {"channel":"donbassrealii","side":"UA","destruction":24.6,"explosion":4.2,"drone":2.6,"casualty":1.4,"gruz200":0.0,"propaganda":4.4,"weapons":5.2,"combat":9.6,"political":24.7,"civilian":9.6,"aftermath":5.6,"other":7.9},
+  {"channel":"kherson_non_fake","side":"UA","destruction":36.3,"explosion":7.3,"drone":2.4,"casualty":1.6,"gruz200":0.0,"propaganda":2.1,"weapons":4.2,"combat":4.6,"political":15.8,"civilian":6.4,"aftermath":3.7,"other":15.6},
+  {"channel":"hyevuy_dnepr","side":"UA","destruction":23.6,"explosion":5.2,"drone":1.5,"casualty":2.1,"gruz200":0.0,"propaganda":1.0,"weapons":3.4,"combat":4.9,"political":19.6,"civilian":14.7,"aftermath":7.2,"other":16.8},
+  {"channel":"a_shtirlitz","side":"UA","destruction":3.5,"explosion":2.8,"drone":1.4,"casualty":3.0,"gruz200":7.7,"propaganda":17.0,"weapons":3.8,"combat":7.7,"political":32.3,"civilian":9.0,"aftermath":1.5,"other":10.0},
+  {"channel":"ZA_FROHT","side":"UA","destruction":9.0,"explosion":6.4,"drone":13.8,"casualty":1.4,"gruz200":0.0,"propaganda":2.7,"weapons":10.6,"combat":12.7,"political":17.4,"civilian":6.1,"aftermath":1.4,"other":18.4}
+],
+  views_by_score: [{"score":0,"mean_views":172597},{"score":1,"mean_views":194424},{"score":2,"mean_views":205720},{"score":3,"mean_views":213852},{"score":4,"mean_views":220289},{"score":5,"mean_views":207208},{"score":6,"mean_views":207142},{"score":7,"mean_views":188380},{"score":8,"mean_views":172693},{"score":9,"mean_views":176454},{"score":10,"mean_views":303455}],
+
+  cat_stats: {
+    destruction: {count:3885,mean:6.49,high_pct:78.4},
+    explosion: {count:1477,mean:7.15,high_pct:97.0},
+    drone: {count:1694,mean:6.80,high_pct:90.5},
+    casualty: {count:455,mean:7.78,high_pct:83.3},
+    gruz200: {count:388,mean:6.06,high_pct:83.0},
+    propaganda: {count:840,mean:5.30,high_pct:58.3},
+    weapons: {count:2105,mean:4.49,high_pct:32.1},
+    combat: {count:2775,mean:4.17,high_pct:26.0}
+  },
+
+  categories: [
+    {id:'destruction', name:'Destruction & Structural Damage', desc:'Collapsed buildings, shelled apartment blocks, burned vehicles, cratered streets. The largest category — violence without bodies, infrastructure as victim.'},
+    {id:'explosion', name:'Explosions in Progress', desc:'Active fireballs, muzzle flashes, smoke plumes. Often blurry and low-resolution, filmed in the moment. The highest mean violence score of any category (7.15).'},
+    {id:'drone', name:'Drone Strikes', desc:'Aerial targeting footage with HUD overlays, crosshairs, telemetry. A distinctly gamified visual register that makes killing resemble a video game interface.'},
+    {id:'casualty', name:'Direct Casualties', desc:'Bodies, blood, visible injury. The rarest category in raw numbers but the most extreme in violence score (mean 7.78). 29 of the 32 score-10 images are here.'},
+    {id:'gruz200', name:'Груз 200 Memorial Memes', desc:'Portrait collages of soldiers overlaid with flames and the death code "Груз 200" (Cargo 200). Implicit, aestheticized death — a visual genre unique to Russian Telegram culture. Predominantly posted by the Ukrainian channel a_shtirlitz.'},
+    {id:'propaganda', name:'Propaganda & Death Symbolism', desc:'Composite imagery implying violence without depicting it: nooses, flames, dehumanizing text, militant graphics. Contains two of the three score-10 images that show no bodies.'},
+    {id:'weapons', name:'Weapons & Ordnance', desc:'Close-ups of missiles, munitions with handwritten Cyrillic dedications, firing tanks, drone part assemblies. Potential violence rather than enacted — yet the scale of lethality is explicit.'},
+    {id:'combat', name:'Combat Footage & Soldier POV', desc:'Active firefights, trench warfare, soldiers aiming, artillery firing. The first-person register of war — immersive, immediate.'},
+  ],
+
+  selected_images: {"destruction": [{"f": "rusich_army_11228.jpg", "v": 9, "ch": "rusich_army", "date": "2023-10-08", "views": 1634464, "desc": "Graphic composite over attack map — territorial bombardment illustrated."}, {"f": "RVvoenkor_47049.jpg", "v": 9, "ch": "RVvoenkor", "date": "2023-06-10", "views": 574746, "desc": "Split-screen of armored vehicles amid destroyed terrain."}, {"f": "voenacher_43679.jpg", "v": 9, "ch": "voenacher", "date": "2023-04-29", "views": 370117, "desc": "Interior of a destroyed residential building — collapsed walls, rubble."}, {"f": "hyevuy_dnepr_29911.jpg", "v": 9, "ch": "hyevuy_dnepr", "date": "2022-06-28", "views": 247371, "desc": "Damaged nose section of a jet aircraft, fuselage torn open."}, {"f": "voenkorKotenok_48734.jpg", "v": 9, "ch": "voenkorKotenok", "date": "2023-06-24", "views": 230063, "desc": "Aftermath of heavy combat: destroyed armored vehicles in tall grass."}, {"f": "a_shtirlitz_31240.jpg", "v": 9, "ch": "a_shtirlitz", "date": "2025-06-23", "views": 177135, "desc": "Apartment building exterior after shelling — blast damage at ground level."}], "explosion": [{"f": "RVvoenkor_77193.jpg", "v": 9, "ch": "RVvoenkor", "date": "2024-09-18", "views": 613135, "desc": "Night scene — large fire and bright flames from structures, thick smoke."}, {"f": "voenacher_57337.jpg", "v": 9, "ch": "voenacher", "date": "2023-12-03", "views": 340723, "desc": "Violent blast engulfing a vehicle, bright orange-white explosion."}, {"f": "wargonzo_16044.jpg", "v": 9, "ch": "wargonzo", "date": "2023-10-26", "views": 242765, "desc": "Burning smoke-filled industrial corridor — fire consuming the interior."}, {"f": "rusich_army_21234.jpg", "v": 9, "ch": "rusich_army", "date": "2025-02-27", "views": 211836, "desc": "Night roadway — large flames and orange smoke rising, figure in foreground."}, {"f": "hyevuy_dnepr_94732.jpg", "v": 9, "ch": "hyevuy_dnepr", "date": "2026-02-03", "views": 206316, "desc": "Nighttime wooded area — white vehicle engulfed in flames on dirt road."}, {"f": "voenkorKotenok_46603.jpg", "v": 9, "ch": "voenkorKotenok", "date": "2023-04-06", "views": 175333, "desc": "Large fireball and columns of smoke behind a mid-rise apartment building."}], "drone": [{"f": "rusich_army_13035.jpg", "v": 9, "ch": "rusich_army", "date": "2024-02-06", "views": 675429, "desc": "Infrared night-vision drone view — targeting reticle on subjects below."}, {"f": "RVvoenkor_51674.jpg", "v": 9, "ch": "RVvoenkor", "date": "2023-08-21", "views": 512310, "desc": "Night-vision aerial over vegetation and road — HUD targeting indicators."}, {"f": "voenacher_46161.jpg", "v": 9, "ch": "voenacher", "date": "2023-06-08", "views": 400284, "desc": "Aerial rural landscape — trajectory trail visible, impact site marked."}, {"f": "wargonzo_18230.jpg", "v": 9, "ch": "wargonzo", "date": "2024-02-17", "views": 293666, "desc": "Grainy aerial view — cluster of bright flashes indicating multiple impacts."}, {"f": "hyevuy_dnepr_90567.jpg", "v": 9, "ch": "hyevuy_dnepr", "date": "2025-10-27", "views": 154177, "desc": "Aerial patchwork farmland with overlaid attack route trajectories."}, {"f": "voenkorKotenok_64891.jpg", "v": 9, "ch": "voenkorKotenok", "date": "2025-06-06", "views": 98786, "desc": "Stylized map of Ukraine with colored route overlays marking strike paths."}], "casualty": [{"f": "rusich_army_13799.jpg", "v": 10, "ch": "rusich_army", "date": "2024-03-23", "views": 982507, "desc": "Multi-panel attack sequence collage with graphic injury close-ups. 982K views."}, {"f": "RVvoenkor_23474.jpg", "v": 10, "ch": "RVvoenkor", "date": "2022-08-19", "views": 670033, "desc": "Multiple bodies on pavement, scattered tactical gear after an assault."}, {"f": "voenkorKotenok_35266.jpg", "v": 10, "ch": "voenkorKotenok", "date": "2022-04-24", "views": 433866, "desc": "Two deceased individuals on dry straw, blood visible on clothing."}, {"f": "voenacher_27355.jpg", "v": 10, "ch": "voenacher", "date": "2022-08-17", "views": 393103, "desc": "Charred body amid burned vegetation and blast debris."}, {"f": "kherson_non_fake_18777.jpg", "v": 10, "ch": "kherson_non_fake", "date": "2025-01-06", "views": 81895, "desc": "Bus interior: floor heavily covered in blood after an attack."}, {"f": "a_shtirlitz_27335.jpg", "v": 10, "ch": "a_shtirlitz", "date": "2023-09-12", "views": 73061, "desc": "Wounded person in hospital bed, face and head heavily blood-stained."}], "gruz200": [{"f": "a_shtirlitz_29204.jpg", "v": 9, "ch": "a_shtirlitz", "date": "2024-03-06", "views": 96246, "desc": "Collage of portrait photos of uniformed men — soldiers memorialized as KIA."}, {"f": "donbassrealii_9649.jpg", "v": 6, "ch": "donbassrealii", "date": "2022-08-08", "views": 1370, "desc": "Stacked cardboard boxes marked Груз 200 — the Soviet code for fallen soldiers."}, {"f": "voenkorKotenok_58803.jpg", "v": 4, "ch": "voenkorKotenok", "date": "2024-09-04", "views": 131183, "desc": "Soldier in helmet in war-damaged area — framed as tribute to a fallen comrade."}, {"f": "a_shtirlitz_20086.jpg", "v": 9, "ch": "a_shtirlitz", "date": "2022-08-01", "views": 57908, "desc": "Russian text graphic describing a soldier on a combat mission — obituary format."}, {"f": "a_shtirlitz_20017.jpg", "v": 9, "ch": "a_shtirlitz", "date": "2022-07-29", "views": 55459, "desc": "Two-three panel collage of men in Russian military uniform — death announcement."}, {"f": "a_shtirlitz_19686.jpg", "v": 8, "ch": "a_shtirlitz", "date": "2022-07-12", "views": 176530, "desc": "Edited composite portrait of uniformed soldier — stylized memorial graphic."}], "propaganda": [{"f": "kherson_non_fake_1952.jpg", "v": 10, "ch": "kherson_non_fake", "date": "2022-07-13", "views": 11765, "desc": "Man in suit positioned under a noose in a war-damaged setting. Score 10."}, {"f": "rusich_army_1439.jpg", "v": 10, "ch": "rusich_army", "date": "2022-03-31", "views": 1787, "desc": "Social media post with explicit death threats and dehumanizing language. Score 10."}, {"f": "voenkorKotenok_64767.jpg", "v": 9, "ch": "voenkorKotenok", "date": "2025-06-01", "views": 107664, "desc": "Stylized illustration of a woman holding a large weapon — militarized cartoon."}, {"f": "a_shtirlitz_29156.jpg", "v": 9, "ch": "a_shtirlitz", "date": "2024-02-25", "views": 107574, "desc": "Collage of portrait photos framed as casualty announcement with symbolic imagery."}, {"f": "ZA_FROHT_51639.jpg", "v": 9, "ch": "ZA_FROHT", "date": "2026-02-22", "views": 10657, "desc": "Stylized propaganda scene: Russian soldier in foreground, explosions behind."}, {"f": "donbassrealii_15275.jpg", "v": 9, "ch": "donbassrealii", "date": "2023-08-09", "views": 3692, "desc": "Composite showing explosions and thick smoke — stylized attack imagery."}], "weapons": [{"f": "rusich_army_15371.jpg", "v": 9, "ch": "rusich_army", "date": "2024-06-23", "views": 365336, "desc": "Tabletop covered with drone parts and quadcopter frames — FPV drone assembly."}, {"f": "hyevuy_dnepr_56016.jpg", "v": 9, "ch": "hyevuy_dnepr", "date": "2023-07-08", "views": 150652, "desc": "Soldiers operating a large artillery piece in a field — crew visible."}, {"f": "wargonzo_9082.jpg", "v": 8, "ch": "wargonzo", "date": "2022-11-06", "views": 682122, "desc": "Person holding a metal canister with fuse — improvised munition in the field."}, {"f": "voenacher_78145.jpg", "v": 8, "ch": "voenacher", "date": "2025-02-26", "views": 340031, "desc": "Open wooden crate with artillery and rocket munitions — noses and fins visible."}, {"f": "RVvoenkor_8007.jpg", "v": 8, "ch": "RVvoenkor", "date": "2022-04-14", "views": 307173, "desc": "Tabletop with multiple handguns and tactical equipment — seized or displayed."}, {"f": "a_shtirlitz_29253.jpg", "v": 8, "ch": "a_shtirlitz", "date": "2024-03-29", "views": 151981, "desc": "Nighttime military vehicle with mounted weapon system — muzzle flash visible."}], "combat": [{"f": "voenacher_39395.jpg", "v": 9, "ch": "voenacher", "date": "2023-02-11", "views": 355827, "desc": "Two self-propelled guns firing on a snowy wooded hillside — large smoke plumes."}, {"f": "wargonzo_14716.jpg", "v": 9, "ch": "wargonzo", "date": "2023-08-30", "views": 278296, "desc": "Close dynamic scene — soldier aiming weapon amid smoke and debris."}, {"f": "kherson_non_fake_22751.jpg", "v": 9, "ch": "kherson_non_fake", "date": "2025-08-03", "views": 76316, "desc": "Helmeted soldier aiming scoped rifle — active engagement position."}, {"f": "ZA_FROHT_22503.jpg", "v": 9, "ch": "ZA_FROHT", "date": "2023-10-03", "views": 23870, "desc": "Night scene — bright streaks across sky over wooded area, tracer fire."}, {"f": "donbassrealii_16877.jpg", "v": 9, "ch": "donbassrealii", "date": "2023-12-04", "views": 4253, "desc": "Artillery system firing a shell — ground-level perspective."}, {"f": "RVvoenkor_76252.jpg", "v": 8, "ch": "RVvoenkor", "date": "2024-09-03", "views": 541800, "desc": "Damaged building interior through a doorway — rubble, dust suspended in air."}]},
+
+  extreme_images: [{"f": "rusich_army_13799.jpg", "v": 10, "ch": "rusich_army", "date": "2024-03-23", "views": 982507, "ct": "casualty", "desc": "Multi-panel attack sequence with graphic injury close-ups. 982K views."}, {"f": "RVvoenkor_23474.jpg", "v": 10, "ch": "RVvoenkor", "date": "2022-08-19", "views": 670033, "ct": "casualty", "desc": "Multiple bodies on pavement with scattered military gear."}, {"f": "RVvoenkor_18875.jpg", "v": 10, "ch": "RVvoenkor", "date": "2022-07-08", "views": 646727, "ct": "casualty", "desc": "Two deceased soldiers in tall vegetation, visible facial trauma."}, {"f": "rusich_army_7242.jpg", "v": 10, "ch": "rusich_army", "date": "2023-01-14", "views": 597117, "ct": "casualty", "desc": "Multiple soldiers lying in rows — aftermath of combat assault."}, {"f": "RVvoenkor_76401.jpg", "v": 10, "ch": "RVvoenkor", "date": "2024-09-05", "views": 541248, "ct": "casualty", "desc": "Several bodies in wooded brush, prominent head injuries."}, {"f": "RVvoenkor_53402.jpg", "v": 10, "ch": "RVvoenkor", "date": "2023-09-20", "views": 487039, "ct": "casualty", "desc": "Human remains entangled in burned debris in a forest."}, {"f": "voenkorKotenok_35266.jpg", "v": 10, "ch": "voenkorKotenok", "date": "2022-04-24", "views": 433866, "ct": "casualty", "desc": "Two deceased individuals on dry straw, blood on clothing."}, {"f": "voenacher_27355.jpg", "v": 10, "ch": "voenacher", "date": "2022-08-17", "views": 393103, "ct": "casualty", "desc": "Charred body amid burned vegetation — aftermath of explosion."}],
+
+  video_embeds: [
+    {url:'https://t.me/rusich_army/12698',cat:'explosion',ch:'rusich_army',date:'2024-01-15',views:1319864,desc:'Massive nighttime fireball — the most-viewed video in the corpus at 1.3M views.'},
+    {url:'https://t.me/rusich_army/15868',cat:'drone strike',ch:'rusich_army',date:'2024-07-17',views:629791,desc:'Drone targeting display: aerial view of strike zone with HUD overlay and telemetry data.'},
+    {url:'https://t.me/RVvoenkor/41549',cat:'drone strike',ch:'RVvoenkor',date:'2023-03-28',views:542245,desc:'Aerial drone view through smoke over a destroyed landscape — rectangular targeting reticle.'},
+    {url:'https://t.me/RVvoenkor/77233',cat:'destruction',ch:'RVvoenkor',date:'2024-09-18',views:579369,desc:'Burning armored vehicle engulfed in flames and thick smoke on the battlefield.'},
+    {url:'https://t.me/a_shtirlitz/26529',cat:'combat',ch:'a_shtirlitz',date:'2023-07-15',views:200940,desc:'Two camouflaged soldiers in active combat position — crouched over dark soil.'},
+    {url:'https://t.me/wargonzo/9040',cat:'weapons',ch:'wargonzo',date:'2022-11-04',views:496648,desc:'Ship at sea — large vertical flame from a weapon launcher. Naval strike footage.'},
+  ]
+};
+
+// Background images
+const bgFiles = ["voenacher_30345.jpg", "ZA_FROHT_18198.jpg", "RVvoenkor_44949.jpg", "voenkorKotenok_40465.jpg", "voenacher_62983.jpg", "voenkorKotenok_50191.jpg", "rusich_army_13438.jpg", "rusich_army_5751.jpg", "rusich_army_11228.jpg", "rusich_army_9565.jpg", "rusich_army_8166.jpg", "voenacher_69974.jpg", "rusich_army_14791.jpg", "rusich_army_8433.jpg", "rusich_army_13464.jpg", "RVvoenkor_48365.jpg", "RVvoenkor_6887.jpg", "rusich_army_13577.jpg", "kherson_non_fake_13076.jpg", "rusich_army_14231.jpg", "rusich_army_13300.jpg", "rusich_army_5745.jpg", "voenacher_61715.jpg", "voenacher_61711.jpg"];
+
+// ═══════════════════════════════════════
+// INIT BACKGROUND
+// ═══════════════════════════════════════
+const bgContainer = document.getElementById('bgImages');
+bgFiles.forEach(f => {
+  const img = document.createElement('img');
+  img.src = BASE + f;
+  img.alt = '';
+  bgContainer.appendChild(img);
+});
+
+// TICKER
+const tickerTrack = document.getElementById('tickerTrack');
+const tickerText = '10 Telegram channels · 26,707 images · 4 years of war · 41% explicitly violent · mean violence score 4.23 · February 24 2022 – February 24 2026 · RVvoenkor · rusich_army · voenkorKotenok · wargonzo · voenacher · donbassrealii · kherson_non_fake · a_shtirlitz · hyevuy_dnepr · ZA_FROHT · ';
+tickerTrack.innerHTML = `<span>${tickerText}</span><span>${tickerText}</span>`;
+
+// ═══════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════
+const colors = {
+  accent: '#c8a96e', red: '#c84848', blue: '#4878c8',
+  dim: '#555550', surface: '#1a1a1a', border: '#2a2a2a', text: '#e8e8e0'
+};
+
+function getWidth(sel) {
+  return document.querySelector(sel).getBoundingClientRect().width;
+}
+
+// SCORE DISTRIBUTION
+function drawDistChart() {
+  const el = document.getElementById('distChart');
+  const W = el.getBoundingClientRect().width || 800;
+  const H = 280, m = {top:20,right:20,bottom:40,left:50};
+  const w = W - m.left - m.right, h = H - m.top - m.bottom;
+
+  const svg = d3.select('#distChart').attr('viewBox',`0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const x = d3.scaleBand().domain(DATA.score_distribution.map(d=>d.score)).range([0,w]).padding(0.15);
+  const y = d3.scaleLinear().domain([0,d3.max(DATA.score_distribution,d=>d.count)*1.1]).range([h,0]);
+
+  g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(x).tickFormat(d=>`${d}`))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').remove();a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','11px');});
+
+  g.append('g').call(d3.axisLeft(y).ticks(5).tickFormat(d=>d>=1000?`${(d/1000).toFixed(1)}k`:d))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').attr('stroke',colors.border);a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','10px');});
+
+  g.selectAll('rect').data(DATA.score_distribution).join('rect')
+    .attr('x',d=>x(d.score)).attr('y',d=>y(d.count))
+    .attr('width',x.bandwidth()).attr('height',d=>h-y(d.count))
+    .attr('fill',d=>d.score>=6?colors.red:colors.accent)
+    .attr('opacity',d=>d.score>=6?0.85:0.6);
+
+  // Threshold line
+  const x6 = x(6);
+  g.append('line').attr('x1',x6).attr('x2',x6).attr('y1',0).attr('y2',h)
+    .attr('stroke',colors.red).attr('stroke-width',1).attr('stroke-dasharray','4,4').attr('opacity',0.5);
+  g.append('text').attr('x',x6+4).attr('y',12).attr('fill',colors.red).attr('font-size','9px').attr('font-family','IBM Plex Mono').text('≥6 EXPLICITLY VIOLENT');
+}
+
+// TIMELINE
+function drawTimeline() {
+  const el = document.getElementById('timelineChart');
+  const W = el.getBoundingClientRect().width || 900;
+  const H = 320, m = {top:20,right:20,bottom:50,left:45};
+  const w = W-m.left-m.right, h = H-m.top-m.bottom;
+
+  const svg = d3.select('#timelineChart').attr('viewBox',`0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const months = DATA.monthly.map(d=>d.month);
+  const x = d3.scalePoint().domain(months).range([0,w]);
+  const y = d3.scaleLinear().domain([2.5,6]).range([h,0]);
+
+  // Grid
+  y.ticks(5).forEach(t=>{
+    g.append('line').attr('x1',0).attr('x2',w).attr('y1',y(t)).attr('y2',y(t))
+      .attr('stroke',colors.border).attr('stroke-width',1);
+  });
+
+  // Mean line
+  g.append('path').datum(DATA.monthly)
+    .attr('fill','none').attr('stroke',colors.accent).attr('stroke-width',2)
+    .attr('d',d3.line().x(d=>x(d.month)).y(d=>y(d.mean)).curve(d3.curveCatmullRom));
+
+  // Area
+  g.append('path').datum(DATA.monthly)
+    .attr('fill',colors.accent).attr('opacity',0.08)
+    .attr('d',d3.area().x(d=>x(d.month)).y0(h).y1(d=>y(d.mean)).curve(d3.curveCatmullRom));
+
+  // Key events
+  const events = [
+    {month:'2022-04',label:'Bucha'},
+    {month:'2022-09',label:'Kharkiv offensive'},
+    {month:'2022-11',label:'Kherson withdrawal'},
+    {month:'2023-02',label:'Bakhmut peak'},
+    {month:'2024-02',label:'2yr anniversary'},
+    {month:'2025-02',label:'3yr anniversary'},
+  ];
+  events.forEach(ev=>{
+    if(x(ev.month)){
+      g.append('line').attr('x1',x(ev.month)).attr('x2',x(ev.month)).attr('y1',0).attr('y2',h)
+        .attr('stroke',colors.dim).attr('stroke-width',1).attr('stroke-dasharray','3,3');
+      g.append('text').attr('x',x(ev.month)+3).attr('y',h-8).attr('fill',colors.dim)
+        .attr('font-size','8px').attr('font-family','IBM Plex Mono')
+        .attr('transform',`rotate(-90,${x(ev.month)+3},${h-8})`).text(ev.label);
+    }
+  });
+
+  // Axes
+  const yearMonths = months.filter(m=>m.endsWith('-01')||m==='2022-02');
+  g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(x).tickValues(yearMonths).tickFormat(d=>d.slice(0,7)))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').remove();a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','9px').attr('transform','rotate(-30)').attr('text-anchor','end');});
+  g.append('g').call(d3.axisLeft(y).ticks(5))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').remove();a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','10px');});
+}
+
+// HIGH PCT CHART
+function drawHighPct() {
+  const el = document.getElementById('highPctChart');
+  const W = el.getBoundingClientRect().width || 900;
+  const H = 220, m = {top:20,right:20,bottom:40,left:45};
+  const w = W-m.left-m.right, h = H-m.top-m.bottom;
+
+  const svg = d3.select('#highPctChart').attr('viewBox',`0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const months = DATA.monthly.map(d=>d.month);
+  const x = d3.scalePoint().domain(months).range([0,w]);
+  const y = d3.scaleLinear().domain([0,70]).range([h,0]);
+
+  y.ticks(4).forEach(t=>{
+    g.append('line').attr('x1',0).attr('x2',w).attr('y1',y(t)).attr('y2',y(t))
+      .attr('stroke',colors.border).attr('stroke-width',1);
+  });
+
+  // Area
+  g.append('path').datum(DATA.monthly)
+    .attr('fill',colors.red).attr('opacity',0.15)
+    .attr('d',d3.area().x(d=>x(d.month)).y0(h).y1(d=>y(d.high_pct)).curve(d3.curveCatmullRom));
+
+  g.append('path').datum(DATA.monthly)
+    .attr('fill','none').attr('stroke',colors.red).attr('stroke-width',1.5)
+    .attr('d',d3.line().x(d=>x(d.month)).y(d=>y(d.high_pct)).curve(d3.curveCatmullRom));
+
+  // 41% average line
+  g.append('line').attr('x1',0).attr('x2',w).attr('y1',y(41)).attr('y2',y(41))
+    .attr('stroke',colors.accent).attr('stroke-width',1).attr('stroke-dasharray','4,4').attr('opacity',0.7);
+  g.append('text').attr('x',4).attr('y',y(41)-4).attr('fill',colors.accent)
+    .attr('font-size','9px').attr('font-family','IBM Plex Mono').text('41% avg');
+
+  const yearMonths = months.filter(m=>m.endsWith('-01')||m==='2022-02');
+  g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(x).tickValues(yearMonths).tickFormat(d=>d.slice(0,7)))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').remove();a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','9px').attr('transform','rotate(-30)').attr('text-anchor','end');});
+  g.append('g').call(d3.axisLeft(y).ticks(4).tickFormat(d=>`${d}%`))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').remove();a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','10px');});
+}
+
+// CHANNEL CHART
+function drawChannelChart() {
+  const el = document.getElementById('channelChart');
+  const W = el.getBoundingClientRect().width || 500;
+  const H = 340, m = {top:10,right:60,bottom:20,left:10};
+  const w = W-m.left-m.right, h = H-m.top-m.bottom;
+
+  const svg = d3.select('#channelChart').attr('viewBox',`0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const x = d3.scaleLinear().domain([0,5.5]).range([0,w]);
+  const y = d3.scaleBand().domain(DATA.channels.map(d=>d.channel)).range([0,h]).padding(0.25);
+
+  DATA.channels.forEach(d=>{
+    const c = d.side==='RU'?colors.red:colors.blue;
+    g.append('rect').attr('x',0).attr('y',y(d.channel)).attr('width',x(d.mean)).attr('height',y.bandwidth())
+      .attr('fill',c).attr('opacity',0.7);
+    g.append('text').attr('x',x(d.mean)+6).attr('y',y(d.channel)+y.bandwidth()/2+1)
+      .attr('fill',colors.text).attr('font-size','11px').attr('font-family','IBM Plex Mono')
+      .attr('dominant-baseline','middle').text(d.mean.toFixed(2));
+    g.append('text').attr('x',x(d.mean)+38).attr('y',y(d.channel)+y.bandwidth()/2+1)
+      .attr('fill',colors.dim).attr('font-size','9px').attr('font-family','IBM Plex Mono')
+      .attr('dominant-baseline','middle').text(d.side);
+    g.append('text').attr('x',-4).attr('y',y(d.channel)+y.bandwidth()/2+1)
+      .attr('fill',colors.dim).attr('font-size','10px').attr('font-family','IBM Plex Mono')
+      .attr('dominant-baseline','middle').attr('text-anchor','end').text(d.channel);
+  });
+}
+
+// SIDE CHART
+function drawSideChart() {
+  const el = document.getElementById('sideChart');
+  const W = el.getBoundingClientRect().width || 400;
+  const H = 160, m = {top:20,right:20,bottom:30,left:60};
+  const w = W-m.left-m.right, h = H-m.top-m.bottom;
+
+  const svg = d3.select('#sideChart').attr('viewBox',`0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const sideData = [
+    {side:'Ukrainian\nChannels',mean:4.31,col:colors.blue},
+    {side:'Russian\nChannels',mean:4.16,col:colors.red},
+  ];
+  const x = d3.scaleBand().domain(sideData.map(d=>d.side)).range([0,w]).padding(0.4);
+  const y = d3.scaleLinear().domain([3.5,5]).range([h,0]);
+
+  sideData.forEach(d=>{
+    g.append('rect').attr('x',x(d.side)).attr('y',y(d.mean)).attr('width',x.bandwidth()).attr('height',h-y(d.mean))
+      .attr('fill',d.col).attr('opacity',0.7);
+    g.append('text').attr('x',x(d.side)+x.bandwidth()/2).attr('y',y(d.mean)-8)
+      .attr('fill',d.col).attr('font-size','18px').attr('font-family','IBM Plex Mono')
+      .attr('text-anchor','middle').attr('font-weight','500').text(d.mean.toFixed(2));
+    const lines = d.side.split('\n');
+    lines.forEach((ln,i)=>{
+      g.append('text').attr('x',x(d.side)+x.bandwidth()/2).attr('y',h+14+i*12)
+        .attr('fill',colors.dim).attr('font-size','9px').attr('font-family','IBM Plex Mono')
+        .attr('text-anchor','middle').text(ln);
+    });
+  });
+  g.append('g').call(d3.axisLeft(y).ticks(3))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').attr('stroke',colors.border);a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','9px');});
+}
+
+// CHANNEL TABLE
+function buildChannelTable() {
+  const t = document.getElementById('channelTable');
+  t.innerHTML = `<tr><th>Channel</th><th>Side</th><th>Mean Score</th><th>% Explicitly Violent</th><th>Posts</th></tr>`;
+  DATA.channels.forEach(d=>{
+    const c = d.side==='RU'?'#c84848':'#4878c8';
+    const barPct = d.high_pct;
+    t.innerHTML += `<tr>
+      <td><strong>${d.channel}</strong><br><span style="font-size:11px;color:#555550;">${d.title}</span></td>
+      <td><span class="side-badge ${d.side}">${d.side}</span></td>
+      <td style="font-family:var(--mono);color:${c};">${d.mean.toFixed(2)}</td>
+      <td class="bar-cell">
+        <span style="font-family:var(--mono);font-size:12px;">${d.high_pct}%</span>
+        <div class="bar-bg"><div class="bar-fill" style="width:${barPct}%;background:${c};opacity:0.7;"></div></div>
+      </td>
+      <td style="font-family:var(--mono);font-size:12px;color:#555550;">${d.count.toLocaleString()}</td>
+    </tr>`;
+  });
+}
+
+// ENGAGEMENT CHART
+function drawEngagementChart() {
+  const el = document.getElementById('engagementChart');
+  const W = el.getBoundingClientRect().width || 900;
+  const H = 300, m = {top:20,right:40,bottom:50,left:80};
+  const w = W-m.left-m.right, h = H-m.top-m.bottom;
+
+  const svg = d3.select('#engagementChart').attr('viewBox',`0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const x = d3.scaleBand().domain(DATA.views_by_score.map(d=>d.score)).range([0,w]).padding(0.2);
+  const y = d3.scaleLinear().domain([0,350000]).range([h,0]);
+
+  y.ticks(5).forEach(t=>{
+    g.append('line').attr('x1',0).attr('x2',w).attr('y1',y(t)).attr('y2',y(t))
+      .attr('stroke',colors.border).attr('stroke-width',1);
+  });
+
+  g.selectAll('rect').data(DATA.views_by_score).join('rect')
+    .attr('x',d=>x(d.score)).attr('y',d=>y(d.mean_views))
+    .attr('width',x.bandwidth()).attr('height',d=>h-y(d.mean_views))
+    .attr('fill',d=>d.score>=6?colors.red:colors.accent).attr('opacity',0.7);
+
+  g.selectAll('.val-label').data(DATA.views_by_score).join('text')
+    .attr('class','val-label')
+    .attr('x',d=>x(d.score)+x.bandwidth()/2).attr('y',d=>y(d.mean_views)-4)
+    .attr('text-anchor','middle').attr('fill',colors.dim)
+    .attr('font-size','9px').attr('font-family','IBM Plex Mono')
+    .text(d=>`${Math.round(d.mean_views/1000)}k`);
+
+  g.append('g').attr('transform',`translate(0,${h})`).call(d3.axisBottom(x).tickFormat(d=>`Score ${d}`))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').remove();a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','10px');});
+  g.append('g').call(d3.axisLeft(y).ticks(5).tickFormat(d=>`${d/1000}k`))
+    .call(a=>{a.select('.domain').remove();a.selectAll('line').remove();a.selectAll('text').attr('fill',colors.dim).attr('font-family','IBM Plex Mono').attr('font-size','10px');});
+  g.append('text').attr('transform','rotate(-90)').attr('x',-h/2).attr('y',-65)
+    .attr('text-anchor','middle').attr('fill',colors.dim).attr('font-size','10px').attr('font-family','IBM Plex Mono')
+    .text('MEAN VIEWS PER POST');
+}
+
+// ═══════════════════════════════════════
+// TYPOLOGY
+// ═══════════════════════════════════════
+let activeCategory = null;
+
+function buildTypology() {
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = '';
+  DATA.categories.forEach(cat=>{
+    const stats = DATA.cat_stats[cat.id];
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.innerHTML = `
+      <div class="cat-card-header">
+        <div class="cat-name">${cat.name}</div>
+        <div class="cat-score">${stats.mean.toFixed(1)}</div>
+      </div>
+      <div class="cat-meta">${stats.count.toLocaleString()} IMAGES · ${stats.high_pct}% SCORE ≥6</div>
+      <div class="cat-desc">${cat.desc}</div>
+    `;
+    card.addEventListener('click',()=>toggleCategory(cat.id, card));
+    grid.appendChild(card);
+  });
+}
+
+function toggleCategory(id, card) {
+  const detail = document.getElementById('catDetail');
+  const allCards = document.querySelectorAll('.cat-card');
+  allCards.forEach(c=>c.classList.remove('active'));
+
+  if(activeCategory === id) {
+    activeCategory = null;
+    detail.classList.remove('visible');
+    detail.innerHTML = '';
+    return;
+  }
+  activeCategory = id;
+  card.classList.add('active');
+
+  const cat = DATA.categories.find(c=>c.id===id);
+  const stats = DATA.cat_stats[id];
+  const imgs = DATA.selected_images[id] || [];
+
+  detail.classList.add('visible');
+  detail.innerHTML = `
+    <div class="cat-detail-inner">
+      <div class="cat-detail-grid">
+        <div>
+          <h3 style="font-family:var(--serif);font-size:24px;margin-bottom:12px;">${cat.name}</h3>
+          <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:24px;">${cat.desc}</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:24px;">
+            <div style="background:var(--bg);padding:16px;">
+              <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);margin-bottom:4px;">MEAN SCORE</div>
+              <div style="font-family:var(--serif);font-size:28px;color:var(--accent);">${stats.mean.toFixed(2)}</div>
+            </div>
+            <div style="background:var(--bg);padding:16px;">
+              <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);margin-bottom:4px;">TOTAL IMAGES</div>
+              <div style="font-family:var(--serif);font-size:28px;color:var(--accent);">${stats.count.toLocaleString()}</div>
+            </div>
+            <div style="background:var(--bg);padding:16px;">
+              <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);margin-bottom:4px;">SCORE ≥6</div>
+              <div style="font-family:var(--serif);font-size:28px;color:var(--red);">${stats.high_pct}%</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.15em;margin-bottom:12px;">REPRESENTATIVE IMAGES — CLICK TO ENLARGE</div>
+          <div class="cat-images-strip">
+            ${imgs.map(img=>`
+              <div class="cat-img-thumb" onclick="openLightbox('${BASE+img.f}','[${img.v}/10] ${img.ch} · ${img.date} · ${img.views.toLocaleString()} views\\n${img.desc}')">
+                <img src="${BASE+img.f}" alt="" loading="lazy">
+                <div class="img-score">${img.v}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  detail.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ═══════════════════════════════════════
+// EXTREME GRID
+// ═══════════════════════════════════════
+function buildExtremeGrid() {
+  const grid = document.getElementById('extremeGrid');
+  grid.innerHTML = DATA.extreme_images.map(img=>`
+    <div class="extreme-card" onclick="openLightbox('${BASE+img.f}','SCORE ${img.v}/10 · ${img.ch} · ${img.date} · ${img.views.toLocaleString()} views\\n${img.desc}')">
+      <img src="${BASE+img.f}" alt="" loading="lazy">
+      <div class="extreme-overlay">
+        <div class="extreme-score">SCORE ${img.v}/10 · ${img.ct.toUpperCase()}</div>
+        <div class="extreme-channel">${img.ch} · ${img.date}</div>
+        <div class="extreme-desc">${img.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// VIDEO GRID
+// ═══════════════════════════════════════
+function buildVideoGrid() {
+  const grid = document.getElementById('videoGrid');
+  grid.innerHTML = DATA.video_embeds.map(v=>`
+    <div class="video-card">
+      <div class="video-embed-wrap">
+        <iframe src="${v.url}?embed=1" height="350" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+      </div>
+      <div class="video-meta">
+        <div class="video-cat">${v.cat}</div>
+        <div class="video-desc">${v.desc}</div>
+        <div class="video-views">${v.views.toLocaleString()} VIEWS · ${v.ch} · ${v.date}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// LIGHTBOX
+// ═══════════════════════════════════════
+function openLightbox(src, caption) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxCaption').textContent = caption;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.getElementById('lightbox').addEventListener('click', function(e){
+  if(e.target === this) closeLightbox();
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLightbox(); });
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+const sections = ['hero','distribution','timeline','channels','contentbychannel','typology','extreme','videos','engagement'];
+const navDots = document.querySelectorAll('.nav-dot');
+navDots.forEach(dot=>{
+  dot.addEventListener('click',()=>{
+    document.getElementById(dot.dataset.section).scrollIntoView({behavior:'smooth'});
+  });
+});
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navDots.forEach(d=>d.classList.toggle('active', d.dataset.section===e.target.id));
+    }
+  });
+},{threshold:0.3});
+sections.forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) observer.observe(el);
+});
+
+// ═══════════════════════════════════════
+// INIT ALL
+// ═══════════════════════════════════════
+
+// STACKED BAR CHART - content by channel
+function drawStackedChart() {
+  const cats = ['destruction','explosion','drone','casualty','gruz200','propaganda','weapons','combat','political','civilian','aftermath','other'];
+  const catColors = {
+    destruction: '#c84848',
+    explosion:   '#e07020',
+    drone:       '#c8a020',
+    casualty:    '#8b0000',
+    gruz200:     '#6a0dad',
+    propaganda:  '#c8507a',
+    weapons:     '#4878c8',
+    combat:      '#2060a0',
+    political:   '#488848',
+    civilian:    '#48a888',
+    aftermath:   '#887048',
+    other:       '#444440',
+  };
+
+  // Legend
+  const legend = document.getElementById('stackedLegend');
+  legend.innerHTML = '';
+  cats.forEach(cat => {
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:5px;';
+    item.innerHTML = `<div style="width:10px;height:10px;background:${catColors[cat]};opacity:0.85;flex-shrink:0;"></div><span style="font-family:var(--mono);font-size:9px;color:var(--text-muted);letter-spacing:0.1em;">${cat.toUpperCase()}</span>`;
+    legend.appendChild(item);
+  });
+
+  const el = document.getElementById('stackedChart');
+  const W = el.getBoundingClientRect().width || 900;
+  const H = 480;
+  const m = {top: 20, right: 20, bottom: 60, left: 110};
+  const w = W - m.left - m.right;
+  const h = H - m.top - m.bottom;
+
+  const svg = d3.select('#stackedChart').attr('viewBox', `0 0 ${W} ${H}`);
+  svg.selectAll('*').remove();
+  const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+
+  const data = DATA.content_by_channel;
+  const y = d3.scaleBand().domain(data.map(d => d.channel)).range([0, h]).padding(0.2);
+  const x = d3.scaleLinear().domain([0, 100]).range([0, w]);
+
+  // Divider between RU and UA
+  const ruCount = data.filter(d => d.side === 'RU').length;
+  const dividerY = y.bandwidth() * ruCount + y.step() * ruCount + y.paddingInner() * y.step() * 0.5;
+  g.append('line')
+    .attr('x1', -m.left).attr('x2', w)
+    .attr('y1', dividerY).attr('y2', dividerY)
+    .attr('stroke', colors.border).attr('stroke-width', 1)
+    .attr('stroke-dasharray', '4,4');
+  g.append('text').attr('x', -m.left).attr('y', dividerY - 6)
+    .attr('fill', colors.red).attr('font-size', '9px').attr('font-family', 'IBM Plex Mono')
+    .attr('letter-spacing', '0.1em').text('RUSSIAN CHANNELS ▲');
+  g.append('text').attr('x', -m.left).attr('y', dividerY + 14)
+    .attr('fill', colors.blue).attr('font-size', '9px').attr('font-family', 'IBM Plex Mono')
+    .attr('letter-spacing', '0.1em').text('UKRAINIAN CHANNELS ▼');
+
+  // Stacked bars
+  data.forEach(d => {
+    let xPos = 0;
+    cats.forEach(cat => {
+      const val = d[cat] || 0;
+      const barW = x(val);
+      if (barW > 0) {
+        g.append('rect')
+          .attr('x', xPos).attr('y', y(d.channel))
+          .attr('width', barW).attr('height', y.bandwidth())
+          .attr('fill', catColors[cat]).attr('opacity', 0.85);
+        if (barW > 18) {
+          g.append('text')
+            .attr('x', xPos + barW / 2).attr('y', y(d.channel) + y.bandwidth() / 2 + 1)
+            .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+            .attr('fill', '#fff').attr('font-size', '8px').attr('font-family', 'IBM Plex Mono')
+            .attr('opacity', 0.9)
+            .text(`${val.toFixed(0)}%`);
+        }
+        xPos += barW;
+      }
+    });
+  });
+
+  // Y axis labels
+  g.append('g').call(d3.axisLeft(y).tickSize(0))
+    .call(a => {
+      a.select('.domain').remove();
+      a.selectAll('text')
+        .attr('fill', d => {
+          const row = data.find(r => r.channel === d);
+          return row && row.side === 'RU' ? colors.red : colors.blue;
+        })
+        .attr('font-family', 'IBM Plex Mono').attr('font-size', '11px')
+        .attr('dx', '-6px');
+    });
+
+  // X axis
+  g.append('g').attr('transform', `translate(0,${h})`).call(d3.axisBottom(x).ticks(5).tickFormat(d => `${d}%`))
+    .call(a => {
+      a.select('.domain').remove();
+      a.selectAll('line').attr('stroke', colors.border);
+      a.selectAll('text').attr('fill', colors.dim).attr('font-family', 'IBM Plex Mono').attr('font-size', '10px');
+    });
+}
+
+window.addEventListener('load', ()=>{
+  drawDistChart();
+  drawTimeline();
+  drawHighPct();
+  drawChannelChart();
+  drawSideChart();
+  buildChannelTable();
+  drawEngagementChart();
+  drawStackedChart();
+  buildTypology();
+  buildExtremeGrid();
+  buildVideoGrid();
+});
+window.addEventListener('resize', ()=>{
+  drawDistChart();
+  drawTimeline();
+  drawHighPct();
+  drawChannelChart();
+  drawSideChart();
+  drawEngagementChart();
+  drawStackedChart();
+});
+
+// Handle missing images gracefully
+function handleImgError(img) {
+  const parent = img.parentElement;
+  const score = parent.querySelector('.img-score');
+  const scoreVal = score ? score.textContent : '';
+  const ph = document.createElement('div');
+  ph.className = 'img-placeholder';
+  ph.innerHTML = `<div class="ph-score">${scoreVal}</div><div class="ph-name">${img.src.split('/').pop()}</div>`;
+  img.style.display = 'none';
+  if (score) score.style.display = 'none';
+  parent.appendChild(ph);
+}
+
+function handleExtremeImgError(img) {
+  img.style.background = 'var(--surface2)';
+  img.style.minHeight = '200px';
+  img.src = '';
+}
+
+// Apply error handlers after build
+function applyImageErrorHandlers() {
+  document.querySelectorAll('.cat-img-thumb img').forEach(img => {
+    img.onerror = function() { handleImgError(this); };
+    if (img.complete && img.naturalWidth === 0) handleImgError(img);
+  });
+  document.querySelectorAll('.extreme-card img').forEach(img => {
+    img.onerror = function() { handleExtremeImgError(this); };
+    if (img.complete && img.naturalWidth === 0) handleExtremeImgError(img);
+  });
+  document.querySelectorAll('.bg-images img').forEach(img => {
+    img.onerror = function() { this.style.display = 'none'; };
+  });
+}
+
+// Call after typology/extreme built
+const _origBuildTypology = buildTypology;
+buildTypology = function() { _origBuildTypology(); setTimeout(applyImageErrorHandlers, 500); };
+const _origBuildExtreme = buildExtremeGrid;
+buildExtremeGrid = function() { _origBuildExtreme(); setTimeout(applyImageErrorHandlers, 500); };
+</script>
+</body>
+</html>
