@@ -107,26 +107,6 @@ export default function Home() {
           </p>
         </header>
 
-        <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {sections.map(({ href, title, Icon, bg }) => (
-            <a
-              key={href}
-              href={href}
-              className="group flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm ring-0 transition hover:-translate-y-1 hover:shadow-md hover:ring-1 hover:ring-zinc-200"
-            >
-              <div className={`mb-4 inline-flex items-center gap-3 rounded-2xl p-2 ${bg}`}>
-                <Icon />
-                <div className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold italic text-zinc-900 ${bg}`}>
-                  {title}
-                </div>
-              </div>
-              <p className="text-sm text-zinc-600">
-                Open the analytical chapter on {title.toLowerCase()}.
-              </p>
-            </a>
-          ))}
-        </section>
-
         {/* ── 2D Visual Map ── */}
         <section className="space-y-4">
           <div className="flex items-end justify-between">
@@ -161,6 +141,27 @@ export default function Home() {
               loading="lazy"
             />
           </div>
+        </section>
+
+        {/* ── Analytical section tiles ── */}
+        <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {sections.map(({ href, title, Icon, bg }) => (
+            <a
+              key={href}
+              href={href}
+              className="group flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm ring-0 transition hover:-translate-y-1 hover:shadow-md hover:ring-1 hover:ring-zinc-200"
+            >
+              <div className={`mb-4 inline-flex items-center gap-3 rounded-2xl p-2 ${bg}`}>
+                <Icon />
+                <div className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold italic text-zinc-900 ${bg}`}>
+                  {title}
+                </div>
+              </div>
+              <p className="text-sm text-zinc-600">
+                Open the analytical chapter on {title.toLowerCase()}.
+              </p>
+            </a>
+          ))}
         </section>
 
         <section className="max-w-3xl space-y-4 text-sm text-zinc-600">
