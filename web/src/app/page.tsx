@@ -1,89 +1,80 @@
 type SectionConfig = {
   href: string;
   title: string;
-  bg: string;
+  bgColor: string;
+  iconBgColor: string;
+  textColor: string;
   Icon: () => JSX.Element;
 };
+
+const BLUE  = "#0057b7";
+const BLUE2 = "#004fa8"; // slightly darker for icon bg on blue tiles
+const YELL  = "#ffdd00";
+const YELL2 = "#f5d000"; // slightly darker for icon bg on yellow tiles
 
 const sections: SectionConfig[] = [
   {
     href: "/content-type",
-    title: "Content type",
-    bg: "bg-[#e3f0ff]", // light Ukrainian blue
+    title: "Channel Content",
+    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#c5e0ff] text-lg">
-        🎯
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🎯</span>
     ),
   },
   {
     href: "/implied-violence",
-    title: "Implied violence",
-    bg: "bg-[#c5e0ff]", // medium Ukrainian blue
+    title: "Frontline violence",
+    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#a7d0ff] text-lg">
-        ⚠️
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>⚠️</span>
     ),
   },
   {
     href: "/gamification",
     title: "Gamification",
-    bg: "bg-[#a7d0ff]", // stronger Ukrainian blue
+    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#89c0ff] text-lg">
-        🎮
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🎮</span>
     ),
   },
   {
     href: "/dehumanization",
     title: "Dehumanization",
-    bg: "bg-[#89c0ff]", // deepest Ukrainian blue in row
+    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#72b3ff] text-lg">
-        🧱
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🧱</span>
     ),
   },
   {
     href: "/aestheticization",
     title: "Aestheticization",
-    bg: "bg-[#fff7d1]", // light Ukrainian yellow
+    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffefad] text-lg">
-        ✨
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>✨</span>
     ),
   },
   {
     href: "/narrative-framing",
     title: "Narrative framing",
-    bg: "bg-[#ffefad]", // medium Ukrainian yellow
+    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffe789] text-lg">
-        📣
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>📣</span>
     ),
   },
   {
     href: "/technical-framing",
-    title: "Technical framing",
-    bg: "bg-[#ffe789]", // stronger Ukrainian yellow
+    title: "Technical means",
+    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffdf65] text-lg">
-        🛠️
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>🛠️</span>
     ),
   },
   {
     href: "/methodology",
     title: "Methodology",
-    bg: "bg-[#ffdf65]", // deepest Ukrainian yellow in row
+    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f7d34f] text-lg">
-        📊
-      </span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>📊</span>
     ),
   },
 ];
@@ -103,8 +94,8 @@ export default function Home() {
           </h1>
           <p style={{ color: "var(--text-dim)", fontSize: "1.05rem", lineHeight: 1.75 }}>
             A visual and analytical exploration of how the Ukraine war is
-            represented across digital platforms, with a focus on content type,
-            violence, gamification, dehumanization, aestheticization and
+            represented across digital platforms, with a focus on channel content,
+            violence on the front, gamification, dehumanization, aestheticization and
             narrative framing.
           </p>
         </header>
@@ -148,16 +139,16 @@ export default function Home() {
             Analytical chapters
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {sections.map(({ href, title, Icon, bg }) => (
+            {sections.map(({ href, title, Icon, bgColor, textColor }) => (
               <a
                 key={href}
                 href={href}
                 className="group flex flex-col justify-between transition section-tile"
                 style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "18px", textDecoration: "none" }}
               >
-                <div className={`mb-4 inline-flex items-center gap-3 rounded-xl p-2 ${bg}`}>
+                <div className="mb-4 inline-flex items-center gap-3 rounded-xl p-2" style={{ background: bgColor }}>
                   <Icon />
-                  <div className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold italic text-zinc-900 ${bg}`}>
+                  <div className="inline-flex rounded-full px-3 py-1 text-sm font-semibold italic" style={{ background: bgColor, color: textColor }}>
                     {title}
                   </div>
                 </div>
@@ -167,6 +158,40 @@ export default function Home() {
               </a>
             ))}
           </div>
+
+        </section>
+
+        {/* ── Correlatory effects ── */}
+        <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0" }}>
+
+          {/* connector line + label */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
+            <div style={{ width: "1px", height: "48px", background: "linear-gradient(to bottom, transparent, var(--accent))" }} />
+            <p style={{ fontFamily: "var(--mono)", fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--accent-dim)" }}>
+              cross-dimensional
+            </p>
+            <div style={{ width: "1px", height: "24px", background: "linear-gradient(to bottom, var(--accent), var(--accent))" }} />
+          </div>
+
+          {/* tile */}
+          <a
+            href="/correlatory-effects"
+            className="transition section-tile"
+            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "var(--surface)", border: "1px solid var(--accent-dim)", borderRadius: "16px", padding: "24px 40px", textDecoration: "none", minWidth: "280px" }}
+          >
+            <div className="inline-flex items-center gap-3 rounded-xl p-2" style={{ background: "var(--accent)" }}>
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: "var(--accent-dim)" }}>📈</span>
+              <div className="inline-flex rounded-full px-3 py-1 text-sm font-semibold italic" style={{ background: "var(--accent)", color: "var(--bg)" }}>
+                Correlatory effects
+              </div>
+            </div>
+            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontFamily: "var(--mono)", textAlign: "center", lineHeight: 1.6 }}>
+              Gamification × violence · Dehumanization × violence<br />Aestheticization × narrative framing
+            </p>
+            <p style={{ fontSize: "0.75rem", color: "var(--accent-dim)", fontFamily: "var(--mono)" }}>
+              Open chapter →
+            </p>
+          </a>
         </section>
 
         {/* ── How to read this ── */}

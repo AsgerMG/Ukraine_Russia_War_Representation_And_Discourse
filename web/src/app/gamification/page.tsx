@@ -6,7 +6,7 @@ export default function GamificationPage() {
       chapter="Chapter 03"
       title="Gamification"
       subtitle="Where game-like mechanics, aesthetics or metaphors are used to frame the war and its participants."
-      accentColor="bg-[#a7d0ff]"
+      pillBg="#0057b7" pillText="#fff"
     >
       <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }}>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "16px" }}>

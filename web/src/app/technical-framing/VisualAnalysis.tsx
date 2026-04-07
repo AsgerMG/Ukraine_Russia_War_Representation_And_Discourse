@@ -212,7 +212,7 @@ export default function VisualAnalysis() {
 
         {/* finding callout */}
         <div style={{ display: "flex", gap: "12px", background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "16px" }}>
-          <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "11px", fontWeight: 700, color: "var(--bg)", marginTop: "1px" }}>
+          <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "11px", fontWeight: 700, color: "#fff", marginTop: "1px" }}>
             →
           </span>
           <p style={{ fontSize: "0.875rem", lineHeight: 1.7, color: "var(--text-dim)" }}>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aestheticization × Narrative Framing — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300..700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:#0a0e1a; --surface:#0f1628; --surface-2:#141e35;
+  --border:rgba(0,91,187,0.25); --divider:rgba(0,91,187,0.08);
+  --text:#e8eef8; --text-muted:#7a90b8; --text-faint:#3a4f78;
+  --blue:#005BBB; --blue-light:#3a8ff5; --blue-bright:#5aaeff;
+  --yellow:#FFD500; --yellow-dim:rgba(255,213,0,0.14); --blue-dim:rgba(0,91,187,0.18);
+  --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh}
+body::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--blue) 50%,var(--yellow) 50%);position:fixed;top:0;left:0;right:0;z-index:200}
+
+.header{border-bottom:1px solid var(--border);padding:18px 32px;padding-top:22px;display:flex;align-items:center;gap:16px;position:sticky;top:4px;background:rgba(10,14,26,0.94);backdrop-filter:blur(14px);z-index:100}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;letter-spacing:-0.01em}
+.logo-flag{display:flex;flex-direction:column;width:22px;height:16px;border-radius:3px;overflow:hidden;flex-shrink:0}
+.logo-flag-top{flex:1;background:var(--blue)}
+.logo-flag-bot{flex:1;background:var(--yellow)}
+.header-meta{margin-left:auto;color:var(--text-muted);font-size:12px;font-family:var(--mono)}
+
+.main{max-width:1280px;margin:0 auto;padding:32px}
+.section-label{font-size:11px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--yellow);margin-bottom:8px}
+.section-title{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin-bottom:6px}
+.section-sub{color:var(--text-muted);font-size:14px;margin-bottom:24px;max-width:68ch}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 20px;transition:border-color .2s,box-shadow .2s}
+.kpi:hover{border-color:var(--blue-light);box-shadow:0 0 0 1px rgba(0,91,187,0.2)}
+.kpi-label{font-size:11px;font-family:var(--mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.kpi-value{font-size:28px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:12px;color:var(--text-muted);margin-top:3px}
+.c-blue{color:var(--blue-bright)} .c-yellow{color:var(--yellow)} .c-blue2{color:#7ab8ff} .c-soft{color:#a0c4ff}
+
+.eq-box{background:var(--blue-dim);border:1px solid rgba(0,91,187,0.4);border-radius:var(--r-md);padding:14px 18px;font-family:var(--mono);font-size:14px;color:var(--blue-bright);margin:16px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.eq-sep{color:var(--text-faint)}
+.eq-box strong{color:var(--yellow)}
+
+/* 3-model comparison */
+.compare-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:var(--r-lg);padding:18px 22px;margin-bottom:32px}
+.compare-box h4{font-size:11px;font-family:var(--mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.compare-item h5{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:10px}
+.compare-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.compare-label{color:var(--text-muted)}
+.compare-val{font-family:var(--mono);font-weight:600}
+.val-yellow{color:var(--yellow)} .val-blue{color:var(--blue-bright)} .val-muted{color:#7ab8ff}
+.cbar-wrap{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin-bottom:8px}
+.cbar{height:4px;border-radius:2px}
+
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.charts-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.charts-wide{margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px}
+.chart-wrap{position:relative}
+
+/* Propaganda meme highlight pill */
+.pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,213,0,0.12);border:1px solid rgba(255,213,0,0.3);border-radius:99px;padding:2px 10px;font-size:12px;color:var(--yellow);font-family:var(--mono)}
+
+.findings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:32px 0}
+.finding{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;transition:border-color .2s}
+.finding:hover{border-color:rgba(255,213,0,0.3)}
+.finding-icon{font-size:22px;margin-bottom:10px}
+.finding-q{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.finding-a{font-size:14px;color:var(--text);line-height:1.55}
+.finding-a strong{color:var(--yellow)}
+
+.code-section{margin-top:48px}
+.code-block{background:#060810;border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;font-family:var(--mono);font-size:13px;line-height:1.7;color:#abb2bf;overflow-x:auto;margin-bottom:16px;white-space:pre}
+.code-cell-label{font-size:11px;font-family:var(--mono);color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;margin-top:20px}
+.kw{color:#c678dd} .fn{color:#61afef} .str{color:#98c379} .cm{color:#5c6370;font-style:italic} .num{color:#d19a66}
+
+.divider{height:1px;background:var(--divider);margin:48px 0}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(0,91,187,0.4);border-radius:3px}
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .charts-2col,.charts-3col{grid-template-columns:1fr}
+  .compare-grid{grid-template-columns:1fr}
+  .findings{grid-template-columns:1fr}
+  .main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-flag"><div class="logo-flag-top"></div><div class="logo-flag-bot"></div></div>
+    War Media Annotation Dashboard
+  </div>
+  <span class="header-meta">n = 25,474 images &nbsp;·&nbsp; 10 channels &nbsp;·&nbsp; 0–10 score scale</span>
+</header>
+
+<main class="main">
+
+  <div style="margin-bottom:24px;margin-top:32px">
+    <div class="section-label">Regression Analysis</div>
+    <div class="section-title">Aestheticization Score → Narrative Framing Score</div>
+    <div class="section-sub">The more polished or stylized an image — flame overlays, professional colour grading, graphic design composites — the more strongly it carries ideological messaging. <span class="pill">✦ Propaganda memes are the key driver</span></div>
+  </div>
+
+  <div class="eq-box">
+    <span>ŷ = <strong>1.385</strong> + <strong>0.687</strong> × aestheticization_score</span>
+    <span class="eq-sep">|</span><span>R = 0.581</span>
+    <span class="eq-sep">|</span><span>R² = 0.338</span>
+    <span class="eq-sep">|</span><span>p &lt; 0.0001</span>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Pearson R</div><div class="kpi-value c-yellow">0.581</div><div class="kpi-sub">Strong positive correlation</div></div>
+    <div class="kpi"><div class="kpi-label">R² Explained</div><div class="kpi-value c-yellow">33.8%</div><div class="kpi-sub">Strongest R² of all 3 models</div></div>
+    <div class="kpi"><div class="kpi-label">Slope (β₁)</div><div class="kpi-value c-blue">+0.687</div><div class="kpi-sub">+1 aesthet pt → +0.69 framing</div></div>
+    <div class="kpi"><div class="kpi-label">Propaganda meme</div><div class="kpi-value c-soft">6.64 / 7.27</div><div class="kpi-sub">Aestheticization / Framing mean</div></div>
+  </div>
+
+  <!-- 3-model comparison -->
+  <div class="compare-box">
+    <h4>How this model compares to the other two</h4>
+    <div class="compare-grid">
+      <div class="compare-item">
+        <h5 style="color:var(--yellow)">✦ Aestheticization → Narrative Framing (this page)</h5>
+        <div class="compare-row"><span class="compare-label">Pearson R</span><span class="compare-val val-yellow">0.581</span></div>
+        <div class="cbar-wrap"><div class="cbar" style="width:58.1%;background:var(--yellow)"></div></div>
+        <div class="compare-row"><span class="compare-label">R²</span><span class="compare-val val-yellow">33.8%</span></div>
+        <div class="cbar-wrap"><div class="cbar" style="width:33.8%;background:var(--yellow)"></div></div>
+        <div class="compare-row"><span class="compare-label">Slope β₁</span><span class="compare-val val-yellow">+0.687</span></div>
+      </div>
+      <div class="compare-item">
+        <h5 style="color:var(--blue-bright)">Dehumanization → Implied Violence</h5>
+        <div class="compare-row"><span class="compare-label">Pearson R</span><span class="compare-val val-blue">0.567</span></div>
+        <div class="cbar-wrap"><div class="cbar" style="width:56.7%;background:var(--blue-bright)"></div></div>
+        <div class="compare-row"><span class="compare-label">R²</span><span class="compare-val val-blue">32.1%</span></div>
+        <div class="cbar-wrap"><div class="cbar" style="width:32.1%;background:var(--blue-bright)"></div></div>
+        <div class="compare-row"><span class="compare-label">Slope β₁</span><span class="compare-val val-blue">+0.735</span></div>
+      </div>
+      <div class="compare-item">
+        <h5 style="color:#7ab8ff">Gamification → Implied Violence</h5>
+        <div class="compare-row"><span class="compare-label">Pearson R</span><span class="compare-val val-muted">0.327</span></div>
+        <div class="cbar-wrap"><div class="cbar" style="width:32.7%;background:#7ab8ff"></div></div>
+        <div class="compare-row"><span class="compare-label">R²</span><span class="compare-val val-muted">10.7%</span></div>
+        <div class="cbar-wrap"><div class="cbar" style="width:10.7%;background:#7ab8ff"></div></div>
+        <div class="compare-row"><span class="compare-label">Slope β₁</span><span class="compare-val val-muted">+0.370</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scatter + Mean line -->
+  <div class="charts-2col">
+    <div class="card">
+      <div class="card-title">Scatter — 3,000 sampled images + regression line</div>
+      <div class="card-sub">Tight upward cloud. Denser at mid-range (aestheticization 2–5) where the bulk of the dataset sits.</div>
+      <div class="chart-wrap" style="height:320px"><canvas id="scatterChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Mean Narrative Framing by Aestheticization Level</div>
+      <div class="card-sub">Remarkably clean climb from 0.07 (a=0) to ~7 (a=8). The anomaly at a=9 reflects a tiny sample (n=43) with high variance.</div>
+      <div class="chart-wrap" style="height:320px"><canvas id="meanLineChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Distributions -->
+  <div class="charts-2col" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">Distribution — Aestheticization Score</div>
+      <div class="card-sub">Peaks at 3 (n=7,966). Most images receive moderate aesthetic polish. Only propaganda memes and professional productions reach 6–9.</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="aDist"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribution — Narrative Framing Score</div>
+      <div class="card-sub">More uniform than other score distributions. A wide spread from 2–7 reflects the diversity of messaging intensity across content types.</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="nfDist"></canvas></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="margin-bottom:24px">
+    <div class="section-label">Breakdown by Category</div>
+    <div class="section-title">Propaganda Memes as the Extreme Outlier</div>
+    <div class="section-sub">Propaganda memes score 6.64 on aestheticization and 7.27 on narrative framing — dramatically above every other content type. Composite/meme frames and professional production are the frame-level drivers.</div>
+  </div>
+
+  <div class="charts-2col">
+    <div class="card">
+      <div class="card-title">Content Type — Aestheticization vs Narrative Framing (bubble = sample size)</div>
+      <div class="card-sub">Propaganda meme is the lone top-right outlier. Political content scores high on framing relative to its aestheticization, suggesting ideology can exist without polish.</div>
+      <div class="chart-wrap" style="height:380px"><canvas id="ctBubble"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Frame Type — Aestheticization vs Narrative Framing (bubble = sample size)</div>
+      <div class="card-sub">Composite/meme frames dominate both axes (5.95 / 6.34). Professional production ranks second. Civilian recordings sit at the low end.</div>
+      <div class="chart-wrap" style="height:380px"><canvas id="frameBubble"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Channel bubble -->
+  <div class="charts-wide" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">Channel — Aestheticization vs Narrative Framing (bubble = sample size)</div>
+      <div class="card-sub">a_shtirlitz leads on narrative framing (4.99) and ties wargonzo on aestheticization (~4.2). hyevuy_dnepr scores lowest on both — consistent with its civilian/aftermath focus.</div>
+      <div class="chart-wrap" style="height:300px"><canvas id="chBubble"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Correlation heatmap -->
+  <div class="charts-wide" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">Correlation Heatmap — All 5 Scores</div>
+      <div class="card-sub">Aestheticization and narrative framing share the strongest pairwise correlation in the whole matrix (0.581). They also both correlate highly with dehumanization (~0.43–0.59), forming the ideological triad of the dataset.</div>
+      <div class="chart-wrap" style="height:270px"><canvas id="corrChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="margin-bottom:24px">
+    <div class="section-label">Key Findings</div>
+    <div class="section-title">Answering the Research Questions</div>
+  </div>
+
+  <div class="findings">
+    <div class="finding">
+      <div class="finding-icon">🎨</div>
+      <div class="finding-q">As aestheticization rises, does framing rise?</div>
+      <div class="finding-a"><strong>Yes — the strongest relationship in the dataset.</strong> R = 0.581 and R² = 33.8%, edging out even the dehumanization → violence pairing. The climb is nearly monotonic from a=0 to a=8.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">📣</div>
+      <div class="finding-q">Which content type is the key driver?</div>
+      <div class="finding-a"><strong>Propaganda memes dominate</strong> — aestheticization mean 6.64, framing mean 7.27. No other content type scores above 5.2 on framing. "ГРУZ 200" composites, flame overlays, and flag graphics are characteristic examples.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">🖼️</div>
+      <div class="finding-q">Which frame type drives it?</div>
+      <div class="finding-a"><strong>Composite/meme frames</strong> (5.95 / 6.34) and professional production (4.20 / 4.05). Screenshots also score high on framing (4.29) despite lower aestheticization — maps and infographics carry ideology without visual polish.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">⚡</div>
+      <div class="finding-q">Can framing be high without aestheticization?</div>
+      <div class="finding-a"><strong>Yes — screenshots show this.</strong> Tactical maps and infographics score framing ~4.3 while scoring only 3.4 on aestheticization. Ideology travels through information design, not just visual beauty.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">📡</div>
+      <div class="finding-q">Which channel aestheticizes most?</div>
+      <div class="finding-a"><strong>wargonzo and a_shtirlitz</strong> lead (≈4.2–4.3). a_shtirlitz has the highest narrative framing of any channel (4.99), reflecting its heavy use of meme composites and ideological overlays. hyevuy_dnepr is the lowest on both (3.13 / 3.14).</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">🧮</div>
+      <div class="finding-q">What does the equation say?</div>
+      <div class="finding-a">ŷ = 1.39 + 0.69x — the low intercept (1.39) means an un-aestheticized image carries almost no framing. This is the most "intentional" pairing: polished visuals are actively crafted to carry ideology.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="code-section">
+    <div style="margin-bottom:24px">
+      <div class="section-label">Google Colab Code</div>
+      <div class="section-title">Run This in Your Notebook</div>
+      <div class="section-sub">Assumes <code style="font-family:var(--mono);color:var(--blue-bright)">df</code> is already loaded from annotations.csv.</div>
+    </div>
+
+    <div class="code-cell-label">Cell 1 — Regression & Stats</div>
+    <div class="code-block"><span class="kw">from</span> scipy <span class="kw">import</span> stats
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+df_c = df[[<span class="str">'aestheticization_score'</span>, <span class="str">'narrative_framing_score'</span>]].<span class="fn">dropna</span>()
+x, y = df_c[<span class="str">'aestheticization_score'</span>].values, df_c[<span class="str">'narrative_framing_score'</span>].values
+slope, intercept, r, p, se = stats.<span class="fn">linregress</span>(x, y)
+
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"ŷ = {intercept:.4f} + {slope:.4f} × aestheticization_score"</span>)
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"R = {r:.4f}  |  R² = {r**2:.4f}  |  p = {p:.2e}"</span>)</div>
+
+    <div class="code-cell-label">Cell 2 — Scatter + Regression Line</div>
+    <div class="code-block"><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+sample = df_c.<span class="fn">sample</span>(<span class="num">3000</span>, random_state=<span class="num">42</span>)
+xj = sample[<span class="str">'aestheticization_score'</span>] + np.random.<span class="fn">uniform</span>(-<span class="num">0.3</span>,<span class="num">0.3</span>,<span class="fn">len</span>(sample))
+yj = sample[<span class="str">'narrative_framing_score'</span>] + np.random.<span class="fn">uniform</span>(-<span class="num">0.3</span>,<span class="num">0.3</span>,<span class="fn">len</span>(sample))
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="num">10</span>,<span class="num">6</span>), facecolor=<span class="str">'#0a0e1a'</span>)
+ax.<span class="fn">set_facecolor</span>(<span class="str">'#0f1628'</span>)
+ax.<span class="fn">scatter</span>(xj, yj, alpha=<span class="num">0.12</span>, s=<span class="num">12</span>, color=<span class="str">'#005BBB'</span>)
+xl = np.<span class="fn">linspace</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">100</span>)
+ax.<span class="fn">plot</span>(xl, intercept+slope*xl, color=<span class="str">'#FFD500'</span>, lw=<span class="num">2.5</span>,
+       label=<span class="fn">f</span><span class="str">'ŷ={intercept:.2f} + {slope:.3f}x  R²={r**2:.3f}'</span>)
+ax.<span class="fn">tick_params</span>(colors=<span class="str">'#7a90b8'</span>)
+<span class="kw">for</span> sp <span class="kw">in</span> ax.spines.values(): sp.<span class="fn">set_edgecolor</span>(<span class="str">'#1a2a4a'</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="str">'Aestheticization Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_ylabel</span>(<span class="str">'Narrative Framing Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_title</span>(<span class="str">'Aestheticization vs Narrative Framing'</span>, color=<span class="str">'#e8eef8'</span>)
+ax.<span class="fn">legend</span>(facecolor=<span class="str">'#0f1628'</span>, labelcolor=<span class="str">'#e8eef8'</span>)
+plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</div>
+
+    <div class="code-cell-label">Cell 3 — Mean Line + 95% CI Ribbon</div>
+    <div class="code-block">means = df_c.<span class="fn">groupby</span>(<span class="str">'aestheticization_score'</span>)[<span class="str">'narrative_framing_score'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'std'</span>,<span class="str">'count'</span>])
+ci = <span class="num">1.96</span> * means[<span class="str">'std'</span>] / np.<span class="fn">sqrt</span>(means[<span class="str">'count'</span>])
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="num">10</span>,<span class="num">5</span>), facecolor=<span class="str">'#0a0e1a'</span>)
+ax.<span class="fn">set_facecolor</span>(<span class="str">'#0f1628'</span>)
+ax.<span class="fn">plot</span>(means.index, means[<span class="str">'mean'</span>], <span class="str">'o-'</span>, color=<span class="str">'#005BBB'</span>, lw=<span class="num">2</span>, ms=<span class="num">7</span>)
+ax.<span class="fn">fill_between</span>(means.index, means[<span class="str">'mean'</span>]-ci, means[<span class="str">'mean'</span>]+ci,
+                alpha=<span class="num">0.2</span>, color=<span class="str">'#FFD500'</span>)
+ax.<span class="fn">tick_params</span>(colors=<span class="str">'#7a90b8'</span>)
+<span class="kw">for</span> sp <span class="kw">in</span> ax.spines.values(): sp.<span class="fn">set_edgecolor</span>(<span class="str">'#1a2a4a'</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="str">'Aestheticization Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_ylabel</span>(<span class="str">'Mean Narrative Framing'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_title</span>(<span class="str">'Mean Narrative Framing by Aestheticization Level (95% CI)'</span>, color=<span class="str">'#e8eef8'</span>)
+ax.<span class="fn">set_xticks</span>(<span class="fn">range</span>(<span class="num">11</span>)); plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</div>
+
+    <div class="code-cell-label">Cell 4 — Content Type Bubble + Channel Breakdown</div>
+    <div class="code-block">ct = df.<span class="fn">groupby</span>(<span class="str">'content_type'</span>)[[<span class="str">'aestheticization_score'</span>,<span class="str">'narrative_framing_score'</span>]].<span class="fn">mean</span>()
+ct[<span class="str">'count'</span>] = df.<span class="fn">groupby</span>(<span class="str">'content_type'</span>).<span class="fn">size</span>()
+ch = df.<span class="fn">groupby</span>(<span class="str">'channel'</span>)[[<span class="str">'aestheticization_score'</span>,<span class="str">'narrative_framing_score'</span>]].<span class="fn">mean</span>()
+
+fig, axes = plt.<span class="fn">subplots</span>(<span class="num">1</span>, <span class="num">2</span>, figsize=(<span class="num">16</span>,<span class="num">6</span>), facecolor=<span class="str">'#0a0e1a'</span>)
+<span class="kw">for</span> ax <span class="kw">in</span> axes: ax.<span class="fn">set_facecolor</span>(<span class="str">'#0f1628'</span>)
+
+axes[<span class="num">0</span>].<span class="fn">scatter</span>(ct[<span class="str">'aestheticization_score'</span>], ct[<span class="str">'narrative_framing_score'</span>],
+              s=ct[<span class="str">'count'</span>]/ct[<span class="str">'count'</span>].<span class="fn">max</span>()*<span class="num">2000</span>,
+              color=<span class="str">'#005BBB'</span>, edgecolors=<span class="str">'#FFD500'</span>, lw=<span class="num">1.2</span>, alpha=<span class="num">0.8</span>)
+<span class="kw">for</span> idx, row <span class="kw">in</span> ct.<span class="fn">iterrows</span>():
+    axes[<span class="num">0</span>].<span class="fn">annotate</span>(idx, (row[<span class="str">'aestheticization_score'</span>],row[<span class="str">'narrative_framing_score'</span>]),
+                    fontsize=<span class="num">8</span>, ha=<span class="str">'center'</span>, va=<span class="str">'bottom'</span>, color=<span class="str">'#e8eef8'</span>)
+axes[<span class="num">0</span>].<span class="fn">set_title</span>(<span class="str">'Content Type'</span>, color=<span class="str">'#e8eef8'</span>)
+
+axes[<span class="num">1</span>].<span class="fn">scatter</span>(ch[<span class="str">'aestheticization_score'</span>], ch[<span class="str">'narrative_framing_score'</span>],
+              s=<span class="num">300</span>, color=<span class="str">'#FFD500'</span>, edgecolors=<span class="str">'#005BBB'</span>, lw=<span class="num">1.5</span>, alpha=<span class="num">0.9</span>)
+<span class="kw">for</span> idx, row <span class="kw">in</span> ch.<span class="fn">iterrows</span>():
+    axes[<span class="num">1</span>].<span class="fn">annotate</span>(idx, (row[<span class="str">'aestheticization_score'</span>],row[<span class="str">'narrative_framing_score'</span>]),
+                    fontsize=<span class="num">8</span>, ha=<span class="str">'center'</span>, va=<span class="str">'bottom'</span>, color=<span class="str">'#e8eef8'</span>)
+axes[<span class="num">1</span>].<span class="fn">set_title</span>(<span class="str">'Channel'</span>, color=<span class="str">'#e8eef8'</span>)
+
+<span class="kw">for</span> ax <span class="kw">in</span> axes:
+    ax.<span class="fn">tick_params</span>(colors=<span class="str">'#7a90b8'</span>)
+    <span class="kw">for</span> sp <span class="kw">in</span> ax.spines.values(): sp.<span class="fn">set_edgecolor</span>(<span class="str">'#1a2a4a'</span>)
+    ax.<span class="fn">set_xlabel</span>(<span class="str">'Aestheticization Score'</span>, color=<span class="str">'#7a90b8'</span>)
+    ax.<span class="fn">set_ylabel</span>(<span class="str">'Narrative Framing Score'</span>, color=<span class="str">'#7a90b8'</span>)
+plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</div>
+  </div>
+</main>
+
+<script>
+const scatterRaw  = [[2.0, 1.0], [4.0, 4.0], [4.0, 2.0], [3.0, 6.0], [2.0, 4.0], [6.0, 4.0], [2.0, 2.0], [4.0, 4.0], [2.0, 0.0], [1.0, 0.0], [2.0, 6.0], [7.0, 6.0], [8.0, 6.0], [5.0, 6.0], [7.0, 8.0], [5.0, 6.0], [2.0, 2.0], [6.0, 4.0], [3.0, 4.0], [2.0, 0.0], [3.0, 4.0], [2.0, 1.0], [6.0, 4.0], [4.0, 4.0], [2.0, 2.0], [7.0, 8.0], [4.0, 3.0], [7.0, 8.0], [2.0, 0.0], [5.0, 6.0], [2.0, 3.0], [2.0, 2.0], [4.0, 6.0], [4.0, 8.0], [2.0, 1.0], [2.0, 2.0], [4.0, 3.0], [4.0, 3.0], [1.0, 2.0], [3.0, 3.0], [3.0, 3.0], [3.0, 4.0], [3.0, 1.0], [2.0, 3.0], [2.0, 7.0], [3.0, 4.0], [2.0, 3.0], [4.0, 4.0], [3.0, 3.0], [5.0, 4.0], [3.0, 2.0], [2.0, 2.0], [3.0, 2.0], [3.0, 2.0], [4.0, 6.0], [3.0, 3.0], [4.0, 4.0], [2.0, 1.0], [3.0, 4.0], [3.0, 4.0], [6.0, 3.0], [4.0, 4.0], [2.0, 3.0], [3.0, 4.0], [7.0, 6.0], [4.0, 4.0], [3.0, 4.0], [2.0, 2.0], [2.0, 2.0], [2.0, 1.0], [4.0, 4.0], [7.0, 8.0], [4.0, 4.0], [5.0, 5.0], [4.0, 2.0], [2.0, 2.0], [2.0, 3.0], [5.0, 6.0], [4.0, 5.0], [2.0, 4.0], [3.0, 7.0], [4.0, 2.0], [6.0, 7.0], [7.0, 6.0], [4.0, 4.0], [5.0, 7.0], [3.0, 1.0], [4.0, 5.0], [3.0, 6.0], [4.0, 4.0], [3.0, 2.0], [2.0, 4.0], [4.0, 6.0], [2.0, 2.0], [3.0, 5.0], [6.0, 6.0], [4.0, 5.0], [4.0, 3.0], [3.0, 3.0], [1.0, 6.0], [4.0, 6.0], [2.0, 5.0], [4.0, 3.0], [3.0, 2.0], [4.0, 3.0], [2.0, 2.0], [7.0, 6.0], [2.0, 3.0], [4.0, 3.0], [3.0, 2.0], [4.0, 3.0], [2.0, 3.0], [5.0, 4.0], [6.0, 6.0], [3.0, 2.0], [1.0, 3.0], [3.0, 5.0], [3.0, 3.0], [4.0, 4.0], [3.0, 4.0], [6.0, 7.0], [4.0, 6.0], [1.0, 0.0], [4.0, 6.0], [3.0, 3.0], [5.0, 4.0], [1.0, 1.0], [8.0, 8.0], [3.0, 2.0], [3.0, 3.0], [4.0, 3.0], [7.0, 4.0], [5.0, 4.0], [1.0, 4.0], [3.0, 4.0], [2.0, 2.0], [4.0, 3.0], [2.0, 1.0], [1.0, 2.0], [3.0, 4.0], [4.0, 6.0], [2.0, 2.0], [3.0, 4.0], [7.0, 8.0], [7.0, 8.0], [4.0, 5.0], [2.0, 1.0], [2.0, 4.0], [0.0, 0.0], [5.0, 4.0], [6.0, 6.0], [3.0, 6.0], [0.0, 0.0], [3.0, 4.0], [6.0, 7.0], [7.0, 8.0], [2.0, 3.0], [3.0, 2.0], [3.0, 1.0], [2.0, 4.0], [5.0, 3.0], [2.0, 4.0], [6.0, 8.0], [8.0, 6.0], [4.0, 3.0], [6.0, 4.0], [2.0, 1.0], [3.0, 5.0], [3.0, 3.0], [3.0, 3.0], [7.0, 7.0], [6.0, 4.0], [3.0, 3.0], [5.0, 4.0], [5.0, 4.0], [4.0, 6.0], [5.0, 4.0], [4.0, 5.0], [3.0, 1.0], [2.0, 1.0], [6.0, 6.0], [1.0, 1.0], [7.0, 7.0], [2.0, 2.0], [3.0, 4.0], [4.0, 3.0], [3.0, 4.0], [3.0, 4.0], [4.0, 4.0], [4.0, 8.0], [2.0, 3.0], [3.0, 6.0], [4.0, 3.0], [4.0, 3.0], [2.0, 1.0], [1.0, 1.0], [4.0, 8.0], [7.0, 8.0], [2.0, 4.0], [4.0, 3.0], [5.0, 4.0], [2.0, 2.0], [2.0, 4.0], [2.0, 4.0], [3.0, 1.0], [5.0, 6.0], [3.0, 2.0], [3.0, 2.0], [3.0, 3.0], [4.0, 6.0], [4.0, 3.0], [4.0, 4.0], [3.0, 6.0], [7.0, 9.0], [3.0, 4.0], [2.0, 1.0], [6.0, 5.0], [3.0, 3.0], [2.0, 4.0], [5.0, 4.0], [1.0, 6.0], [3.0, 2.0], [5.0, 4.0], [3.0, 3.0], [5.0, 8.0], [7.0, 7.0], [4.0, 5.0], [2.0, 2.0], [4.0, 4.0], [2.0, 3.0], [3.0, 4.0], [7.0, 6.0], [3.0, 3.0], [6.0, 2.0], [5.0, 4.0], [2.0, 3.0], [2.0, 0.0], [5.0, 6.0], [5.0, 4.0], [3.0, 6.0], [1.0, 2.0], [3.0, 2.0], [4.0, 3.0], [6.0, 3.0], [4.0, 4.0], [3.0, 6.0], [3.0, 7.0], [3.0, 2.0], [7.0, 6.0], [3.0, 3.0], [5.0, 7.0], [4.0, 6.0], [3.0, 4.0], [4.0, 9.0], [3.0, 4.0], [3.0, 2.0], [2.0, 2.0], [4.0, 2.0], [3.0, 2.0], [7.0, 3.0], [3.0, 4.0], [4.0, 2.0], [3.0, 2.0], [2.0, 1.0], [8.0, 6.0], [3.0, 2.0], [3.0, 3.0], [6.0, 6.0], [2.0, 6.0], [3.0, 0.0], [2.0, 3.0], [4.0, 4.0], [4.0, 5.0], [4.0, 6.0], [2.0, 2.0], [3.0, 4.0], [5.0, 3.0], [2.0, 3.0], [5.0, 6.0], [3.0, 6.0], [3.0, 4.0], [3.0, 3.0], [1.0, 6.0], [4.0, 4.0], [4.0, 4.0], [8.0, 3.0], [2.0, 1.0], [2.0, 3.0], [3.0, 4.0], [3.0, 3.0], [3.0, 4.0], [3.0, 2.0], [2.0, 4.0], [4.0, 6.0], [2.0, 4.0], [3.0, 4.0], [7.0, 7.0], [3.0, 2.0], [3.0, 2.0], [6.0, 7.0], [3.0, 4.0], [5.0, 4.0], [4.0, 7.0], [3.0, 4.0], [8.0, 8.0], [2.0, 2.0], [3.0, 2.0], [4.0, 6.0], [3.0, 3.0], [3.0, 2.0], [8.0, 7.0], [4.0, 4.0], [2.0, 4.0], [4.0, 4.0], [3.0, 2.0], [2.0, 3.0], [4.0, 4.0], [3.0, 4.0], [8.0, 8.0], [4.0, 5.0], [3.0, 2.0], [5.0, 4.0], [3.0, 6.0], [7.0, 3.0], [2.0, 2.0], [4.0, 3.0], [2.0, 5.0], [3.0, 4.0], [3.0, 7.0], [3.0, 3.0], [4.0, 6.0], [3.0, 5.0], [4.0, 7.0], [3.0, 4.0], [2.0, 2.0], [5.0, 4.0], [4.0, 6.0], [4.0, 2.0], [2.0, 2.0], [2.0, 3.0], [4.0, 4.0], [4.0, 6.0], [3.0, 4.0], [2.0, 5.0], [3.0, 6.0], [3.0, 2.0], [5.0, 7.0], [3.0, 4.0], [2.0, 2.0], [2.0, 2.0], [3.0, 4.0], [3.0, 3.0], [3.0, 3.0], [7.0, 8.0], [2.0, 1.0], [4.0, 3.0], [4.0, 4.0], [2.0, 3.0], [6.0, 7.0], [5.0, 2.0], [3.0, 3.0], [7.0, 7.0], [6.0, 7.0], [3.0, 2.0], [3.0, 6.0], [4.0, 2.0], [2.0, 7.0], [5.0, 4.0], [6.0, 5.0], [3.0, 3.0], [5.0, 6.0], [3.0, 2.0], [4.0, 3.0], [4.0, 4.0], [3.0, 2.0], [4.0, 6.0], [6.0, 7.0], [5.0, 4.0], [3.0, 2.0], [4.0, 3.0], [4.0, 4.0], [4.0, 3.0], [2.0, 2.0], [4.0, 6.0], [4.0, 4.0], [3.0, 1.0], [2.0, 1.0], [3.0, 2.0], [3.0, 4.0], [4.0, 2.0], [2.0, 1.0], [2.0, 3.0], [7.0, 7.0], [6.0, 6.0], [2.0, 7.0], [3.0, 3.0], [3.0, 3.0], [3.0, 4.0], [5.0, 7.0], [3.0, 4.0], [2.0, 0.0], [7.0, 6.0], [3.0, 3.0], [2.0, 3.0], [2.0, 1.0], [5.0, 3.0], [6.0, 3.0], [0.0, 0.0], [3.0, 4.0], [3.0, 4.0], [5.0, 6.0], [4.0, 2.0], [2.0, 1.0], [2.0, 2.0], [3.0, 2.0], [3.0, 4.0], [3.0, 2.0], [4.0, 4.0], [2.0, 4.0], [2.0, 4.0], [4.0, 4.0], [2.0, 4.0], [2.0, 1.0], [3.0, 3.0], [2.0, 6.0], [4.0, 4.0], [3.0, 4.0], [2.0, 2.0], [2.0, 3.0], [3.0, 6.0], [5.0, 6.0], [5.0, 3.0], [4.0, 4.0], [7.0, 7.0], [3.0, 2.0], [6.0, 4.0], [2.0, 2.0], [7.0, 6.0], [2.0, 2.0], [2.0, 1.0], [3.0, 3.0], [2.0, 0.0], [6.0, 4.0], [8.0, 7.0], [7.0, 7.0], [7.0, 8.0], [3.0, 3.0], [4.0, 4.0], [2.0, 2.0], [3.0, 3.0], [1.0, 0.0], [2.0, 3.0], [3.0, 5.0], [7.0, 8.0], [3.0, 5.0], [4.0, 5.0], [5.0, 4.0], [4.0, 4.0], [6.0, 6.0], [5.0, 3.0], [2.0, 2.0], [2.0, 4.0], [6.0, 4.0], [3.0, 7.0], [5.0, 6.0], [2.0, 2.0], [3.0, 4.0], [6.0, 4.0], [4.0, 4.0], [3.0, 3.0], [2.0, 4.0], [2.0, 4.0], [3.0, 4.0], [7.0, 8.0], [3.0, 2.0], [4.0, 4.0], [2.0, 3.0], [4.0, 4.0], [2.0, 1.0], [2.0, 2.0], [3.0, 7.0], [4.0, 4.0], [2.0, 4.0], [0.0, 0.0], [4.0, 2.0], [3.0, 3.0], [4.0, 4.0], [3.0, 4.0], [2.0, 3.0], [4.0, 3.0], [4.0, 4.0], [7.0, 8.0], [6.0, 7.0], [1.0, 4.0], [5.0, 3.0], [6.0, 8.0], [3.0, 3.0], [3.0, 3.0], [3.0, 3.0], [3.0, 3.0], [5.0, 4.0], [6.0, 8.0], [3.0, 4.0], [2.0, 4.0], [3.0, 2.0], [3.0, 2.0], [4.0, 6.0], [7.0, 6.0], [8.0, 7.0], [6.0, 6.0], [2.0, 2.0], [2.0, 6.0], [3.0, 2.0], [3.0, 2.0], [4.0, 4.0], [3.0, 5.0], [5.0, 7.0], [5.0, 4.0], [4.0, 3.0], [5.0, 6.0], [2.0, 1.0], [4.0, 4.0], [4.0, 3.0], [5.0, 6.0], [3.0, 5.0], [7.0, 6.0], [3.0, 4.0], [2.0, 3.0], [3.0, 2.0], [6.0, 7.0], [5.0, 4.0], [3.0, 2.0], [4.0, 3.0], [3.0, 4.0], [3.0, 3.0], [4.0, 8.0], [4.0, 2.0], [2.0, 1.0], [3.0, 4.0], [3.0, 2.0], [3.0, 2.0], [1.0, 4.0], [2.0, 2.0], [3.0, 4.0], [1.0, 4.0], [4.0, 4.0], [4.0, 4.0], [3.0, 4.0], [3.0, 2.0], [6.0, 6.0], [1.0, 4.0], [7.0, 6.0], [2.0, 2.0], [5.0, 4.0], [3.0, 4.0], [4.0, 0.0], [4.0, 4.0], [1.0, 8.0], [3.0, 4.0], [6.0, 6.0], [3.0, 4.0], [3.0, 3.0], [4.0, 3.0], [3.0, 3.0], [6.0, 6.0], [4.0, 2.0], [2.0, 3.0], [2.0, 1.0], [3.0, 2.0], [4.0, 3.0], [4.0, 5.0], [3.0, 4.0], [2.0, 2.0], [2.0, 3.0], [4.0, 5.0], [3.0, 4.0], [2.0, 1.0], [1.0, 0.0], [4.0, 3.0], [3.0, 2.0], [3.0, 4.0], [4.0, 4.0], [2.0, 1.0], [4.0, 3.0], [4.0, 3.0], [2.0, 4.0], [3.0, 4.0], [2.0, 2.0], [3.0, 5.0], [4.0, 4.0], [3.0, 3.0], [2.0, 3.0], [7.0, 6.0], [3.0, 4.0], [8.0, 6.0], [3.0, 2.0], [4.0, 3.0], [3.0, 4.0], [5.0, 4.0], [4.0, 3.0], [7.0, 8.0], [4.0, 3.0], [4.0, 5.0], [3.0, 2.0], [2.0, 2.0], [8.0, 2.0], [3.0, 2.0], [3.0, 2.0], [3.0, 4.0], [4.0, 2.0], [2.0, 2.0], [3.0, 2.0], [7.0, 7.0], [4.0, 6.0], [1.0, 0.0], [9.0, 6.0], [4.0, 4.0], [6.0, 6.0], [0.0, 0.0], [7.0, 8.0], [3.0, 1.0], [2.0, 2.0], [2.0, 3.0], [4.0, 3.0], [2.0, 3.0], [4.0, 6.0], [2.0, 6.0], [5.0, 4.0], [4.0, 2.0], [3.0, 2.0], [3.0, 4.0], [4.0, 7.0], [4.0, 2.0], [6.0, 7.0], [4.0, 2.0], [2.0, 4.0], [3.0, 2.0], [4.0, 5.0], [4.0, 1.0], [4.0, 5.0], [3.0, 3.0], [4.0, 4.0], [3.0, 3.0], [2.0, 3.0], [3.0, 3.0], [2.0, 6.0], [2.0, 3.0], [3.0, 4.0], [4.0, 4.0], [3.0, 4.0], [4.0, 6.0], [3.0, 2.0], [4.0, 2.0], [3.0, 3.0], [4.0, 3.0], [3.0, 4.0], [3.0, 1.0], [4.0, 6.0], [4.0, 6.0], [6.0, 5.0], [5.0, 3.0], [5.0, 6.0], [2.0, 2.0], [3.0, 3.0], [3.0, 2.0], [4.0, 4.0], [7.0, 8.0], [2.0, 3.0], [4.0, 3.0], [3.0, 3.0], [1.0, 2.0], [5.0, 6.0], [3.0, 3.0], [3.0, 4.0], [2.0, 8.0], [5.0, 6.0], [3.0, 2.0], [2.0, 4.0], [2.0, 1.0], [3.0, 4.0], [4.0, 3.0], [4.0, 5.0], [7.0, 7.0], [6.0, 3.0], [2.0, 0.0], [7.0, 8.0], [2.0, 4.0], [1.0, 2.0], [3.0, 3.0], [5.0, 6.0], [4.0, 3.0], [3.0, 2.0], [4.0, 4.0], [3.0, 3.0], [4.0, 3.0], [2.0, 2.0], [4.0, 2.0], [3.0, 4.0], [7.0, 7.0], [4.0, 2.0], [4.0, 4.0], [2.0, 1.0], [3.0, 2.0], [3.0, 2.0], [2.0, 2.0], [1.0, 2.0], [3.0, 8.0], [3.0, 2.0], [8.0, 8.0], [3.0, 2.0], [4.0, 3.0], [7.0, 7.0], [2.0, 3.0], [5.0, 4.0], [4.0, 5.0], [2.0, 6.0], [8.0, 3.0], [2.0, 3.0], [4.0, 4.0], [2.0, 8.0], [7.0, 6.0], [4.0, 2.0], [3.0, 4.0], [2.0, 7.0], [4.0, 4.0], [5.0, 4.0], [5.0, 7.0], [4.0, 3.0], [7.0, 8.0], [4.0, 2.0], [1.0, 6.0], [4.0, 5.0], [4.0, 2.0], [3.0, 2.0], [3.0, 7.0], [2.0, 1.0], [3.0, 4.0], [2.0, 1.0], [2.0, 2.0], [4.0, 6.0], [6.0, 7.0], [4.0, 6.0], [2.0, 2.0], [3.0, 4.0], [4.0, 3.0], [4.0, 4.0], [5.0, 3.0], [2.0, 6.0], [4.0, 6.0], [3.0, 5.0], [3.0, 6.0], [4.0, 3.0], [5.0, 6.0], [3.0, 3.0], [4.0, 3.0], [3.0, 2.0], [5.0, 4.0], [1.0, 0.0], [6.0, 3.0], [3.0, 1.0], [2.0, 4.0], [3.0, 2.0], [4.0, 5.0], [4.0, 7.0], [4.0, 3.0], [5.0, 4.0], [2.0, 2.0], [4.0, 3.0], [4.0, 2.0], [6.0, 8.0], [4.0, 6.0], [2.0, 2.0], [6.0, 6.0], [4.0, 4.0], [4.0, 3.0], [3.0, 3.0], [8.0, 7.0], [3.0, 3.0], [2.0, 4.0], [3.0, 4.0], [3.0, 3.0], [3.0, 3.0], [3.0, 6.0], [6.0, 8.0], [3.0, 2.0], [4.0, 2.0], [3.0, 3.0], [4.0, 4.0], [3.0, 2.0], [4.0, 7.0], [4.0, 1.0], [3.0, 4.0], [3.0, 4.0], [0.0, 0.0], [5.0, 2.0], [7.0, 6.0], [2.0, 2.0], [5.0, 3.0], [7.0, 8.0], [3.0, 3.0], [4.0, 4.0], [2.0, 2.0], [3.0, 4.0], [3.0, 3.0], [7.0, 8.0], [3.0, 2.0], [4.0, 8.0], [4.0, 2.0], [7.0, 6.0], [2.0, 2.0], [3.0, 2.0], [4.0, 6.0], [4.0, 4.0], [3.0, 5.0], [6.0, 6.0], [2.0, 3.0], [4.0, 4.0], [4.0, 3.0], [3.0, 6.0], [3.0, 3.0], [3.0, 3.0], [2.0, 6.0], [3.0, 4.0], [5.0, 4.0], [5.0, 4.0], [3.0, 4.0], [3.0, 4.0], [6.0, 7.0], [4.0, 2.0], [7.0, 8.0], [3.0, 4.0], [4.0, 4.0], [3.0, 2.0], [2.0, 1.0], [6.0, 7.0], [4.0, 2.0], [3.0, 2.0], [2.0, 4.0], [2.0, 2.0], [4.0, 3.0], [5.0, 6.0], [3.0, 4.0], [4.0, 3.0], [3.0, 2.0], [2.0, 7.0], [5.0, 4.0], [3.0, 3.0], [4.0, 5.0], [6.0, 3.0], [4.0, 2.0], [3.0, 4.0], [3.0, 4.0], [2.0, 3.0], [4.0, 2.0], [8.0, 7.0], [4.0, 6.0], [3.0, 2.0], [2.0, 0.0], [6.0, 4.0], [3.0, 1.0], [8.0, 7.0], [2.0, 3.0], [3.0, 4.0], [4.0, 5.0], [4.0, 6.0], [5.0, 6.0], [2.0, 6.0], [4.0, 2.0], [2.0, 1.0], [4.0, 4.0], [4.0, 4.0], [3.0, 2.0], [4.0, 3.0], [7.0, 8.0], [2.0, 3.0], [2.0, 6.0], [3.0, 2.0], [3.0, 6.0], [1.0, 7.0], [3.0, 4.0], [4.0, 7.0], [8.0, 6.0], [3.0, 2.0], [3.0, 2.0], [6.0, 7.0], [2.0, 1.0], [3.0, 4.0], [3.0, 2.0], [3.0, 4.0], [3.0, 2.0], [4.0, 4.0], [3.0, 3.0], [3.0, 3.0], [0.0, 0.0], [3.0, 4.0], [3.0, 1.0], [2.0, 2.0], [7.0, 8.0], [5.0, 4.0], [3.0, 1.0], [3.0, 2.0], [3.0, 1.0], [6.0, 2.0], [3.0, 2.0], [2.0, 3.0], [6.0, 8.0], [2.0, 1.0], [4.0, 2.0], [3.0, 3.0], [7.0, 7.0], [5.0, 4.0], [5.0, 0.0], [2.0, 0.0], [3.0, 3.0], [1.0, 4.0], [4.0, 4.0], [6.0, 6.0], [2.0, 1.0], [6.0, 4.0], [3.0, 2.0], [7.0, 7.0], [3.0, 4.0], [9.0, 1.0], [3.0, 1.0], [3.0, 3.0], [3.0, 2.0], [3.0, 4.0], [3.0, 4.0], [7.0, 7.0], [3.0, 3.0], [3.0, 1.0], [7.0, 8.0], [4.0, 6.0], [4.0, 4.0], [6.0, 5.0], [5.0, 6.0], [4.0, 6.0], [3.0, 7.0], [3.0, 5.0], [7.0, 9.0], [2.0, 2.0], [3.0, 4.0], [5.0, 6.0], [2.0, 1.0], [4.0, 4.0], [4.0, 4.0], [2.0, 2.0], [3.0, 6.0], [2.0, 3.0], [5.0, 6.0], [4.0, 4.0], [8.0, 8.0], [4.0, 2.0], [3.0, 1.0], [7.0, 6.0], [3.0, 2.0], [6.0, 4.0], [2.0, 4.0], [8.0, 8.0], [2.0, 4.0], [3.0, 4.0], [2.0, 7.0], [5.0, 9.0], [5.0, 4.0], [9.0, 8.0], [2.0, 1.0], [4.0, 2.0], [2.0, 5.0], [6.0, 4.0], [2.0, 3.0], [2.0, 3.0], [4.0, 3.0], [3.0, 6.0], [4.0, 6.0], [5.0, 6.0], [7.0, 6.0], [3.0, 3.0], [3.0, 3.0], [4.0, 7.0], [2.0, 1.0], [4.0, 6.0], [3.0, 4.0], [2.0, 6.0], [5.0, 4.0], [3.0, 3.0], [6.0, 4.0], [0.0, 0.0], [2.0, 4.0], [3.0, 2.0], [3.0, 5.0], [3.0, 4.0], [4.0, 3.0], [4.0, 3.0], [2.0, 1.0], [3.0, 6.0], [2.0, 4.0], [4.0, 4.0], [3.0, 6.0], [2.0, 3.0], [4.0, 4.0], [3.0, 4.0], [3.0, 3.0], [3.0, 4.0], [7.0, 7.0], [4.0, 4.0], [4.0, 1.0], [5.0, 3.0], [2.0, 2.0], [1.0, 3.0], [7.0, 6.0], [4.0, 4.0], [3.0, 6.0], [7.0, 7.0], [4.0, 6.0], [5.0, 4.0], [3.0, 3.0], [2.0, 2.0], [4.0, 3.0], [2.0, 7.0], [5.0, 4.0], [6.0, 3.0], [4.0, 7.0], [4.0, 3.0], [5.0, 7.0], [4.0, 3.0], [2.0, 2.0], [6.0, 5.0], [3.0, 4.0], [6.0, 5.0], [3.0, 4.0], [2.0, 1.0], [3.0, 6.0], [6.0, 6.0], [2.0, 0.0], [3.0, 4.0], [5.0, 7.0], [4.0, 4.0], [4.0, 3.0], [4.0, 4.0], [2.0, 2.0], [3.0, 2.0], [3.0, 6.0], [2.0, 2.0], [2.0, 2.0], [2.0, 2.0], [5.0, 4.0], [2.0, 9.0], [2.0, 7.0], [6.0, 3.0], [4.0, 5.0], [4.0, 4.0], [6.0, 6.0], [3.0, 3.0], [3.0, 2.0], [6.0, 3.0], [3.0, 4.0], [4.0, 3.0], [2.0, 1.0], [5.0, 4.0], [7.0, 7.0], [4.0, 2.0], [3.0, 3.0], [6.0, 5.0], [3.0, 3.0], [5.0, 4.0], [2.0, 3.0], [3.0, 3.0], [8.0, 7.0], [3.0, 2.0], [5.0, 6.0], [3.0, 2.0], [5.0, 4.0], [4.0, 4.0], [3.0, 4.0], [3.0, 2.0], [3.0, 3.0], [3.0, 4.0], [4.0, 3.0], [2.0, 3.0], [3.0, 7.0], [5.0, 4.0], [3.0, 2.0], [2.0, 2.0], [3.0, 2.0], [2.0, 4.0], [2.0, 1.0], [3.0, 3.0], [3.0, 4.0], [8.0, 9.0], [1.0, 6.0], [4.0, 4.0], [6.0, 5.0], [4.0, 3.0], [3.0, 7.0], [3.0, 2.0], [4.0, 5.0], [3.0, 2.0], [4.0, 4.0], [3.0, 2.0], [3.0, 2.0], [5.0, 4.0], [2.0, 1.0], [4.0, 6.0], [4.0, 4.0], [4.0, 4.0], [3.0, 4.0], [5.0, 4.0], [2.0, 2.0], [4.0, 7.0], [2.0, 3.0], [2.0, 4.0], [5.0, 4.0], [4.0, 4.0], [4.0, 3.0], [4.0, 6.0], [3.0, 3.0], [7.0, 7.0], [5.0, 4.0], [2.0, 3.0], [6.0, 3.0], [2.0, 2.0], [3.0, 2.0], [7.0, 7.0], [2.0, 3.0], [6.0, 4.0], [2.0, 3.0], [0.0, 0.0], [2.0, 3.0], [3.0, 2.0], [7.0, 3.0], [2.0, 2.0], [3.0, 4.0], [3.0, 6.0], [2.0, 1.0], [2.0, 2.0], [2.0, 1.0], [4.0, 6.0], [4.0, 3.0], [2.0, 3.0], [3.0, 4.0], [2.0, 2.0], [3.0, 3.0], [3.0, 4.0], [3.0, 4.0], [5.0, 4.0], [6.0, 7.0], [4.0, 3.0], [7.0, 7.0], [2.0, 3.0], [3.0, 3.0], [3.0, 2.0], [3.0, 2.0], [4.0, 2.0], [3.0, 2.0], [3.0, 1.0], [3.0, 4.0], [5.0, 7.0], [3.0, 3.0], [2.0, 3.0], [4.0, 4.0], [3.0, 2.0], [3.0, 2.0], [7.0, 7.0], [0.0, 0.0], [3.0, 7.0], [3.0, 4.0], [1.0, 4.0], [1.0, 2.0], [4.0, 3.0], [3.0, 3.0], [3.0, 4.0], [3.0, 2.0], [5.0, 6.0], [4.0, 4.0], [1.0, 4.0], [4.0, 3.0], [3.0, 2.0], [3.0, 2.0], [3.0, 4.0], [1.0, 6.0], [0.0, 0.0], [3.0, 4.0], [3.0, 4.0], [7.0, 7.0], [3.0, 1.0], [6.0, 7.0], [3.0, 1.0], [4.0, 6.0], [4.0, 4.0], [4.0, 4.0], [2.0, 1.0], [4.0, 4.0], [1.0, 0.0], [2.0, 2.0], [2.0, 2.0], [2.0, 3.0], [2.0, 4.0], [4.0, 4.0], [4.0, 2.0], [3.0, 3.0], [3.0, 2.0], [1.0, 2.0], [3.0, 4.0], [3.0, 3.0], [7.0, 6.0], [3.0, 2.0], [3.0, 2.0], [2.0, 2.0], [4.0, 4.0], [5.0, 6.0], [3.0, 4.0], [5.0, 6.0], [6.0, 6.0], [3.0, 2.0], [2.0, 3.0], [5.0, 3.0], [2.0, 1.0], [2.0, 2.0], [6.0, 3.0], [1.0, 0.0], [3.0, 3.0], [3.0, 3.0], [7.0, 4.0], [4.0, 4.0], [3.0, 4.0], [4.0, 2.0], [5.0, 6.0], [3.0, 4.0], [5.0, 4.0], [8.0, 8.0], [4.0, 7.0], [2.0, 4.0], [2.0, 4.0], [5.0, 7.0], [2.0, 1.0], [1.0, 6.0], [2.0, 2.0], [4.0, 4.0], [3.0, 4.0], [5.0, 4.0], [4.0, 2.0], [3.0, 2.0], [2.0, 7.0], [3.0, 2.0], [2.0, 3.0], [3.0, 2.0], [7.0, 6.0], [2.0, 3.0], [3.0, 4.0], [2.0, 2.0], [2.0, 4.0], [7.0, 6.0], [8.0, 9.0], [6.0, 7.0], [6.0, 4.0], [2.0, 6.0], [2.0, 1.0], [2.0, 5.0], [3.0, 3.0], [3.0, 2.0], [4.0, 3.0], [4.0, 4.0], [3.0, 3.0], [4.0, 3.0], [3.0, 2.0], [3.0, 4.0], [6.0, 6.0], [3.0, 2.0], [2.0, 1.0], [4.0, 6.0], [5.0, 4.0], [4.0, 4.0], [4.0, 2.0], [3.0, 0.0], [2.0, 3.0], [4.0, 5.0], [4.0, 3.0], [4.0, 3.0], [4.0, 3.0], [2.0, 3.0], [3.0, 4.0], [3.0, 3.0], [2.0, 1.0], [3.0, 1.0], [3.0, 4.0], [2.0, 2.0], [3.0, 4.0], [7.0, 6.0], [4.0, 5.0], [3.0, 7.0], [3.0, 2.0], [4.0, 4.0], [4.0, 6.0], [7.0, 9.0], [3.0, 1.0], [3.0, 4.0], [3.0, 4.0], [3.0, 4.0], [4.0, 6.0], [3.0, 2.0], [3.0, 3.0], [3.0, 6.0], [2.0, 3.0], [4.0, 5.0], [2.0, 3.0], [4.0, 4.0], [2.0, 1.0], [2.0, 3.0], [5.0, 3.0], [3.0, 4.0], [2.0, 4.0], [3.0, 4.0], [3.0, 1.0], [4.0, 6.0], [4.0, 4.0], [3.0, 4.0], [2.0, 3.0], [3.0, 2.0], [3.0, 2.0], [5.0, 4.0], [3.0, 4.0], [6.0, 4.0], [7.0, 5.0], [3.0, 1.0], [4.0, 7.0], [3.0, 1.0], [3.0, 3.0], [4.0, 4.0], [2.0, 5.0], [2.0, 2.0], [4.0, 4.0], [3.0, 3.0], [3.0, 4.0], [5.0, 6.0], [4.0, 2.0], [6.0, 8.0], [5.0, 5.0], [4.0, 3.0], [4.0, 2.0], [3.0, 2.0], [1.0, 4.0], [3.0, 3.0], [3.0, 3.0], [4.0, 3.0], [2.0, 2.0], [7.0, 6.0], [3.0, 4.0], [2.0, 6.0], [6.0, 7.0], [4.0, 4.0], [7.0, 8.0], [8.0, 8.0], [4.0, 3.0], [6.0, 3.0], [7.0, 8.0], [4.0, 4.0], [3.0, 2.0], [2.0, 1.0], [8.0, 7.0], [2.0, 4.0], [8.0, 3.0], [3.0, 2.0], [2.0, 3.0], [2.0, 5.0], [4.0, 6.0], [2.0, 2.0], [4.0, 4.0], [3.0, 3.0], [4.0, 6.0], [4.0, 5.0], [6.0, 8.0], [3.0, 2.0], [4.0, 5.0], [2.0, 2.0], [3.0, 1.0], [7.0, 6.0], [3.0, 1.0], [4.0, 6.0], [3.0, 2.0], [3.0, 2.0], [3.0, 6.0], [3.0, 1.0], [3.0, 8.0], [4.0, 4.0], [3.0, 4.0], [5.0, 1.0], [8.0, 0.0], [3.0, 4.0], [3.0, 2.0], [3.0, 2.0], [3.0, 7.0], [4.0, 4.0], [4.0, 4.0], [5.0, 4.0], [7.0, 7.0], [3.0, 8.0], [4.0, 3.0], [1.0, 0.0], [5.0, 7.0], [3.0, 2.0], [4.0, 4.0], [5.0, 5.0], [2.0, 3.0], [3.0, 4.0], [7.0, 9.0], [6.0, 4.0], [4.0, 4.0], [1.0, 0.0], [2.0, 2.0], [3.0, 4.0], [6.0, 7.0], [3.0, 4.0], [5.0, 4.0], [2.0, 2.0], [4.0, 3.0], [3.0, 6.0], [5.0, 6.0], [4.0, 4.0], [3.0, 6.0], [3.0, 4.0], [6.0, 6.0], [2.0, 2.0], [4.0, 3.0], [3.0, 2.0], [4.0, 4.0], [3.0, 4.0], [5.0, 6.0], [3.0, 3.0], [4.0, 4.0], [5.0, 3.0], [2.0, 2.0], [3.0, 1.0], [2.0, 3.0], [2.0, 1.0], [1.0, 4.0], [3.0, 4.0], [5.0, 6.0], [4.0, 3.0], [5.0, 3.0], [5.0, 4.0], [3.0, 3.0], [3.0, 4.0], [5.0, 6.0], [6.0, 7.0], [4.0, 3.0], [2.0, 1.0], [6.0, 6.0], [6.0, 8.0], [3.0, 3.0], [4.0, 6.0], [5.0, 6.0], [7.0, 7.0], [3.0, 4.0], [4.0, 3.0], [3.0, 3.0], [5.0, 4.0], [5.0, 4.0], [4.0, 3.0], [4.0, 4.0], [4.0, 6.0], [7.0, 5.0], [2.0, 2.0], [6.0, 2.0], [3.0, 2.0], [4.0, 3.0], [3.0, 3.0], [3.0, 3.0], [3.0, 4.0], [3.0, 4.0], [3.0, 4.0], [3.0, 5.0], [7.0, 6.0], [3.0, 2.0], [6.0, 6.0], [5.0, 6.0], [3.0, 4.0], [2.0, 2.0], [2.0, 3.0], [7.0, 6.0], [4.0, 4.0], [3.0, 2.0], [3.0, 4.0], [5.0, 4.0], [2.0, 3.0], [8.0, 6.0], [4.0, 4.0], [4.0, 4.0], [2.0, 7.0], [3.0, 4.0], [5.0, 8.0], [2.0, 3.0], [2.0, 2.0], [4.0, 3.0], [3.0, 4.0], [3.0, 5.0], [4.0, 7.0], [4.0, 2.0], [7.0, 8.0], [4.0, 3.0], [5.0, 4.0], [4.0, 6.0], [7.0, 8.0], [2.0, 0.0], [5.0, 6.0], [2.0, 2.0], [2.0, 3.0], [2.0, 2.0], [4.0, 3.0], [3.0, 2.0], [3.0, 4.0], [3.0, 2.0], [2.0, 1.0], [8.0, 8.0], [3.0, 5.0], [3.0, 5.0], [8.0, 8.0], [2.0, 2.0], [4.0, 6.0], [4.0, 3.0], [2.0, 4.0], [3.0, 2.0], [6.0, 9.0], [4.0, 5.0], [4.0, 4.0], [4.0, 1.0], [5.0, 4.0], [2.0, 1.0], [3.0, 2.0], [4.0, 2.0], [2.0, 4.0], [5.0, 4.0], [3.0, 1.0], [5.0, 6.0], [4.0, 4.0], [5.0, 4.0], [3.0, 3.0], [3.0, 2.0], [2.0, 2.0], [2.0, 2.0], [6.0, 8.0], [4.0, 6.0], [5.0, 3.0], [5.0, 6.0], [3.0, 3.0], [2.0, 4.0], [3.0, 2.0], [3.0, 4.0], [3.0, 4.0], [2.0, 3.0], [3.0, 4.0], [3.0, 4.0], [2.0, 1.0], [3.0, 4.0], [5.0, 4.0], [4.0, 3.0], [4.0, 3.0], [2.0, 3.0], [2.0, 4.0], [3.0, 3.0], [4.0, 4.0], [4.0, 6.0], [6.0, 7.0], [8.0, 9.0], [7.0, 7.0], [4.0, 4.0], [3.0, 2.0], [7.0, 8.0], [8.0, 8.0], [6.0, 7.0], [7.0, 9.0], [2.0, 2.0], [2.0, 2.0], [4.0, 2.0], [1.0, 1.0], [3.0, 4.0], [4.0, 2.0], [3.0, 3.0], [7.0, 7.0], [2.0, 6.0], [4.0, 2.0], [4.0, 2.0], [1.0, 1.0], [3.0, 2.0], [3.0, 3.0], [4.0, 4.0], [6.0, 4.0], [2.0, 2.0], [3.0, 2.0], [3.0, 2.0], [4.0, 6.0], [1.0, 6.0], [3.0, 4.0], [6.0, 6.0], [4.0, 3.0], [4.0, 4.0], [4.0, 4.0], [2.0, 1.0], [2.0, 5.0], [2.0, 1.0], [5.0, 8.0], [2.0, 2.0], [2.0, 2.0], [5.0, 4.0], [2.0, 3.0], [2.0, 6.0], [2.0, 3.0], [6.0, 4.0], [3.0, 2.0], [4.0, 6.0], [5.0, 4.0], [6.0, 4.0], [3.0, 4.0], [4.0, 4.0], [4.0, 4.0], [3.0, 5.0], [2.0, 6.0], [2.0, 7.0], [5.0, 6.0], [8.0, 6.0], [5.0, 3.0], [7.0, 8.0], [3.0, 4.0], [0.0, 0.0], [3.0, 3.0], [4.0, 6.0], [5.0, 4.0], [3.0, 6.0], [6.0, 7.0], [5.0, 6.0], [3.0, 4.0], [3.0, 3.0], [2.0, 1.0], [2.0, 2.0], [4.0, 4.0], [3.0, 6.0], [4.0, 2.0], [7.0, 7.0], [3.0, 4.0], [2.0, 1.0], [4.0, 4.0], [3.0, 4.0], [2.0, 6.0], [3.0, 4.0], [2.0, 2.0], [3.0, 7.0], [8.0, 8.0], [2.0, 1.0], [4.0, 6.0], [5.0, 6.0], [3.0, 4.0], [6.0, 4.0], [6.0, 6.0], [4.0, 4.0], [3.0, 4.0], [4.0, 4.0], [5.0, 3.0], [4.0, 4.0], [3.0, 4.0], [7.0, 7.0], [2.0, 3.0], [2.0, 3.0], [4.0, 7.0], [8.0, 6.0], [2.0, 7.0], [3.0, 3.0], [3.0, 4.0], [2.0, 2.0], [8.0, 8.0], [3.0, 5.0], [1.0, 7.0], [3.0, 3.0], [2.0, 1.0], [7.0, 4.0], [5.0, 7.0], [2.0, 6.0], [3.0, 4.0], [4.0, 3.0], [4.0, 3.0], [6.0, 7.0], [3.0, 4.0], [4.0, 6.0], [3.0, 4.0], [5.0, 8.0], [4.0, 3.0], [4.0, 3.0], [7.0, 6.0], [2.0, 1.0], [3.0, 3.0], [4.0, 4.0], [5.0, 3.0], [4.0, 3.0], [3.0, 3.0], [7.0, 7.0], [4.0, 2.0], [3.0, 2.0], [3.0, 4.0], [3.0, 2.0], [4.0, 6.0], [7.0, 8.0], [3.0, 4.0], [3.0, 4.0], [7.0, 8.0], [7.0, 5.0], [8.0, 9.0], [3.0, 2.0], [5.0, 5.0], [4.0, 6.0], [7.0, 4.0], [2.0, 1.0], [3.0, 3.0], [4.0, 4.0], [4.0, 3.0], [7.0, 8.0], [4.0, 6.0], [4.0, 4.0], [4.0, 3.0], [2.0, 2.0], [7.0, 7.0], [6.0, 3.0], [6.0, 6.0], [8.0, 8.0], [4.0, 3.0], [3.0, 1.0], [2.0, 3.0], [3.0, 2.0], [4.0, 6.0], [2.0, 3.0], [3.0, 6.0], [3.0, 4.0], [4.0, 6.0], [3.0, 4.0], [3.0, 4.0], [4.0, 5.0], [5.0, 6.0], [3.0, 3.0], [2.0, 3.0], [7.0, 8.0], [3.0, 3.0], [3.0, 4.0], [4.0, 4.0], [2.0, 2.0], [3.0, 3.0], [3.0, 3.0], [5.0, 7.0], [3.0, 6.0], [7.0, 7.0], [5.0, 4.0], [7.0, 8.0], [4.0, 8.0], [3.0, 7.0], [5.0, 4.0], [5.0, 3.0], [4.0, 3.0], [2.0, 3.0], [3.0, 3.0], [7.0, 4.0], [2.0, 7.0], [4.0, 2.0], [4.0, 4.0], [3.0, 4.0], [4.0, 3.0], [3.0, 2.0], [3.0, 4.0], [7.0, 8.0], [4.0, 3.0], [3.0, 2.0], [3.0, 2.0], [2.0, 5.0], [7.0, 5.0], [4.0, 4.0], [3.0, 4.0], [2.0, 2.0], [8.0, 4.0], [2.0, 4.0], [2.0, 3.0], [3.0, 2.0], [0.0, 0.0], [4.0, 4.0], [3.0, 2.0], [8.0, 8.0], [6.0, 4.0], [4.0, 3.0], [3.0, 4.0], [4.0, 6.0], [4.0, 3.0], [2.0, 2.0], [1.0, 0.0], [3.0, 3.0], [2.0, 3.0], [3.0, 4.0], [3.0, 4.0], [4.0, 3.0], [3.0, 4.0], [4.0, 4.0], [3.0, 4.0], [4.0, 4.0], [4.0, 1.0], [6.0, 6.0], [2.0, 2.0], [3.0, 3.0], [3.0, 4.0], [3.0, 4.0], [3.0, 3.0], [3.0, 4.0], [4.0, 2.0], [4.0, 6.0], [3.0, 4.0], [5.0, 4.0], [3.0, 3.0], [7.0, 6.0], [3.0, 1.0], [7.0, 7.0], [7.0, 7.0], [7.0, 6.0], [2.0, 6.0], [2.0, 4.0], [3.0, 1.0], [1.0, 4.0], [5.0, 4.0], [2.0, 2.0], [2.0, 3.0], [4.0, 6.0], [3.0, 6.0], [4.0, 4.0], [5.0, 4.0], [3.0, 6.0], [3.0, 4.0], [7.0, 6.0], [2.0, 4.0], [7.0, 7.0], [3.0, 5.0], [7.0, 8.0], [4.0, 3.0], [4.0, 3.0], [6.0, 7.0], [3.0, 2.0], [7.0, 7.0], [4.0, 6.0], [2.0, 0.0], [5.0, 7.0], [4.0, 2.0], [5.0, 4.0], [6.0, 7.0], [6.0, 7.0], [1.0, 4.0], [4.0, 6.0], [3.0, 5.0], [2.0, 1.0], [7.0, 5.0], [1.0, 3.0], [5.0, 5.0], [4.0, 6.0], [7.0, 6.0], [4.0, 4.0], [4.0, 3.0], [8.0, 8.0], [1.0, 3.0], [4.0, 4.0], [4.0, 4.0], [2.0, 4.0], [7.0, 6.0], [3.0, 6.0], [4.0, 6.0], [5.0, 7.0], [3.0, 3.0], [3.0, 3.0], [2.0, 2.0], [3.0, 4.0], [3.0, 2.0], [3.0, 4.0], [6.0, 4.0], [4.0, 6.0], [4.0, 2.0], [2.0, 2.0], [4.0, 0.0], [2.0, 1.0], [2.0, 2.0], [3.0, 4.0], [8.0, 8.0], [2.0, 8.0], [3.0, 4.0], [8.0, 8.0], [3.0, 2.0], [2.0, 2.0], [2.0, 3.0], [4.0, 6.0], [4.0, 4.0], [4.0, 3.0], [4.0, 4.0], [3.0, 4.0], [3.0, 2.0], [4.0, 3.0], [3.0, 3.0], [3.0, 6.0], [3.0, 3.0], [3.0, 2.0], [3.0, 4.0], [2.0, 1.0], [5.0, 4.0], [4.0, 4.0], [4.0, 4.0], [3.0, 3.0], [4.0, 3.0], [3.0, 4.0], [3.0, 4.0], [3.0, 4.0], [5.0, 6.0], [7.0, 6.0], [4.0, 3.0], [4.0, 7.0], [7.0, 7.0], [5.0, 0.0], [8.0, 8.0], [4.0, 4.0], [2.0, 1.0], [4.0, 3.0], [4.0, 3.0], [6.0, 6.0], [3.0, 2.0], [5.0, 5.0], [3.0, 3.0], [3.0, 5.0], [3.0, 5.0], [3.0, 8.0], [4.0, 9.0], [6.0, 4.0], [2.0, 1.0], [6.0, 4.0], [3.0, 1.0], [6.0, 7.0], [4.0, 4.0], [3.0, 5.0], [2.0, 2.0], [8.0, 6.0], [3.0, 4.0], [2.0, 2.0], [3.0, 4.0], [5.0, 4.0], [4.0, 4.0], [2.0, 3.0], [3.0, 3.0], [8.0, 9.0], [5.0, 7.0], [2.0, 3.0], [5.0, 6.0], [7.0, 8.0], [7.0, 6.0], [3.0, 4.0], [3.0, 3.0], [3.0, 3.0], [5.0, 7.0], [5.0, 6.0], [5.0, 4.0], [7.0, 7.0], [4.0, 5.0], [4.0, 6.0], [3.0, 2.0], [3.0, 2.0], [6.0, 6.0], [4.0, 6.0], [5.0, 5.0], [3.0, 4.0], [4.0, 3.0], [2.0, 1.0], [3.0, 6.0], [7.0, 6.0], [3.0, 1.0], [3.0, 2.0], [2.0, 4.0], [2.0, 1.0], [6.0, 6.0], [2.0, 3.0], [3.0, 4.0], [3.0, 3.0], [5.0, 4.0], [5.0, 6.0], [1.0, 6.0], [2.0, 2.0], [4.0, 5.0], [3.0, 4.0], [2.0, 2.0], [6.0, 7.0], [3.0, 4.0], [7.0, 6.0], [4.0, 8.0], [5.0, 7.0], [6.0, 6.0], [5.0, 6.0], [4.0, 4.0], [7.0, 7.0], [5.0, 4.0], [3.0, 3.0], [6.0, 4.0], [6.0, 8.0], [3.0, 2.0], [2.0, 3.0], [2.0, 2.0], [5.0, 6.0], [5.0, 5.0], [3.0, 4.0], [3.0, 1.0], [4.0, 3.0], [3.0, 1.0], [5.0, 4.0], [3.0, 3.0], [4.0, 6.0], [4.0, 4.0], [4.0, 1.0], [5.0, 6.0], [7.0, 6.0], [4.0, 4.0], [2.0, 3.0], [6.0, 5.0], [3.0, 2.0], [3.0, 4.0], [2.0, 2.0], [3.0, 2.0], [6.0, 5.0], [4.0, 4.0], [2.0, 2.0], [3.0, 6.0], [4.0, 3.0], [3.0, 2.0], [3.0, 4.0], [3.0, 4.0], [2.0, 2.0], [8.0, 8.0], [3.0, 4.0], [3.0, 3.0], [3.0, 2.0], [8.0, 8.0], [4.0, 4.0], [3.0, 2.0], [7.0, 6.0], [3.0, 2.0], [4.0, 3.0], [6.0, 4.0], [3.0, 2.0], [4.0, 4.0], [3.0, 1.0], [3.0, 4.0], [3.0, 3.0], [2.0, 3.0], [4.0, 6.0], [4.0, 3.0], [2.0, 2.0], [2.0, 2.0], [3.0, 3.0], [3.0, 2.0], [5.0, 3.0], [4.0, 4.0], [2.0, 7.0], [3.0, 4.0], [4.0, 4.0], [3.0, 4.0], [6.0, 4.0], [3.0, 4.0], [2.0, 3.0], [3.0, 2.0], [2.0, 4.0], [2.0, 2.0], [3.0, 4.0], [2.0, 3.0], [3.0, 4.0], [4.0, 4.0], [4.0, 4.0], [7.0, 7.0], [5.0, 6.0], [6.0, 0.0], [3.0, 3.0], [3.0, 4.0], [3.0, 4.0], [3.0, 3.0], [2.0, 1.0], [5.0, 4.0], [4.0, 5.0], [6.0, 6.0], [4.0, 6.0], [3.0, 3.0], [4.0, 3.0], [1.0, 4.0], [2.0, 4.0], [8.0, 6.0], [3.0, 2.0], [3.0, 4.0], [6.0, 6.0], [3.0, 2.0], [5.0, 3.0], [7.0, 8.0], [1.0, 0.0], [3.0, 6.0], [7.0, 6.0], [2.0, 2.0], [4.0, 4.0], [3.0, 2.0], [3.0, 2.0], [5.0, 2.0], [3.0, 4.0], [3.0, 2.0], [4.0, 4.0], [2.0, 2.0], [3.0, 4.0], [4.0, 4.0], [3.0, 3.0], [4.0, 4.0], [4.0, 6.0], [1.0, 4.0], [4.0, 6.0], [3.0, 2.0], [4.0, 4.0], [2.0, 2.0], [4.0, 6.0], [7.0, 7.0], [4.0, 4.0], [4.0, 4.0], [3.0, 2.0], [4.0, 5.0], [8.0, 7.0], [5.0, 6.0], [3.0, 3.0], [3.0, 4.0], [6.0, 6.0], [6.0, 6.0], [2.0, 3.0], [3.0, 4.0], [1.0, 4.0], [3.0, 3.0], [6.0, 4.0], [6.0, 4.0], [2.0, 2.0], [3.0, 4.0], [5.0, 5.0], [4.0, 3.0], [3.0, 4.0], [4.0, 0.0], [3.0, 2.0], [3.0, 3.0], [2.0, 1.0], [4.0, 4.0], [3.0, 3.0], [3.0, 3.0], [4.0, 4.0], [5.0, 4.0], [4.0, 6.0], [3.0, 4.0], [3.0, 4.0], [4.0, 3.0], [2.0, 4.0], [3.0, 2.0], [3.0, 2.0], [7.0, 2.0], [5.0, 4.0], [4.0, 3.0], [4.0, 6.0], [5.0, 6.0], [2.0, 3.0], [3.0, 1.0], [3.0, 2.0], [2.0, 3.0], [4.0, 4.0], [2.0, 2.0], [4.0, 2.0], [3.0, 4.0], [3.0, 6.0], [8.0, 2.0], [3.0, 3.0], [4.0, 1.0], [3.0, 4.0], [5.0, 4.0], [7.0, 7.0], [6.0, 2.0], [2.0, 6.0], [2.0, 2.0], [1.0, 2.0], [3.0, 3.0], [3.0, 4.0], [4.0, 4.0], [3.0, 6.0], [4.0, 1.0], [4.0, 4.0], [2.0, 1.0], [2.0, 1.0], [3.0, 2.0], [3.0, 4.0], [6.0, 7.0], [7.0, 8.0], [4.0, 0.0], [3.0, 2.0], [4.0, 1.0], [3.0, 2.0], [6.0, 5.0], [3.0, 6.0], [3.0, 3.0], [3.0, 2.0], [5.0, 3.0], [4.0, 4.0], [3.0, 3.0], [3.0, 1.0], [4.0, 4.0], [3.0, 4.0], [3.0, 4.0], [2.0, 2.0], [5.0, 4.0], [3.0, 2.0], [4.0, 5.0], [7.0, 6.0], [4.0, 6.0], [3.0, 3.0], [3.0, 3.0], [5.0, 5.0], [3.0, 4.0], [7.0, 4.0], [4.0, 6.0], [6.0, 4.0], [3.0, 5.0], [5.0, 5.0], [2.0, 7.0], [8.0, 9.0], [3.0, 3.0], [1.0, 7.0], [5.0, 4.0], [4.0, 3.0], [3.0, 4.0], [3.0, 2.0], [5.0, 4.0], [2.0, 2.0], [3.0, 4.0], [4.0, 3.0], [3.0, 3.0], [3.0, 2.0], [4.0, 4.0], [4.0, 6.0], [3.0, 3.0], [3.0, 2.0], [4.0, 1.0], [4.0, 3.0], [4.0, 3.0], [8.0, 9.0], [2.0, 1.0], [4.0, 4.0], [2.0, 9.0], [8.0, 4.0], [2.0, 6.0], [4.0, 8.0], [4.0, 3.0], [4.0, 1.0], [4.0, 3.0], [5.0, 7.0], [3.0, 4.0], [4.0, 4.0], [3.0, 2.0], [4.0, 2.0], [4.0, 4.0], [4.0, 6.0], [4.0, 4.0], [3.0, 4.0], [4.0, 6.0], [2.0, 6.0], [3.0, 4.0], [2.0, 2.0], [3.0, 6.0], [2.0, 1.0], [4.0, 4.0], [3.0, 3.0], [3.0, 3.0], [5.0, 6.0], [6.0, 4.0], [4.0, 2.0], [4.0, 4.0], [2.0, 2.0], [3.0, 2.0], [8.0, 8.0], [4.0, 4.0], [6.0, 4.0], [4.0, 5.0], [2.0, 3.0], [2.0, 2.0], [7.0, 9.0], [4.0, 4.0], [3.0, 1.0], [5.0, 6.0], [3.0, 4.0], [3.0, 2.0], [3.0, 3.0], [2.0, 4.0], [6.0, 4.0], [4.0, 3.0], [4.0, 1.0], [3.0, 3.0], [4.0, 6.0], [3.0, 6.0], [3.0, 2.0], [4.0, 6.0], [3.0, 4.0], [3.0, 1.0], [5.0, 4.0], [4.0, 2.0], [4.0, 7.0], [3.0, 2.0], [5.0, 6.0], [6.0, 8.0], [4.0, 3.0], [2.0, 2.0], [3.0, 7.0], [2.0, 4.0], [7.0, 6.0], [3.0, 2.0], [1.0, 4.0], [8.0, 7.0], [3.0, 4.0], [4.0, 3.0], [3.0, 4.0], [3.0, 2.0], [5.0, 4.0], [4.0, 6.0], [3.0, 3.0], [4.0, 4.0], [5.0, 8.0], [4.0, 5.0], [7.0, 7.0], [5.0, 4.0], [3.0, 5.0], [3.0, 4.0], [3.0, 2.0], [3.0, 2.0], [4.0, 4.0], [7.0, 7.0], [7.0, 8.0], [3.0, 4.0], [7.0, 6.0], [4.0, 2.0], [2.0, 8.0], [2.0, 3.0], [2.0, 3.0], [2.0, 4.0], [1.0, 7.0], [2.0, 4.0], [3.0, 4.0], [4.0, 4.0], [4.0, 4.0], [4.0, 4.0], [4.0, 6.0], [3.0, 2.0], [4.0, 6.0], [4.0, 3.0], [4.0, 2.0], [2.0, 5.0], [3.0, 4.0], [5.0, 6.0], [3.0, 3.0], [2.0, 1.0], [3.0, 4.0], [2.0, 3.0], [1.0, 1.0], [3.0, 4.0], [6.0, 4.0], [3.0, 2.0], [2.0, 2.0], [7.0, 7.0], [3.0, 4.0], [3.0, 4.0], [3.0, 4.0], [4.0, 4.0], [3.0, 3.0], [7.0, 8.0], [3.0, 2.0], [4.0, 4.0], [3.0, 2.0], [5.0, 3.0], [4.0, 4.0], [1.0, 1.0], [2.0, 3.0], [3.0, 4.0], [2.0, 4.0], [4.0, 6.0], [7.0, 5.0], [1.0, 4.0], [7.0, 8.0], [2.0, 5.0], [4.0, 5.0], [4.0, 6.0], [4.0, 5.0], [2.0, 0.0], [4.0, 4.0], [2.0, 3.0], [3.0, 2.0], [2.0, 2.0], [4.0, 8.0], [4.0, 4.0], [2.0, 1.0], [4.0, 2.0], [4.0, 3.0], [3.0, 6.0], [3.0, 4.0], [3.0, 2.0], [5.0, 4.0], [4.0, 2.0], [7.0, 8.0], [4.0, 4.0], [3.0, 4.0], [2.0, 4.0], [4.0, 1.0], [7.0, 6.0], [4.0, 4.0], [2.0, 2.0], [6.0, 4.0], [4.0, 3.0], [4.0, 6.0], [2.0, 3.0], [4.0, 1.0], [8.0, 7.0], [7.0, 7.0], [1.0, 5.0], [4.0, 4.0], [6.0, 4.0], [3.0, 3.0], [5.0, 4.0], [3.0, 3.0], [3.0, 3.0], [4.0, 7.0], [1.0, 8.0], [2.0, 6.0], [3.0, 3.0], [4.0, 2.0], [3.0, 6.0], [3.0, 2.0], [3.0, 3.0], [2.0, 2.0], [3.0, 3.0], [4.0, 3.0], [4.0, 3.0], [4.0, 5.0], [8.0, 4.0], [3.0, 2.0], [3.0, 2.0], [2.0, 1.0], [2.0, 2.0], [2.0, 6.0], [2.0, 3.0], [3.0, 2.0], [3.0, 4.0], [4.0, 3.0], [3.0, 3.0], [3.0, 4.0], [5.0, 4.0], [4.0, 3.0], [2.0, 7.0], [4.0, 6.0], [4.0, 5.0], [2.0, 1.0], [3.0, 2.0], [7.0, 4.0], [3.0, 4.0], [6.0, 5.0], [4.0, 7.0], [2.0, 2.0], [4.0, 4.0], [6.0, 4.0], [2.0, 6.0], [4.0, 2.0], [4.0, 4.0], [2.0, 4.0], [2.0, 2.0], [6.0, 4.0], [4.0, 4.0], [4.0, 4.0], [7.0, 7.0], [3.0, 4.0], [5.0, 4.0], [2.0, 2.0], [4.0, 2.0], [2.0, 0.0], [2.0, 5.0], [7.0, 4.0], [3.0, 4.0], [4.0, 3.0], [2.0, 2.0], [7.0, 8.0], [3.0, 4.0], [7.0, 6.0], [7.0, 6.0], [3.0, 3.0], [2.0, 3.0], [2.0, 4.0], [2.0, 1.0], [3.0, 4.0], [2.0, 3.0], [2.0, 4.0], [3.0, 1.0], [3.0, 5.0], [3.0, 3.0], [3.0, 2.0], [4.0, 5.0], [4.0, 4.0], [5.0, 6.0], [2.0, 3.0], [2.0, 4.0], [3.0, 3.0], [2.0, 3.0], [2.0, 1.0], [4.0, 6.0], [2.0, 4.0], [2.0, 1.0], [6.0, 7.0], [6.0, 6.0], [1.0, 0.0], [2.0, 2.0], [3.0, 4.0], [8.0, 7.0], [3.0, 3.0], [2.0, 3.0], [4.0, 4.0], [4.0, 4.0], [2.0, 4.0], [7.0, 8.0], [2.0, 2.0], [3.0, 4.0], [5.0, 7.0], [2.0, 1.0], [3.0, 4.0], [4.0, 3.0], [3.0, 4.0], [3.0, 2.0], [6.0, 4.0], [2.0, 2.0], [4.0, 3.0], [3.0, 2.0], [6.0, 4.0], [5.0, 4.0], [2.0, 4.0], [3.0, 2.0], [4.0, 7.0], [5.0, 7.0], [2.0, 1.0], [6.0, 3.0], [4.0, 7.0], [3.0, 3.0], [4.0, 4.0], [4.0, 2.0], [3.0, 3.0], [3.0, 6.0], [6.0, 4.0], [3.0, 3.0], [4.0, 6.0], [1.0, 7.0], [3.0, 4.0], [8.0, 7.0], [6.0, 8.0], [4.0, 4.0], [4.0, 4.0], [5.0, 6.0], [3.0, 2.0], [2.0, 3.0], [3.0, 2.0], [2.0, 4.0], [2.0, 4.0], [2.0, 4.0], [4.0, 3.0], [5.0, 6.0], [3.0, 4.0], [3.0, 2.0], [4.0, 3.0], [6.0, 6.0], [8.0, 2.0], [3.0, 3.0], [4.0, 4.0], [4.0, 3.0], [4.0, 4.0], [4.0, 6.0], [3.0, 6.0], [8.0, 9.0], [3.0, 6.0], [2.0, 3.0], [4.0, 4.0], [5.0, 6.0], [3.0, 3.0], [3.0, 3.0], [3.0, 2.0], [2.0, 1.0], [2.0, 0.0], [5.0, 6.0], [4.0, 3.0], [5.0, 4.0], [4.0, 6.0], [4.0, 4.0], [2.0, 3.0], [4.0, 3.0], [3.0, 4.0], [3.0, 4.0], [4.0, 3.0], [3.0, 2.0], [3.0, 3.0], [3.0, 3.0], [3.0, 4.0], [6.0, 6.0], [5.0, 6.0], [3.0, 3.0], [3.0, 2.0], [3.0, 2.0], [2.0, 2.0], [3.0, 4.0], [2.0, 2.0], [4.0, 4.0], [6.0, 7.0], [3.0, 4.0], [3.0, 4.0], [4.0, 5.0], [3.0, 4.0], [5.0, 6.0], [4.0, 3.0], [7.0, 6.0], [3.0, 5.0], [8.0, 7.0], [3.0, 3.0], [2.0, 4.0], [3.0, 4.0], [3.0, 5.0], [4.0, 2.0], [2.0, 4.0], [2.0, 4.0], [5.0, 6.0], [2.0, 2.0], [3.0, 3.0], [4.0, 3.0], [2.0, 4.0], [2.0, 1.0], [8.0, 6.0], [4.0, 6.0], [5.0, 6.0], [3.0, 2.0], [4.0, 3.0], [4.0, 3.0], [4.0, 5.0], [2.0, 2.0], [4.0, 4.0], [3.0, 2.0], [2.0, 4.0], [2.0, 1.0], [2.0, 0.0], [3.0, 3.0], [6.0, 6.0], [1.0, 4.0], [4.0, 3.0], [5.0, 7.0], [2.0, 1.0], [6.0, 2.0], [5.0, 2.0], [4.0, 6.0], [3.0, 3.0], [7.0, 4.0], [2.0, 2.0], [2.0, 1.0], [5.0, 4.0], [4.0, 4.0], [3.0, 3.0], [6.0, 8.0], [4.0, 3.0], [4.0, 3.0], [6.0, 5.0], [7.0, 6.0], [7.0, 6.0], [4.0, 3.0], [3.0, 4.0], [3.0, 3.0], [4.0, 3.0], [2.0, 2.0], [3.0, 3.0], [2.0, 4.0], [2.0, 4.0], [3.0, 3.0], [2.0, 3.0], [2.0, 6.0], [2.0, 4.0], [2.0, 2.0], [4.0, 4.0], [3.0, 4.0], [5.0, 5.0], [4.0, 4.0], [4.0, 4.0], [6.0, 3.0], [5.0, 4.0], [3.0, 2.0], [2.0, 4.0], [7.0, 8.0], [5.0, 6.0], [5.0, 4.0], [3.0, 3.0], [2.0, 2.0], [6.0, 8.0], [2.0, 5.0], [3.0, 4.0], [2.0, 4.0], [1.0, 2.0], [3.0, 2.0], [3.0, 3.0], [4.0, 7.0], [4.0, 3.0], [3.0, 4.0], [4.0, 3.0], [4.0, 4.0], [6.0, 5.0], [3.0, 2.0], [7.0, 6.0], [3.0, 3.0], [3.0, 3.0], [3.0, 3.0], [7.0, 6.0], [4.0, 4.0], [7.0, 6.0], [4.0, 3.0], [4.0, 4.0], [2.0, 4.0], [4.0, 5.0], [4.0, 6.0], [1.0, 0.0], [1.0, 2.0], [4.0, 7.0], [4.0, 3.0], [3.0, 3.0], [1.0, 7.0], [2.0, 2.0], [4.0, 4.0], [2.0, 4.0], [3.0, 6.0], [3.0, 2.0], [3.0, 1.0], [3.0, 4.0], [2.0, 2.0], [3.0, 8.0], [2.0, 2.0], [3.0, 3.0], [3.0, 3.0], [3.0, 2.0], [2.0, 2.0], [8.0, 9.0], [1.0, 2.0], [1.0, 1.0], [2.0, 4.0], [2.0, 2.0], [0.0, 0.0], [7.0, 8.0], [2.0, 3.0], [2.0, 1.0], [5.0, 4.0], [3.0, 2.0], [6.0, 3.0], [4.0, 4.0], [7.0, 6.0], [3.0, 3.0], [3.0, 2.0], [6.0, 5.0], [8.0, 3.0], [7.0, 6.0], [2.0, 3.0], [4.0, 4.0], [4.0, 4.0], [3.0, 4.0], [3.0, 3.0], [3.0, 4.0], [6.0, 8.0], [4.0, 4.0], [8.0, 7.0], [3.0, 6.0], [4.0, 3.0], [4.0, 5.0], [3.0, 2.0], [4.0, 3.0], [4.0, 7.0], [4.0, 7.0], [3.0, 4.0], [4.0, 3.0], [3.0, 3.0], [3.0, 2.0], [5.0, 6.0], [3.0, 4.0], [5.0, 4.0], [3.0, 4.0], [3.0, 2.0], [6.0, 7.0], [3.0, 4.0], [7.0, 6.0], [1.0, 1.0], [6.0, 6.0], [4.0, 6.0], [4.0, 4.0], [3.0, 4.0], [2.0, 3.0], [5.0, 6.0], [2.0, 3.0], [7.0, 2.0], [2.0, 1.0], [2.0, 3.0], [4.0, 4.0], [3.0, 4.0], [3.0, 2.0], [4.0, 6.0], [4.0, 3.0], [5.0, 4.0], [4.0, 3.0], [3.0, 4.0], [3.0, 4.0], [4.0, 4.0], [2.0, 3.0], [2.0, 2.0], [6.0, 4.0], [5.0, 4.0], [3.0, 4.0], [6.0, 6.0], [4.0, 4.0], [2.0, 6.0], [6.0, 2.0], [8.0, 5.0], [3.0, 3.0], [4.0, 6.0], [3.0, 4.0], [4.0, 4.0], [2.0, 3.0], [3.0, 2.0], [2.0, 6.0], [8.0, 3.0], [3.0, 6.0], [3.0, 4.0], [3.0, 2.0], [3.0, 2.0], [2.0, 2.0], [2.0, 4.0], [3.0, 7.0], [3.0, 2.0], [0.0, 0.0], [3.0, 4.0], [4.0, 3.0], [1.0, 2.0], [3.0, 2.0], [2.0, 7.0], [4.0, 6.0], [6.0, 7.0], [2.0, 3.0], [3.0, 4.0], [1.0, 4.0], [3.0, 2.0], [4.0, 4.0], [3.0, 2.0], [5.0, 4.0], [3.0, 2.0], [2.0, 4.0], [7.0, 8.0], [7.0, 8.0], [2.0, 2.0], [2.0, 1.0], [2.0, 3.0], [7.0, 6.0], [3.0, 7.0], [2.0, 5.0], [6.0, 7.0], [4.0, 6.0], [4.0, 4.0], [4.0, 2.0], [3.0, 3.0], [2.0, 2.0], [5.0, 7.0], [3.0, 4.0], [4.0, 5.0], [6.0, 7.0], [3.0, 4.0], [3.0, 6.0], [7.0, 8.0], [5.0, 6.0], [7.0, 6.0], [6.0, 4.0], [3.0, 2.0], [4.0, 6.0], [3.0, 4.0], [3.0, 6.0], [3.0, 4.0], [2.0, 2.0], [5.0, 7.0], [2.0, 2.0], [5.0, 6.0], [4.0, 4.0], [2.0, 7.0], [3.0, 2.0], [4.0, 5.0], [2.0, 3.0], [4.0, 4.0], [2.0, 3.0], [3.0, 4.0], [1.0, 3.0], [5.0, 7.0], [4.0, 4.0], [3.0, 2.0], [3.0, 3.0], [6.0, 7.0], [5.0, 6.0], [4.0, 5.0], [0.0, 0.0], [1.0, 7.0], [6.0, 5.0], [7.0, 6.0], [1.0, 8.0], [3.0, 2.0], [3.0, 4.0], [2.0, 2.0], [3.0, 2.0], [4.0, 7.0], [4.0, 3.0], [2.0, 4.0], [3.0, 3.0], [3.0, 6.0], [2.0, 2.0], [3.0, 3.0], [1.0, 1.0], [3.0, 4.0], [4.0, 3.0], [2.0, 3.0], [4.0, 4.0], [4.0, 3.0], [3.0, 1.0], [4.0, 7.0], [4.0, 7.0], [4.0, 4.0], [5.0, 6.0], [5.0, 4.0], [3.0, 3.0], [2.0, 2.0], [4.0, 4.0], [4.0, 2.0], [2.0, 3.0], [3.0, 2.0], [4.0, 5.0], [1.0, 6.0], [4.0, 4.0], [3.0, 3.0], [1.0, 6.0], [3.0, 4.0], [4.0, 4.0], [5.0, 3.0], [2.0, 4.0], [4.0, 0.0], [3.0, 2.0], [2.0, 3.0], [2.0, 0.0], [4.0, 4.0], [3.0, 2.0], [7.0, 6.0], [3.0, 2.0], [3.0, 5.0], [3.0, 2.0], [7.0, 8.0], [4.0, 4.0], [3.0, 3.0], [4.0, 1.0], [3.0, 2.0], [5.0, 4.0], [3.0, 4.0], [3.0, 3.0], [3.0, 2.0], [6.0, 8.0], [3.0, 4.0], [3.0, 3.0], [5.0, 4.0], [7.0, 9.0], [3.0, 1.0], [3.0, 2.0], [5.0, 4.0], [2.0, 9.0], [7.0, 8.0], [3.0, 4.0], [7.0, 8.0], [2.0, 3.0], [4.0, 7.0], [2.0, 2.0], [3.0, 3.0], [3.0, 3.0], [4.0, 6.0], [3.0, 5.0], [3.0, 3.0], [5.0, 6.0], [3.0, 3.0], [3.0, 2.0], [5.0, 5.0], [4.0, 2.0], [4.0, 5.0], [7.0, 4.0], [4.0, 4.0], [3.0, 4.0], [2.0, 2.0], [4.0, 4.0], [5.0, 4.0], [5.0, 4.0], [4.0, 6.0], [1.0, 1.0], [5.0, 2.0], [7.0, 4.0], [3.0, 2.0], [2.0, 4.0], [2.0, 1.0], [2.0, 5.0], [4.0, 4.0], [3.0, 4.0], [3.0, 2.0]];
+const meanVals    = [0.07, 3.332, 2.736, 3.359, 4.113, 4.833, 5.352, 6.533, 6.917, 5.558, 4.0];
+const ciUpper     = [0.172, 3.51, 2.782, 3.39, 4.15, 4.897, 5.43, 6.612, 7.057, 6.306, NaN];
+const ciLower     = [-0.032, 3.153, 2.69, 3.329, 4.075, 4.769, 5.273, 6.453, 6.777, 4.811, NaN];
+const meanCounts  = [171, 684, 4725, 7966, 5983, 2088, 1650, 1599, 564, 43, 1];
+const regLineX    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const regLineY    = [1.385, 2.071, 2.758, 3.445, 4.131, 4.818, 5.504, 6.191, 6.878, 7.564, 8.251];
+const aDistData   = [[0, 171], [1, 684], [2, 4725], [3, 7966], [4, 5983], [5, 2089], [6, 1650], [7, 1599], [8, 564], [9, 43], [10, 1]];
+const nfDistData  = [[0, 520], [1, 1461], [2, 4228], [3, 4807], [4, 6919], [5, 1338], [6, 3358], [7, 1663], [8, 1022], [9, 159]];
+const ctData      = [["civilian", 2.78, 2.23, 1797], ["other", 2.88, 1.93, 3677], ["police/military confrontation", 3.0, 4.0, 1], ["casualty", 3.38, 4.52, 451], ["aftermath", 3.42, 3.44, 778], ["destruction", 3.47, 3.59, 3727], ["soldier POV", 3.73, 3.75, 2245], ["weapon system", 3.87, 3.58, 1997], ["political", 3.9, 5.09, 6348], ["explosion", 3.91, 3.78, 1375], ["combat footage", 4.04, 4.07, 393], ["drone strike", 4.19, 5.21, 1603], ["propaganda meme", 6.64, 7.27, 1082]];
+const frameData   = [["civilian recording", 3.09, 2.99, 8076], ["other", 3.21, 2.65, 2206], ["soldier POV", 3.29, 3.29, 699], ["screenshot", 3.4, 4.29, 6547], ["drone POV", 3.84, 4.45, 2038], ["professional production", 4.2, 4.05, 2961], ["combat footage", 4.8, 4.4, 5], ["composite/meme", 5.95, 6.34, 2942]];
+const chData      = [["wargonzo", 4.31, 4.42, 2575], ["a_shtirlitz", 4.18, 4.99, 2451], ["rusich_army", 4.15, 4.23, 2560], ["donbassrealii", 3.94, 4.07, 2516], ["voenkorKotenok", 3.58, 3.69, 2579], ["voenacher", 3.55, 3.74, 2586], ["ZA_FROHT", 3.51, 3.69, 2486], ["RVvoenkor", 3.37, 3.72, 2631], ["kherson_non_fake", 3.36, 3.66, 2516], ["hyevuy_dnepr", 3.13, 3.14, 2574]];
+const corrMatrix  = [[1.0, 0.327, 0.567, 0.34, 0.472], [0.327, 1.0, 0.584, 0.397, 0.349], [0.567, 0.584, 1.0, 0.427, 0.587], [0.34, 0.397, 0.427, 1.0, 0.581], [0.472, 0.349, 0.587, 0.581, 1.0]];
+const corrLabels  = ['Impl.Violence','Gamification','Dehumanization','Aestheticization','Narr.Framing'];
+
+Chart.defaults.color = '#7a90b8';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 12;
+const gridCol = 'rgba(0,91,187,0.1)';
+const BLUE='#005BBB', BLUE_B='#5aaeff', YELLOW='#FFD500', YELLOW_D='#c9a800';
+
+// ── SCATTER ──────────────────────────────────────────────────────────────────
+new Chart(document.getElementById('scatterChart'), {
+  type:'scatter',
+  data:{ datasets:[
+    {
+      label:'Images',
+      data: scatterRaw.map(d=>({ x:d[0]+(Math.random()-.5)*.35, y:d[1]+(Math.random()-.5)*.35 })),
+      backgroundColor:'rgba(0,91,187,0.18)', pointRadius:2.5,
+    },
+    {
+      label:'Regression',
+      data: regLineX.map((x,i)=>({ x, y:regLineY[i] })),
+      type:'line', borderColor:YELLOW, borderWidth:2.5, pointRadius:0, fill:false, tension:0,
+    }
+  ]},
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      x:{ title:{display:true,text:'Aestheticization Score',color:'#7a90b8'}, min:-0.5, max:10.5, grid:{color:gridCol} },
+      y:{ title:{display:true,text:'Narrative Framing Score',color:'#7a90b8'}, min:-0.5, max:10.5, grid:{color:gridCol} }
+    },
+    plugins:{ legend:{display:true,labels:{color:'#7a90b8'}},
+      tooltip:{ callbacks:{ label:ctx => ctx.dataset.label==='Images'
+        ? `Aesthet: ${ctx.raw.x.toFixed(0)}  Framing: ${ctx.raw.y.toFixed(0)}`
+        : `Predicted: ${ctx.raw.y.toFixed(2)}` } }
+    }
+  }
+});
+
+// ── MEAN LINE ────────────────────────────────────────────────────────────────
+(function(){
+  const labels = Array.from({length:11},(_,i)=>i);
+  new Chart(document.getElementById('meanLineChart'), {
+    data:{
+      labels,
+      datasets:[
+        {
+          type:'line', label:'Mean Framing',
+          data:meanVals,
+          borderColor:BLUE_B, borderWidth:2.5,
+          pointBackgroundColor:meanVals.map(v=>v>6?YELLOW:BLUE_B),
+          pointBorderColor:meanVals.map(v=>v>6?YELLOW_D:BLUE),
+          pointRadius:6, pointHoverRadius:8,
+          fill:false, tension:0.3, order:1,
+        },
+        {
+          type:'line', label:'CI Upper', data:ciUpper,
+          borderColor:'transparent', pointRadius:0,
+          fill:'+1', backgroundColor:'rgba(255,213,0,0.1)',
+          tension:0.3, order:2,
+        },
+        {
+          type:'line', label:'CI Lower', data:ciLower,
+          borderColor:'transparent', pointRadius:0, fill:false, tension:0.3, order:3,
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ title:{display:true,text:'Aestheticization Score',color:'#7a90b8'}, grid:{color:gridCol} },
+        y:{ title:{display:true,text:'Mean Narrative Framing',color:'#7a90b8'}, min:0, max:10, grid:{color:gridCol} }
+      },
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label:ctx => ctx.datasetIndex===0
+          ? `Mean: ${ctx.raw.toFixed(2)}  n=${meanCounts[ctx.dataIndex].toLocaleString()}` : null } }
+      }
+    }
+  });
+})();
+
+// ── AREA DISTRIBUTIONS ────────────────────────────────────────────────────────
+function makeArea(id, data, col, fill) {
+  new Chart(document.getElementById(id), {
+    type:'line',
+    data:{
+      labels:data.map(d=>d[0]),
+      datasets:[{
+        label:'Count', data:data.map(d=>d[1]),
+        borderColor:col, borderWidth:2, backgroundColor:fill,
+        fill:true, tension:0.4, pointRadius:4, pointBackgroundColor:col,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{grid:{color:gridCol}},
+        y:{grid:{color:gridCol},ticks:{callback:v=>v>=1000?v/1000+'k':v}}
+      },
+      plugins:{legend:{display:false}}
+    }
+  });
+}
+makeArea('aDist',  aDistData,  BLUE_B, 'rgba(0,91,187,0.18)');
+makeArea('nfDist', nfDistData, YELLOW, 'rgba(255,213,0,0.12)');
+
+// ── BUBBLE CHARTS ─────────────────────────────────────────────────────────────
+function makeBubble(id, data, xMax) {
+  const maxCount = Math.max(...data.map(d=>d[3]));
+  const palette=[BLUE_B,YELLOW,'#7ab8ff',YELLOW_D,'#004a99','#ffea4d','#2266cc','#e6be00','#1a4fa0','#ffd000','#3378dd','#c9a800','#5599ff'];
+  new Chart(document.getElementById(id), {
+    type:'bubble',
+    data:{ datasets:data.map((d,i)=>({
+      label:d[0],
+      data:[{ x:d[1], y:d[2], r:Math.max(5,Math.sqrt(d[3]/maxCount)*36) }],
+      backgroundColor:palette[i%palette.length]+'99',
+      borderColor:i%2===0?BLUE_B:YELLOW, borderWidth:1.5,
+    })) },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ title:{display:true,text:'Mean Aestheticization Score',color:'#7a90b8'}, min:-.2, max:xMax, grid:{color:gridCol} },
+        y:{ title:{display:true,text:'Mean Narrative Framing Score',color:'#7a90b8'}, min:0, max:10, grid:{color:gridCol} }
+      },
+      plugins:{
+        legend:{ position:'right', labels:{ boxWidth:10, font:{size:11}, color:'#7a90b8' } },
+        tooltip:{ callbacks:{ label:ctx =>
+          `${ctx.dataset.label}  aesthet=${ctx.raw.x.toFixed(2)}  framing=${ctx.raw.y.toFixed(2)}  n=${data[ctx.datasetIndex][3].toLocaleString()}` } }
+      }
+    }
+  });
+}
+makeBubble('ctBubble',    ctData,    8);
+makeBubble('frameBubble', frameData, 7);
+makeBubble('chBubble',    chData,    6);
+
+// ── HEATMAP ───────────────────────────────────────────────────────────────────
+(function(){
+  const canvas=document.getElementById('corrChart');
+  const ctx2=canvas.getContext('2d');
+  function getCol(v){
+    if(v>=0){const t=v;return `rgb(${Math.round(t*0)},${Math.round(22+(91-22)*t)},${Math.round(53+(187-53)*t)})`;}
+    else{const t=-v;return `rgb(${Math.round(255*t+15*(1-t))},${Math.round(213*t+22*(1-t))},${Math.round(0*t+53*(1-t))})`;}
+  }
+  function draw(){
+    const W=canvas.parentElement.offsetWidth-40,labelW=115,cellH=46;
+    const n=corrLabels.length,cellW=(W-labelW)/n,H=cellH*n+55;
+    canvas.width=W; canvas.height=H; ctx2.clearRect(0,0,W,H);
+    corrLabels.forEach((l,i)=>{
+      ctx2.save(); ctx2.translate(labelW+cellW*i+cellW/2,18);
+      ctx2.rotate(-Math.PI/7); ctx2.textAlign='right';
+      ctx2.fillStyle='#7a90b8'; ctx2.font='11px DM Mono,monospace';
+      ctx2.fillText(l,0,0); ctx2.restore();
+    });
+    corrMatrix.forEach((row,ri)=>{
+      ctx2.textAlign='right'; ctx2.fillStyle='#7a90b8'; ctx2.font='11px DM Mono,monospace';
+      ctx2.fillText(corrLabels[ri],labelW-8,55+ri*cellH+cellH/2+4);
+      row.forEach((val,ci)=>{
+        const cx=labelW+ci*cellW,cy=55+ri*cellH;
+        ctx2.fillStyle=getCol(val); ctx2.globalAlpha=Math.abs(val)*0.85+0.12;
+        ctx2.beginPath(); ctx2.roundRect(cx+2,cy+2,cellW-4,cellH-4,4); ctx2.fill();
+        ctx2.globalAlpha=1;
+        ctx2.fillStyle=Math.abs(val)>0.35?'#fff':'#7a90b8';
+        ctx2.textAlign='center'; ctx2.font='bold 12px DM Mono,monospace';
+        ctx2.fillText(val.toFixed(2),cx+cellW/2,cy+cellH/2+5);
+      });
+    });
+  }
+  setTimeout(draw,100); window.addEventListener('resize',draw);
+})();
+</script>
+</body>
+</html>

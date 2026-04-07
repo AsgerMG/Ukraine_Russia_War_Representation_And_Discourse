@@ -12,8 +12,8 @@ export default function ImpliedViolencePage() {
               ← Overview
             </Link>
             <span style={{ color: "var(--border)" }}>/</span>
-            <span className="rounded-full bg-[#c5e0ff] px-3 py-1 text-xs font-semibold italic text-zinc-900">
-              Implied violence
+            <span className="rounded-full px-3 py-1 text-xs font-semibold italic" style={{ background: "#0057b7", color: "#fff" }}>
+              Frontline violence
             </span>
           </div>
           <div style={{ borderLeft: "3px solid var(--accent)", paddingLeft: "20px" }} className="space-y-3">
@@ -21,7 +21,7 @@ export default function ImpliedViolencePage() {
               Chapter 02
             </p>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.8rem,4vw,3rem)", fontWeight: 700, lineHeight: 1.2, color: "var(--accent)" }}>
-              Implied violence
+              Frontline violence
             </h1>
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
               How violence is suggested, obscured or made visible through language,
@@ -34,7 +34,7 @@ export default function ImpliedViolencePage() {
         {/* ── overview ── */}
         <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }}>
           <div className="flex items-center gap-3" style={{ marginBottom: "16px" }}>
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "12px", fontWeight: 700, color: "var(--bg)" }}>
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
               1
             </span>
             <h2 style={{ fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-dim)" }}>
@@ -53,7 +53,7 @@ export default function ImpliedViolencePage() {
         <section className="space-y-4">
           <div className="flex items-end justify-between">
             <div className="flex items-center gap-3">
-              <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--red)", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
+              <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#ffdd00", fontSize: "12px", fontWeight: 700, color: "#111" }}>
                 2
               </span>
               <div>
@@ -79,7 +79,7 @@ export default function ImpliedViolencePage() {
             <iframe
               src="/violence.html"
               className="absolute inset-0 h-full w-full"
-              title="Violence on the Front — Telegram War Imagery Analysis"
+              title="Frontline violence — Telegram War Imagery Analysis"
               loading="lazy"
             />
           </div>

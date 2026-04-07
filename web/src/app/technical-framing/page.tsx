@@ -13,8 +13,8 @@ export default function TechnicalFramingPage() {
               ← Overview
             </Link>
             <span style={{ color: "var(--border)" }}>/</span>
-            <span className="rounded-full bg-[#ffe789] px-3 py-1 text-xs font-semibold italic text-zinc-900">
-              Technical framing
+            <span className="rounded-full px-3 py-1 text-xs font-semibold italic" style={{ background: "#ffdd00", color: "#111" }}>
+              Technical means
             </span>
           </div>
           <div style={{ borderLeft: "3px solid var(--accent)", paddingLeft: "20px" }} className="space-y-3">
@@ -22,7 +22,7 @@ export default function TechnicalFramingPage() {
               Chapter 07
             </p>
             <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.8rem,4vw,3rem)", fontWeight: 700, lineHeight: 1.2, color: "var(--accent)" }}>
-              Technical framing
+              Technical means
             </h1>
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
               How image-production modes — drone POV, soldier POV, civilian recording,
@@ -63,7 +63,7 @@ export default function TechnicalFramingPage() {
         {/* ── interactive charts ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "12px", fontWeight: 700, color: "var(--bg)" }}>
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
               1
             </span>
             <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
@@ -76,7 +76,7 @@ export default function TechnicalFramingPage() {
         {/* ── interpretation ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--red)", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#ffdd00", fontSize: "12px", fontWeight: 700, color: "#111" }}>
               2
             </span>
             <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
@@ -97,7 +97,7 @@ export default function TechnicalFramingPage() {
               This divergence is not merely aesthetic. The annotation scores
               show that drone footage consistently scores higher on gamification
               and dehumanisation than any other frame type. By H2 2025, drone
-              POV images score 6.04 on gamification (out of 7) compared to a
+              POV images score 6.04 on gamification (out of 10) compared to a
               corpus-wide average of ~1.7 — suggesting that the drone aesthetic
               imports the visual grammar of first-person games into the
               representation of lethal force.

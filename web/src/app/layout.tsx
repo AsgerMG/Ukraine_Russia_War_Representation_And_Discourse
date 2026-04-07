@@ -16,14 +16,6 @@ const BG_IMAGES = [
   "wargonzo_14716.jpg","wargonzo_16044.jpg","voenacher_78145.jpg","rusich_army_21234.jpg",
 ];
 
-const TICKER_TEXT = [
-  "Visual representation of war · Telegram · 2022–2025",
-  "10 channels · 24 559 images · Feb 2022 – Dec 2025",
-  "Drone POV · Implied violence · Gamification · Dehumanisation",
-  "Discourse analysis · Technical framing · Narrative framing",
-  "Aestheticisation · Composite/meme · Civilian recording",
-  "CLIP embeddings · t-SNE · Content type analysis",
-];
 
 export default function RootLayout({
   children,
@@ -62,35 +54,8 @@ export default function RootLayout({
           />
         </div>
 
-        {/* ── scrolling ticker ── */}
-        <div
-          className="fixed top-0 left-0 right-0 z-50 flex items-center overflow-hidden"
-          style={{ background: "var(--red)", height: "28px" }}
-        >
-          <div
-            className="flex whitespace-nowrap"
-            style={{ animation: "ticker 40s linear infinite" }}
-          >
-            {[...TICKER_TEXT, ...TICKER_TEXT].map((t, i) => (
-              <span
-                key={i}
-                className="px-16"
-                style={{
-                  fontFamily: "var(--mono)",
-                  fontSize: "10px",
-                  letterSpacing: "0.12em",
-                  color: "#fff",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* ── page content (below ticker) ── */}
-        <div className="relative z-10 flex flex-col flex-1" style={{ paddingTop: "28px" }}>
+        {/* ── page content ── */}
+        <div className="relative z-10 flex flex-col flex-1">
           {children}
         </div>
 

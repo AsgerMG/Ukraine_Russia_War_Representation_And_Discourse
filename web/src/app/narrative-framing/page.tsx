@@ -6,7 +6,7 @@ export default function NarrativeFramingPage() {
       chapter="Chapter 06"
       title="Narrative framing"
       subtitle="How story structures, protagonists and moral logics shape the meaning of events."
-      accentColor="bg-[#ffe680]"
+      pillBg="#ffdd00" pillText="#111"
     >
       <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }}>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "16px" }}>

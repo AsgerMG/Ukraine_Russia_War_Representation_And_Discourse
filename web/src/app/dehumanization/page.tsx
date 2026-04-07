@@ -6,7 +6,7 @@ export default function DehumanizationPage() {
       chapter="Chapter 04"
       title="Dehumanization"
       subtitle="How language and imagery reduce people to categories, abstractions or targets instead of individuals."
-      accentColor="bg-[#fff7d1]"
+      pillBg="#ffdd00" pillText="#111"
     >
       <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }}>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "16px" }}>

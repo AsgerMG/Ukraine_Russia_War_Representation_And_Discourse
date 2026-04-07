@@ -12,7 +12,7 @@
   --accent:      #c8a96e;
   --accent-dim:  #8a7048;
   --red:         #c84848;
-  --blue:        #4878c8;
+  --blue:        #0057b7;
   --green:       #48a878;
 }
 
@@ -32,8 +32,3 @@ body {
 /* section tile hover */
 .section-tile:hover { border-color: var(--accent-dim) !important; }
 
-/* scrolling ticker */
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}

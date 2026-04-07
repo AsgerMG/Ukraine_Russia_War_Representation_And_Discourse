@@ -65,14 +65,14 @@ const panels: Panel[] = [
     content: (
       <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-          Data were collected from ten Russian-language Telegram channels
+          Data were collected from ten primarily Russian-language Telegram channels
           associated with pro-Russian war correspondents and military
           commentators active during the Russo-Ukrainian conflict. Channels were
           selected based on their prominence in the Russian military information
           ecosystem, subscriber base and sustained posting activity throughout
           the study period:{" "}
           <span style={{ color: "var(--accent)", fontWeight: 500 }}>
-            24 February 2022 – 23 February 2023
+            24 February 2022 – 24 February 2026
           </span>
           .
         </p>
@@ -141,7 +141,7 @@ const panels: Panel[] = [
               "If M > 50, exactly 50 messages were selected using evenly spaced index interpolation.",
             ].map((step, i) => (
               <li key={i} style={{ display: "flex", gap: "12px", fontSize: "0.875rem", color: "var(--text-dim)", lineHeight: 1.7 }}>
-                <span style={{ display: "flex", width: "20px", height: "20px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "10px", fontWeight: 700, color: "var(--bg)", marginTop: "2px" }}>
+                <span style={{ display: "flex", width: "20px", height: "20px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: i % 2 === 0 ? "#0057b7" : "#ffdd00", fontSize: "10px", fontWeight: 700, color: i % 2 === 0 ? "#fff" : "#111", marginTop: "2px" }}>
                   {i + 1}
                 </span>
                 <span>{step}</span>
@@ -222,7 +222,7 @@ const panels: Panel[] = [
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {limitationItems.map((item) => (
           <div key={item.title} style={{ display: "flex", gap: "16px", background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "16px" }}>
-            <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--red)", fontSize: "11px", fontWeight: 700, color: "#fff", marginTop: "1px" }}>
+            <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#ffdd00", fontSize: "11px", fontWeight: 700, color: "#111", marginTop: "1px" }}>
               !
             </span>
             <div>

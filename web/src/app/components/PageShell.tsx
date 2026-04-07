@@ -4,11 +4,12 @@ type Props = {
   chapter: string;
   title: string;
   subtitle: string;
-  accentColor?: string;   // tailwind bg class for the breadcrumb pill
+  pillBg?: string;   // hex background for the breadcrumb pill
+  pillText?: string; // hex text color for the breadcrumb pill
   children: React.ReactNode;
 };
 
-export default function PageShell({ chapter, title, subtitle, accentColor = "bg-[#c5e0ff]", children }: Props) {
+export default function PageShell({ chapter, title, subtitle, pillBg = "#0057b7", pillText = "#fff", children }: Props) {
   return (
     <div className="min-h-screen" style={{ color: "var(--text)" }}>
       <main className="mx-auto flex max-w-5xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
@@ -20,7 +21,7 @@ export default function PageShell({ chapter, title, subtitle, accentColor = "bg-
               ← Overview
             </Link>
             <span style={{ color: "var(--border)" }}>/</span>
-            <span className={`rounded-full px-3 py-1 text-xs font-semibold italic text-zinc-900 ${accentColor}`}>
+            <span className="rounded-full px-3 py-1 text-xs font-semibold italic" style={{ background: pillBg, color: pillText }}>
               {title}
             </span>
           </div>

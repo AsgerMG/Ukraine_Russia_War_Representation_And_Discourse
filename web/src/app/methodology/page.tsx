@@ -12,7 +12,7 @@ export default function MethodologyPage() {
               ← Overview
             </Link>
             <span style={{ color: "var(--border)" }}>/</span>
-            <span className="rounded-full bg-[#e3f0ff] px-3 py-1 text-xs font-semibold italic text-zinc-900">
+            <span className="rounded-full px-3 py-1 text-xs font-semibold italic" style={{ background: "#0057b7", color: "#fff" }}>
               Methodology
             </span>
           </div>
@@ -32,7 +32,7 @@ export default function MethodologyPage() {
         {/* ── Data collection ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "12px", fontWeight: 700, color: "var(--bg)" }}>
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
               1
             </span>
             <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
@@ -45,7 +45,7 @@ export default function MethodologyPage() {
         {/* ── Analytical framework ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--red)", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#ffdd00", fontSize: "12px", fontWeight: 700, color: "#111" }}>
               2
             </span>
             <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
@@ -55,7 +55,7 @@ export default function MethodologyPage() {
           <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }} className="space-y-3">
             <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
               Here you can outline your discourse or media analysis framework,
-              the categories used (content type, implied violence, gamification,
+              the categories used (channel content, violence on the front, gamification,
               dehumanization, aestheticization, narrative framing, technical
               framing) and how they were operationalised.
             </p>
@@ -65,7 +65,7 @@ export default function MethodologyPage() {
         {/* ── Procedures, reliability and limitations ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--blue)", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
               3
             </span>
             <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>

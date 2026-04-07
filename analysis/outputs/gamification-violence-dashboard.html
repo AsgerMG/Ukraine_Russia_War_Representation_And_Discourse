@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamification × Implied Violence — Regression Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300..700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:#0a0e1a;
+  --surface:#0f1628;
+  --surface-2:#141e35;
+  --border:rgba(0,91,187,0.25);
+  --divider:rgba(0,91,187,0.08);
+  --text:#e8eef8;
+  --text-muted:#7a90b8;
+  --text-faint:#3a4f78;
+  --blue:#005BBB;
+  --blue-light:#3a8ff5;
+  --blue-bright:#5aaeff;
+  --yellow:#FFD500;
+  --yellow-dim:rgba(255,213,0,0.15);
+  --blue-dim:rgba(0,91,187,0.18);
+  --font:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* flag stripe at very top */
+body::before{
+  content:''; display:block; height:4px;
+  background:linear-gradient(90deg, var(--blue) 50%, var(--yellow) 50%);
+  position:fixed; top:0; left:0; right:0; z-index:200;
+}
+
+.header{
+  border-bottom:1px solid var(--border);
+  padding:18px 32px; padding-top:22px;
+  display:flex; align-items:center; gap:16px;
+  position:sticky; top:4px;
+  background:rgba(10,14,26,0.94);
+  backdrop-filter:blur(14px); z-index:100;
+}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;letter-spacing:-0.01em}
+.logo-flag{
+  display:flex; flex-direction:column;
+  width:22px; height:16px; border-radius:3px; overflow:hidden; flex-shrink:0;
+}
+.logo-flag-top{flex:1;background:var(--blue)}
+.logo-flag-bot{flex:1;background:var(--yellow)}
+.header-meta{margin-left:auto;color:var(--text-muted);font-size:12px;font-family:var(--mono)}
+
+.main{max-width:1280px;margin:0 auto;padding:32px}
+.section-label{font-size:11px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--yellow);margin-bottom:8px}
+.section-title{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin-bottom:6px}
+.section-sub{color:var(--text-muted);font-size:14px;margin-bottom:24px;max-width:68ch}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.kpi{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 20px;
+  transition:border-color .2s, box-shadow .2s;
+}
+.kpi:hover{border-color:var(--blue-light);box-shadow:0 0 0 1px rgba(0,91,187,0.2)}
+.kpi-label{font-size:11px;font-family:var(--mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.kpi-value{font-size:28px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.kpi-sub{font-size:12px;color:var(--text-muted);margin-top:3px}
+.c-blue{color:var(--blue-bright)}
+.c-yellow{color:var(--yellow)}
+.c-blue2{color:#7ab8ff}
+.c-soft{color:#a0c4ff}
+
+.eq-box{
+  background:var(--blue-dim);
+  border:1px solid rgba(0,91,187,0.4);
+  border-radius:var(--r-md);padding:14px 18px;
+  font-family:var(--mono);font-size:14px;
+  color:var(--blue-bright);margin:16px 0;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.eq-sep{color:var(--text-faint)}
+.eq-box strong{color:var(--yellow)}
+
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.charts-wide{margin-bottom:16px}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:20px;
+}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px}
+.chart-wrap{position:relative}
+
+.findings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:32px 0}
+.finding{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:20px;
+  transition:border-color .2s;
+}
+.finding:hover{border-color:rgba(255,213,0,0.3)}
+.finding-icon{font-size:22px;margin-bottom:10px}
+.finding-q{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.finding-a{font-size:14px;color:var(--text);line-height:1.55}
+.finding-a strong{color:var(--yellow)}
+
+.code-section{margin-top:48px}
+.code-block{
+  background:#060810;
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:20px;
+  font-family:var(--mono);font-size:13px;line-height:1.7;
+  color:#abb2bf;overflow-x:auto;margin-bottom:16px;white-space:pre;
+}
+.code-cell-label{font-size:11px;font-family:var(--mono);color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;margin-top:20px}
+.kw{color:#c678dd} .fn{color:#61afef} .str{color:#98c379} .cm{color:#5c6370;font-style:italic} .num{color:#d19a66}
+
+.divider{height:1px;background:var(--divider);margin:48px 0}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(0,91,187,0.4);border-radius:3px}
+
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .charts-2col{grid-template-columns:1fr}
+  .findings{grid-template-columns:1fr}
+  .main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-flag"><div class="logo-flag-top"></div><div class="logo-flag-bot"></div></div>
+    War Media Annotation Dashboard
+  </div>
+  <span class="header-meta">n = 25,474 images &nbsp;·&nbsp; 10 channels &nbsp;·&nbsp; 0–10 score scale</span>
+</header>
+
+<main class="main">
+
+  <div style="margin-bottom:24px;margin-top:32px">
+    <div class="section-label">Regression Analysis</div>
+    <div class="section-title">Gamification Score → Implied Violence Score</div>
+    <div class="section-sub">OLS regression on 25,474 annotated war-media images. As gamification rises, so does implied violence — a statistically significant but partial predictor.</div>
+  </div>
+
+  <div class="eq-box">
+    <span>ŷ = <strong>3.674</strong> + <strong>0.370</strong> × gamification_score</span>
+    <span class="eq-sep">|</span><span>R = 0.327</span>
+    <span class="eq-sep">|</span><span>R² = 0.107</span>
+    <span class="eq-sep">|</span><span>p &lt; 0.0001</span>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Pearson R</div><div class="kpi-value c-blue">0.327</div><div class="kpi-sub">Moderate positive correlation</div></div>
+    <div class="kpi"><div class="kpi-label">R² Explained</div><div class="kpi-value c-yellow">10.7%</div><div class="kpi-sub">Gamification predicts ~1/10</div></div>
+    <div class="kpi"><div class="kpi-label">Slope (β₁)</div><div class="kpi-value c-blue2">+0.370</div><div class="kpi-sub">+1 gam pt → +0.37 violence</div></div>
+    <div class="kpi"><div class="kpi-label">p-value</div><div class="kpi-value c-soft">&lt;10⁻²⁰⁰</div><div class="kpi-sub">Extremely significant</div></div>
+  </div>
+
+  <div class="charts-2col">
+    <div class="card">
+      <div class="card-title">Scatter — 3,000 sampled images + regression line</div>
+      <div class="card-sub">Each dot = one image. Yellow line = OLS fit. Jitter applied for legibility.</div>
+      <div class="chart-wrap" style="height:320px"><canvas id="scatterChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Mean Implied Violence by Gamification Level</div>
+      <div class="card-sub">Line with 95% CI ribbon. Big jump at 0→1; second surge at 6–9 (drone content).</div>
+      <div class="chart-wrap" style="height:320px"><canvas id="meanLineChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-2col" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">Distribution — Gamification Score</div>
+      <div class="card-sub">Heavily right-skewed. ~83% of images score 0 or 1. Only drone/HUD content reaches 6–9.</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="gamDist"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribution — Implied Violence Score</div>
+      <div class="card-sub">Bimodal: civilian/political cluster (0–3) and combat/aftermath cluster (6–8).</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="ivDist"></canvas></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="margin-bottom:24px">
+    <div class="section-label">Breakdown by Category</div>
+    <div class="section-title">How Content Type Drives Both Scores</div>
+    <div class="section-sub">Drone strike content uniquely combines high gamification AND high violence. All other high-violence types (casualty, explosion) have near-zero gamification.</div>
+  </div>
+
+  <div class="charts-2col">
+    <div class="card">
+      <div class="card-title">Content Type — Gamification vs Violence (bubble = sample size)</div>
+      <div class="card-sub">Drone strike is the lone outlier top-right. Casualty = high violence, near-zero gamification.</div>
+      <div class="chart-wrap" style="height:380px"><canvas id="ctBubble"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Frame Type — Gamification vs Violence (bubble = sample size)</div>
+      <div class="card-sub">Drone POV sits far right on gamification. Civilian recording: high violence, low gamification.</div>
+      <div class="chart-wrap" style="height:380px"><canvas id="frameBubble"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-wide" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">Correlation Heatmap — All 5 Scores</div>
+      <div class="card-sub">Dehumanization is the strongest predictor of implied violence (r=0.57). Gamification correlates more with dehumanization (r=0.58) than directly with violence (r=0.33).</div>
+      <div class="chart-wrap" style="height:270px"><canvas id="corrChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="margin-bottom:24px">
+    <div class="section-label">Key Findings</div>
+    <div class="section-title">Answering the Research Questions</div>
+  </div>
+
+  <div class="findings">
+    <div class="finding">
+      <div class="finding-icon">📈</div>
+      <div class="finding-q">As gamification goes up, does violence go up?</div>
+      <div class="finding-a"><strong>Yes — moderately.</strong> r = 0.327, p &lt; 10⁻²⁰⁰. Largest jump is 0→1 (+1.64 pts). Second surge at 6–9 driven by drone-strike content.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">🔍</div>
+      <div class="finding-q">How much does gamification explain?</div>
+      <div class="finding-a">Only <strong>10.7% of variance</strong>. Dehumanization (r=0.57) is a far stronger predictor. Gamification acts partly through dehumanization (r = 0.58).</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">🎯</div>
+      <div class="finding-q">What image type scores high on both?</div>
+      <div class="finding-a"><strong>Drone strike content only</strong> — mean gam = 6.88, violence = 6.81. No other type exceeds gam = 2.5 while also scoring high on violence.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">⚠️</div>
+      <div class="finding-q">Is the relationship linear?</div>
+      <div class="finding-a"><strong>No — threshold effect.</strong> Gam 1–5 plateau ~4.7–5.1. Only at gam ≥ 6 does violence climb sharply, suggesting a non-linear dynamic.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">📺</div>
+      <div class="finding-q">Does the channel matter?</div>
+      <div class="finding-a"><strong>Yes.</strong> Wargonzo, rusich_army, ZA_FROHT average gam ≥ 2.0. Hyevuy_dnepr (0.68) stays low on gamification yet still hits moderate violence.</div>
+    </div>
+    <div class="finding">
+      <div class="finding-icon">🧮</div>
+      <div class="finding-q">What does the equation say?</div>
+      <div class="finding-a">ŷ = 3.67 + 0.37x — even at gam=0, baseline violence is 3.67 (war context floor). Each +1 gam point adds 0.37 violence points.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="code-section">
+    <div style="margin-bottom:24px">
+      <div class="section-label">Google Colab Code</div>
+      <div class="section-title">Run This in Your Notebook</div>
+      <div class="section-sub">Paste these cells sequentially. Each is self-contained.</div>
+    </div>
+
+    <div class="code-cell-label">Cell 1 — Upload & Load</div>
+    <div class="code-block"><span class="kw">from</span> google.colab <span class="kw">import</span> files
+<span class="kw">import</span> io, pandas <span class="kw">as</span> pd
+
+uploaded = <span class="fn">files.upload</span>()  <span class="cm"># opens file picker</span>
+df = pd.<span class="fn">read_csv</span>(io.BytesIO(uploaded[<span class="str">'annotations.csv'</span>]))
+<span class="fn">print</span>(df.shape, df.columns.<span class="fn">tolist</span>())</div>
+
+    <div class="code-cell-label">Cell 2 — Scatter + Regression Line</div>
+    <div class="code-block"><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> scipy <span class="kw">import</span> stats
+
+df_c = df[[<span class="str">'gamification_score'</span>, <span class="str">'implied_violence_score'</span>]].<span class="fn">dropna</span>()
+x, y = df_c[<span class="str">'gamification_score'</span>].values, df_c[<span class="str">'implied_violence_score'</span>].values
+slope, intercept, r, p, se = stats.<span class="fn">linregress</span>(x, y)
+
+sample = df_c.<span class="fn">sample</span>(<span class="num">3000</span>, random_state=<span class="num">42</span>)
+xj = sample[<span class="str">'gamification_score'</span>] + np.random.<span class="fn">uniform</span>(-<span class="num">0.3</span>,<span class="num">0.3</span>,<span class="fn">len</span>(sample))
+yj = sample[<span class="str">'implied_violence_score'</span>] + np.random.<span class="fn">uniform</span>(-<span class="num">0.3</span>,<span class="num">0.3</span>,<span class="fn">len</span>(sample))
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="num">10</span>,<span class="num">6</span>), facecolor=<span class="str">'#0a0e1a'</span>)
+ax.<span class="fn">set_facecolor</span>(<span class="str">'#0f1628'</span>)
+ax.<span class="fn">scatter</span>(xj, yj, alpha=<span class="num">0.12</span>, s=<span class="num">12</span>, color=<span class="str">'#005BBB'</span>)
+xl = np.<span class="fn">linspace</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">100</span>)
+ax.<span class="fn">plot</span>(xl, intercept+slope*xl, color=<span class="str">'#FFD500'</span>, lw=<span class="num">2</span>,
+       label=<span class="fn">f</span><span class="str">'ŷ={intercept:.2f} + {slope:.3f}x  R²={r**2:.3f}'</span>)
+ax.<span class="fn">tick_params</span>(colors=<span class="str">'#7a90b8'</span>)
+<span class="kw">for</span> spine <span class="kw">in</span> ax.spines.values(): spine.<span class="fn">set_edgecolor</span>(<span class="str">'#1a2a4a'</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="str">'Gamification Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_ylabel</span>(<span class="str">'Implied Violence Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_title</span>(<span class="str">'Gamification vs Implied Violence'</span>, color=<span class="str">'#e8eef8'</span>)
+ax.<span class="fn">legend</span>(facecolor=<span class="str">'#0f1628'</span>, labelcolor=<span class="str">'#e8eef8'</span>)
+plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</div>
+
+    <div class="code-cell-label">Cell 3 — Mean Line + 95% CI Ribbon</div>
+    <div class="code-block">means = df_c.<span class="fn">groupby</span>(<span class="str">'gamification_score'</span>)[<span class="str">'implied_violence_score'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'std'</span>,<span class="str">'count'</span>])
+ci = <span class="num">1.96</span> * means[<span class="str">'std'</span>] / np.<span class="fn">sqrt</span>(means[<span class="str">'count'</span>])
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="num">10</span>,<span class="num">5</span>), facecolor=<span class="str">'#0a0e1a'</span>)
+ax.<span class="fn">set_facecolor</span>(<span class="str">'#0f1628'</span>)
+ax.<span class="fn">plot</span>(means.index, means[<span class="str">'mean'</span>], <span class="str">'o-'</span>, color=<span class="str">'#005BBB'</span>, lw=<span class="num">2</span>, ms=<span class="num">7</span>)
+ax.<span class="fn">fill_between</span>(means.index, means[<span class="str">'mean'</span>]-ci, means[<span class="str">'mean'</span>]+ci,
+                alpha=<span class="num">0.2</span>, color=<span class="str">'#FFD500'</span>)
+ax.<span class="fn">tick_params</span>(colors=<span class="str">'#7a90b8'</span>)
+<span class="kw">for</span> spine <span class="kw">in</span> ax.spines.values(): spine.<span class="fn">set_edgecolor</span>(<span class="str">'#1a2a4a'</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="str">'Gamification Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_ylabel</span>(<span class="str">'Mean Implied Violence'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_title</span>(<span class="str">'Mean Implied Violence by Gamification Level (95% CI)'</span>, color=<span class="str">'#e8eef8'</span>)
+ax.<span class="fn">set_xticks</span>(<span class="fn">range</span>(<span class="num">11</span>)); plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</div>
+
+    <div class="code-cell-label">Cell 4 — Content Type Bubble Chart</div>
+    <div class="code-block">ct = df.<span class="fn">groupby</span>(<span class="str">'content_type'</span>)[[<span class="str">'gamification_score'</span>,<span class="str">'implied_violence_score'</span>]].<span class="fn">mean</span>()
+ct[<span class="str">'count'</span>] = df.<span class="fn">groupby</span>(<span class="str">'content_type'</span>).<span class="fn">size</span>()
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="num">10</span>,<span class="num">7</span>), facecolor=<span class="str">'#0a0e1a'</span>)
+ax.<span class="fn">set_facecolor</span>(<span class="str">'#0f1628'</span>)
+ax.<span class="fn">scatter</span>(ct[<span class="str">'gamification_score'</span>], ct[<span class="str">'implied_violence_score'</span>],
+           s=ct[<span class="str">'count'</span>]/ct[<span class="str">'count'</span>].<span class="fn">max</span>()*<span class="num">2000</span>,
+           color=<span class="str">'#005BBB'</span>, edgecolors=<span class="str">'#FFD500'</span>, lw=<span class="num">1.2</span>, alpha=<span class="num">0.8</span>)
+<span class="kw">for</span> idx, row <span class="kw">in</span> ct.<span class="fn">iterrows</span>():
+    ax.<span class="fn">annotate</span>(idx,(row[<span class="str">'gamification_score'</span>],row[<span class="str">'implied_violence_score'</span>]),
+                fontsize=<span class="num">9</span>,ha=<span class="str">'center'</span>,va=<span class="str">'bottom'</span>,color=<span class="str">'#e8eef8'</span>)
+ax.<span class="fn">tick_params</span>(colors=<span class="str">'#7a90b8'</span>)
+<span class="kw">for</span> spine <span class="kw">in</span> ax.spines.values(): spine.<span class="fn">set_edgecolor</span>(<span class="str">'#1a2a4a'</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="str">'Mean Gamification Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_ylabel</span>(<span class="str">'Mean Implied Violence Score'</span>, color=<span class="str">'#7a90b8'</span>)
+ax.<span class="fn">set_title</span>(<span class="str">'Content Types — Gamification vs Violence (bubble = count)'</span>, color=<span class="str">'#e8eef8'</span>)
+plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</div>
+
+    <div class="code-cell-label">Cell 5 — Full Correlation Heatmap</div>
+    <div class="code-block"><span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">from</span> matplotlib.colors <span class="kw">import</span> LinearSegmentedColormap
+
+ua_cmap = LinearSegmentedColormap.<span class="fn">from_list</span>(<span class="str">'ua'</span>, [<span class="str">'#FFD500'</span>, <span class="str">'#0f1628'</span>, <span class="str">'#005BBB'</span>])
+score_cols = [<span class="str">'implied_violence_score'</span>,<span class="str">'gamification_score'</span>,
+              <span class="str">'dehumanization_score'</span>,<span class="str">'aestheticization_score'</span>,<span class="str">'narrative_framing_score'</span>]
+corr = df[score_cols].<span class="fn">corr</span>()
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="num">8</span>,<span class="num">6</span>), facecolor=<span class="str">'#0a0e1a'</span>)
+ax.<span class="fn">set_facecolor</span>(<span class="str">'#0f1628'</span>)
+sns.<span class="fn">heatmap</span>(corr, annot=<span class="kw">True</span>, fmt=<span class="str">'.3f'</span>, cmap=ua_cmap,
+            vmin=-<span class="num">1</span>, vmax=<span class="num">1</span>, ax=ax, square=<span class="kw">True</span>, linewidths=<span class="num">0.5</span>)
+ax.<span class="fn">set_title</span>(<span class="str">'Score Correlation Matrix'</span>, color=<span class="str">'#e8eef8'</span>)
+plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</div>
+  </div>
+</main>
+
+<script>
+const scatterRaw  = [[6.0, 0.0], [7.0, 5.0], [0.0, 3.0], [7.0, 8.0], [0.0, 2.0], [2.0, 3.0], [0.0, 1.0], [2.0, 8.0], [0.0, 0.0], [0.0, 0.0], [0.0, 1.0], [8.0, 4.0], [2.0, 4.0], [2.0, 4.0], [6.0, 6.0], [6.0, 5.0], [0.0, 4.0], [2.0, 8.0], [0.0, 2.0], [0.0, 0.0], [1.0, 7.0], [0.0, 2.0], [1.0, 2.0], [1.0, 9.0], [0.0, 0.0], [1.0, 5.0], [0.0, 8.0], [2.0, 8.0], [1.0, 1.0], [0.0, 3.0], [0.0, 1.0], [0.0, 3.0], [8.0, 7.0], [1.0, 7.0], [0.0, 1.0], [0.0, 4.0], [1.0, 8.0], [1.0, 2.0], [0.0, 4.0], [2.0, 4.0], [4.0, 4.0], [1.0, 4.0], [0.0, 0.0], [1.0, 5.0], [0.0, 8.0], [8.0, 5.0], [0.0, 4.0], [1.0, 5.0], [1.0, 5.0], [1.0, 8.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [6.0, 7.0], [0.0, 1.0], [1.0, 6.0], [1.0, 1.0], [1.0, 8.0], [0.0, 2.0], [2.0, 4.0], [1.0, 6.0], [0.0, 0.0], [1.0, 2.0], [4.0, 6.0], [1.0, 6.0], [1.0, 6.0], [0.0, 1.0], [1.0, 3.0], [3.0, 2.0], [1.0, 8.0], [2.0, 8.0], [1.0, 8.0], [1.0, 8.0], [0.0, 3.0], [0.0, 0.0], [1.0, 6.0], [4.0, 8.0], [0.0, 2.0], [1.0, 6.0], [0.0, 6.0], [0.0, 0.0], [1.0, 4.0], [2.0, 8.0], [1.0, 6.0], [6.0, 6.0], [0.0, 2.0], [0.0, 1.0], [8.0, 6.0], [1.0, 6.0], [0.0, 2.0], [0.0, 3.0], [8.0, 7.0], [0.0, 1.0], [4.0, 6.0], [7.0, 8.0], [8.0, 4.0], [1.0, 6.0], [0.0, 8.0], [0.0, 4.0], [0.0, 1.0], [0.0, 4.0], [1.0, 7.0], [7.0, 2.0], [1.0, 2.0], [0.0, 3.0], [2.0, 7.0], [0.0, 0.0], [1.0, 6.0], [1.0, 3.0], [0.0, 8.0], [0.0, 6.0], [2.0, 4.0], [1.0, 3.0], [1.0, 4.0], [1.0, 0.0], [4.0, 6.0], [0.0, 6.0], [2.0, 7.0], [0.0, 3.0], [0.0, 2.0], [0.0, 9.0], [1.0, 0.0], [2.0, 6.0], [0.0, 7.0], [1.0, 3.0], [2.0, 1.0], [2.0, 6.0], [1.0, 2.0], [0.0, 2.0], [0.0, 5.0], [0.0, 1.0], [0.0, 8.0], [0.0, 2.0], [8.0, 4.0], [0.0, 2.0], [1.0, 2.0], [0.0, 0.0], [0.0, 0.0], [1.0, 4.0], [1.0, 4.0], [0.0, 1.0], [0.0, 6.0], [7.0, 6.0], [2.0, 6.0], [1.0, 6.0], [0.0, 1.0], [0.0, 3.0], [0.0, 0.0], [2.0, 6.0], [7.0, 4.0], [0.0, 1.0], [0.0, 0.0], [1.0, 4.0], [1.0, 5.0], [2.0, 6.0], [1.0, 4.0], [1.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 7.0], [0.0, 3.0], [1.0, 4.0], [7.0, 6.0], [0.0, 6.0], [1.0, 3.0], [0.0, 0.0], [1.0, 8.0], [8.0, 4.0], [1.0, 2.0], [1.0, 6.0], [1.0, 8.0], [6.0, 4.0], [1.0, 3.0], [8.0, 6.0], [9.0, 8.0], [4.0, 6.0], [0.0, 8.0], [0.0, 6.0], [0.0, 1.0], [1.0, 2.0], [0.0, 2.0], [1.0, 3.0], [0.0, 4.0], [0.0, 8.0], [0.0, 1.0], [0.0, 1.0], [1.0, 3.0], [1.0, 7.0], [2.0, 5.0], [0.0, 6.0], [0.0, 8.0], [1.0, 5.0], [1.0, 6.0], [0.0, 1.0], [0.0, 2.0], [6.0, 6.0], [2.0, 6.0], [0.0, 9.0], [2.0, 6.0], [1.0, 8.0], [0.0, 3.0], [1.0, 6.0], [0.0, 1.0], [2.0, 0.0], [9.0, 8.0], [0.0, 6.0], [0.0, 0.0], [0.0, 2.0], [1.0, 6.0], [0.0, 7.0], [1.0, 7.0], [0.0, 1.0], [1.0, 7.0], [6.0, 6.0], [0.0, 0.0], [1.0, 8.0], [0.0, 1.0], [0.0, 0.0], [2.0, 8.0], [0.0, 9.0], [0.0, 0.0], [1.0, 8.0], [0.0, 1.0], [1.0, 6.0], [8.0, 6.0], [1.0, 6.0], [1.0, 3.0], [3.0, 6.0], [0.0, 6.0], [1.0, 4.0], [0.0, 1.0], [1.0, 6.0], [0.0, 2.0], [1.0, 8.0], [0.0, 1.0], [1.0, 0.0], [9.0, 8.0], [1.0, 4.0], [0.0, 8.0], [0.0, 3.0], [1.0, 4.0], [0.0, 8.0], [1.0, 5.0], [2.0, 6.0], [1.0, 4.0], [1.0, 6.0], [1.0, 2.0], [4.0, 6.0], [1.0, 2.0], [6.0, 7.0], [8.0, 8.0], [1.0, 4.0], [1.0, 6.0], [2.0, 5.0], [0.0, 4.0], [0.0, 0.0], [3.0, 2.0], [0.0, 6.0], [1.0, 2.0], [0.0, 8.0], [1.0, 2.0], [0.0, 6.0], [0.0, 2.0], [1.0, 6.0], [0.0, 2.0], [1.0, 2.0], [1.0, 9.0], [0.0, 1.0], [0.0, 0.0], [0.0, 6.0], [1.0, 4.0], [1.0, 7.0], [9.0, 8.0], [0.0, 1.0], [0.0, 6.0], [1.0, 7.0], [1.0, 2.0], [8.0, 9.0], [0.0, 2.0], [0.0, 8.0], [6.0, 4.0], [0.0, 4.0], [2.0, 8.0], [2.0, 3.0], [0.0, 1.0], [0.0, 0.0], [0.0, 0.0], [1.0, 4.0], [1.0, 2.0], [1.0, 6.0], [0.0, 1.0], [0.0, 3.0], [0.0, 2.0], [0.0, 3.0], [1.0, 6.0], [2.0, 6.0], [0.0, 2.0], [1.0, 2.0], [2.0, 1.0], [1.0, 2.0], [1.0, 8.0], [3.0, 6.0], [1.0, 8.0], [2.0, 7.0], [0.0, 1.0], [0.0, 1.0], [1.0, 8.0], [1.0, 6.0], [0.0, 4.0], [1.0, 4.0], [1.0, 7.0], [0.0, 1.0], [1.0, 6.0], [1.0, 3.0], [0.0, 2.0], [1.0, 7.0], [7.0, 6.0], [1.0, 6.0], [0.0, 8.0], [1.0, 3.0], [6.0, 4.0], [1.0, 4.0], [2.0, 4.0], [0.0, 0.0], [0.0, 0.0], [1.0, 4.0], [6.0, 6.0], [2.0, 6.0], [1.0, 8.0], [8.0, 7.0], [0.0, 0.0], [2.0, 6.0], [1.0, 4.0], [0.0, 6.0], [1.0, 9.0], [3.0, 5.0], [1.0, 3.0], [0.0, 1.0], [0.0, 8.0], [1.0, 8.0], [2.0, 5.0], [2.0, 4.0], [0.0, 0.0], [0.0, 6.0], [0.0, 1.0], [4.0, 6.0], [0.0, 6.0], [0.0, 0.0], [0.0, 1.0], [1.0, 6.0], [1.0, 6.0], [0.0, 9.0], [2.0, 6.0], [0.0, 0.0], [1.0, 6.0], [1.0, 6.0], [1.0, 2.0], [0.0, 1.0], [4.0, 3.0], [0.0, 0.0], [2.0, 9.0], [6.0, 7.0], [0.0, 4.0], [8.0, 6.0], [1.0, 6.0], [0.0, 6.0], [2.0, 6.0], [3.0, 8.0], [0.0, 2.0], [8.0, 6.0], [1.0, 4.0], [0.0, 8.0], [1.0, 8.0], [0.0, 1.0], [9.0, 8.0], [4.0, 5.0], [1.0, 6.0], [1.0, 3.0], [1.0, 2.0], [1.0, 3.0], [1.0, 8.0], [0.0, 1.0], [0.0, 5.0], [1.0, 3.0], [1.0, 0.0], [0.0, 2.0], [0.0, 0.0], [1.0, 4.0], [0.0, 3.0], [0.0, 0.0], [1.0, 2.0], [6.0, 3.0], [4.0, 3.0], [0.0, 6.0], [1.0, 7.0], [0.0, 6.0], [1.0, 4.0], [1.0, 9.0], [1.0, 7.0], [0.0, 0.0], [4.0, 9.0], [0.0, 7.0], [1.0, 2.0], [1.0, 1.0], [0.0, 4.0], [0.0, 1.0], [0.0, 0.0], [8.0, 6.0], [1.0, 6.0], [4.0, 8.0], [6.0, 2.0], [4.0, 0.0], [0.0, 3.0], [1.0, 4.0], [1.0, 6.0], [0.0, 6.0], [1.0, 7.0], [0.0, 4.0], [0.0, 2.0], [3.0, 6.0], [0.0, 0.0], [0.0, 0.0], [1.0, 4.0], [0.0, 1.0], [1.0, 7.0], [1.0, 6.0], [0.0, 4.0], [0.0, 2.0], [0.0, 0.0], [1.0, 6.0], [1.0, 8.0], [1.0, 3.0], [8.0, 6.0], [0.0, 2.0], [1.0, 8.0], [0.0, 1.0], [2.0, 3.0], [0.0, 0.0], [0.0, 0.0], [0.0, 4.0], [1.0, 0.0], [1.0, 9.0], [4.0, 6.0], [3.0, 5.0], [2.0, 6.0], [1.0, 6.0], [2.0, 6.0], [0.0, 3.0], [0.0, 2.0], [0.0, 0.0], [0.0, 6.0], [1.0, 4.0], [2.0, 6.0], [2.0, 8.0], [0.0, 2.0], [1.0, 6.0], [0.0, 3.0], [0.0, 2.0], [0.0, 2.0], [0.0, 5.0], [3.0, 2.0], [1.0, 3.0], [0.0, 1.0], [0.0, 3.0], [3.0, 1.0], [0.0, 7.0], [1.0, 8.0], [0.0, 3.0], [1.0, 8.0], [1.0, 4.0], [0.0, 3.0], [1.0, 7.0], [2.0, 7.0], [0.0, 2.0], [1.0, 8.0], [0.0, 4.0], [1.0, 8.0], [0.0, 1.0], [0.0, 1.0], [4.0, 8.0], [0.0, 8.0], [0.0, 2.0], [0.0, 0.0], [0.0, 1.0], [1.0, 2.0], [1.0, 2.0], [0.0, 2.0], [1.0, 3.0], [0.0, 0.0], [0.0, 0.0], [2.0, 6.0], [0.0, 3.0], [0.0, 3.0], [1.0, 4.0], [8.0, 9.0], [0.0, 4.0], [1.0, 4.0], [0.0, 2.0], [2.0, 5.0], [2.0, 6.0], [3.0, 7.0], [0.0, 8.0], [0.0, 1.0], [0.0, 6.0], [1.0, 2.0], [9.0, 8.0], [6.0, 6.0], [3.0, 6.0], [9.0, 8.0], [0.0, 4.0], [1.0, 4.0], [0.0, 1.0], [1.0, 4.0], [1.0, 5.0], [0.0, 4.0], [1.0, 4.0], [3.0, 6.0], [2.0, 1.0], [4.0, 9.0], [1.0, 2.0], [1.0, 8.0], [1.0, 7.0], [9.0, 6.0], [0.0, 4.0], [0.0, 0.0], [0.0, 8.0], [0.0, 9.0], [1.0, 6.0], [0.0, 8.0], [1.0, 8.0], [0.0, 1.0], [1.0, 8.0], [6.0, 5.0], [1.0, 6.0], [1.0, 3.0], [2.0, 1.0], [0.0, 1.0], [0.0, 2.0], [0.0, 0.0], [0.0, 2.0], [0.0, 3.0], [1.0, 4.0], [0.0, 1.0], [0.0, 3.0], [1.0, 6.0], [0.0, 3.0], [0.0, 1.0], [0.0, 2.0], [2.0, 4.0], [0.0, 3.0], [8.0, 4.0], [0.0, 3.0], [1.0, 2.0], [0.0, 8.0], [0.0, 0.0], [6.0, 3.0], [2.0, 4.0], [1.0, 2.0], [2.0, 1.0], [0.0, 6.0], [1.0, 6.0], [1.0, 3.0], [1.0, 5.0], [3.0, 4.0], [1.0, 3.0], [1.0, 4.0], [0.0, 1.0], [0.0, 3.0], [2.0, 6.0], [1.0, 9.0], [0.0, 8.0], [0.0, 1.0], [0.0, 1.0], [7.0, 6.0], [1.0, 6.0], [0.0, 0.0], [0.0, 0.0], [0.0, 7.0], [0.0, 8.0], [1.0, 4.0], [5.0, 8.0], [0.0, 1.0], [0.0, 0.0], [0.0, 2.0], [1.0, 6.0], [0.0, 0.0], [1.0, 3.0], [1.0, 3.0], [1.0, 8.0], [0.0, 2.0], [1.0, 6.0], [2.0, 6.0], [7.0, 6.0], [1.0, 4.0], [0.0, 3.0], [1.0, 5.0], [0.0, 6.0], [1.0, 8.0], [2.0, 3.0], [2.0, 6.0], [0.0, 8.0], [0.0, 1.0], [0.0, 4.0], [1.0, 2.0], [2.0, 3.0], [0.0, 1.0], [0.0, 1.0], [0.0, 2.0], [1.0, 1.0], [0.0, 1.0], [0.0, 2.0], [8.0, 6.0], [9.0, 8.0], [0.0, 0.0], [8.0, 6.0], [1.0, 6.0], [2.0, 4.0], [0.0, 0.0], [1.0, 7.0], [0.0, 1.0], [1.0, 2.0], [0.0, 9.0], [1.0, 6.0], [0.0, 6.0], [0.0, 2.0], [0.0, 6.0], [1.0, 4.0], [0.0, 1.0], [0.0, 1.0], [0.0, 2.0], [0.0, 3.0], [0.0, 6.0], [2.0, 4.0], [0.0, 1.0], [0.0, 3.0], [1.0, 3.0], [0.0, 2.0], [7.0, 2.0], [0.0, 2.0], [0.0, 4.0], [2.0, 6.0], [0.0, 6.0], [0.0, 8.0], [1.0, 6.0], [0.0, 2.0], [0.0, 4.0], [1.0, 3.0], [0.0, 8.0], [9.0, 5.0], [1.0, 3.0], [0.0, 0.0], [0.0, 3.0], [0.0, 7.0], [0.0, 1.0], [1.0, 3.0], [0.0, 2.0], [9.0, 7.0], [9.0, 8.0], [2.0, 8.0], [0.0, 8.0], [9.0, 7.0], [0.0, 1.0], [1.0, 4.0], [1.0, 2.0], [1.0, 5.0], [2.0, 6.0], [0.0, 4.0], [0.0, 8.0], [0.0, 6.0], [0.0, 0.0], [7.0, 8.0], [1.0, 6.0], [1.0, 7.0], [0.0, 6.0], [2.0, 6.0], [2.0, 3.0], [1.0, 7.0], [0.0, 1.0], [1.0, 6.0], [1.0, 6.0], [2.0, 3.0], [6.0, 6.0], [0.0, 1.0], [0.0, 0.0], [7.0, 6.0], [0.0, 8.0], [0.0, 3.0], [1.0, 2.0], [1.0, 4.0], [1.0, 4.0], [0.0, 4.0], [1.0, 5.0], [0.0, 7.0], [0.0, 5.0], [1.0, 2.0], [1.0, 0.0], [0.0, 1.0], [1.0, 4.0], [1.0, 3.0], [1.0, 8.0], [1.0, 0.0], [0.0, 6.0], [0.0, 0.0], [0.0, 0.0], [0.0, 2.0], [0.0, 4.0], [0.0, 3.0], [1.0, 7.0], [1.0, 4.0], [3.0, 4.0], [1.0, 6.0], [1.0, 2.0], [2.0, 8.0], [3.0, 6.0], [0.0, 2.0], [6.0, 4.0], [0.0, 7.0], [1.0, 7.0], [1.0, 9.0], [1.0, 3.0], [0.0, 6.0], [1.0, 5.0], [0.0, 3.0], [1.0, 8.0], [1.0, 8.0], [8.0, 7.0], [0.0, 7.0], [1.0, 6.0], [2.0, 3.0], [1.0, 4.0], [0.0, 7.0], [0.0, 0.0], [0.0, 2.0], [0.0, 4.0], [0.0, 1.0], [2.0, 7.0], [0.0, 0.0], [0.0, 3.0], [1.0, 4.0], [2.0, 4.0], [6.0, 7.0], [0.0, 3.0], [0.0, 0.0], [0.0, 6.0], [0.0, 1.0], [1.0, 0.0], [0.0, 2.0], [8.0, 9.0], [1.0, 6.0], [0.0, 4.0], [1.0, 3.0], [1.0, 8.0], [0.0, 7.0], [0.0, 0.0], [0.0, 2.0], [2.0, 3.0], [0.0, 0.0], [1.0, 1.0], [0.0, 0.0], [0.0, 6.0], [1.0, 0.0], [1.0, 3.0], [1.0, 8.0], [1.0, 7.0], [1.0, 8.0], [0.0, 1.0], [2.0, 2.0], [0.0, 0.0], [7.0, 4.0], [8.0, 6.0], [1.0, 4.0], [4.0, 7.0], [1.0, 7.0], [0.0, 6.0], [1.0, 4.0], [4.0, 8.0], [0.0, 1.0], [0.0, 3.0], [1.0, 6.0], [1.0, 4.0], [2.0, 4.0], [0.0, 4.0], [0.0, 3.0], [1.0, 2.0], [2.0, 1.0], [0.0, 8.0], [1.0, 2.0], [0.0, 6.0], [0.0, 6.0], [1.0, 2.0], [1.0, 8.0], [1.0, 7.0], [0.0, 0.0], [4.0, 1.0], [9.0, 8.0], [0.0, 0.0], [1.0, 4.0], [0.0, 6.0], [1.0, 5.0], [2.0, 6.0], [0.0, 1.0], [0.0, 3.0], [0.0, 6.0], [2.0, 4.0], [0.0, 2.0], [2.0, 6.0], [1.0, 3.0], [9.0, 8.0], [0.0, 1.0], [0.0, 6.0], [8.0, 8.0], [0.0, 8.0], [0.0, 6.0], [9.0, 7.0], [4.0, 5.0], [9.0, 8.0], [2.0, 6.0], [0.0, 2.0], [2.0, 4.0], [1.0, 4.0], [1.0, 5.0], [0.0, 8.0], [1.0, 8.0], [7.0, 4.0], [0.0, 7.0], [0.0, 6.0], [5.0, 4.0], [0.0, 2.0], [1.0, 6.0], [0.0, 2.0], [0.0, 8.0], [0.0, 2.0], [0.0, 1.0], [7.0, 7.0], [1.0, 3.0], [1.0, 2.0], [0.0, 3.0], [0.0, 3.0], [1.0, 6.0], [8.0, 9.0], [1.0, 6.0], [0.0, 8.0], [0.0, 1.0], [1.0, 6.0], [1.0, 8.0], [2.0, 4.0], [1.0, 6.0], [1.0, 4.0], [0.0, 1.0], [0.0, 0.0], [1.0, 6.0], [1.0, 2.0], [2.0, 1.0], [0.0, 5.0], [9.0, 7.0], [0.0, 4.0], [0.0, 1.0], [1.0, 8.0], [1.0, 2.0], [1.0, 9.0], [0.0, 4.0], [2.0, 5.0], [1.0, 4.0], [7.0, 8.0], [8.0, 7.0], [0.0, 7.0], [1.0, 3.0], [0.0, 0.0], [1.0, 8.0], [0.0, 8.0], [0.0, 2.0], [1.0, 3.0], [2.0, 5.0], [0.0, 0.0], [3.0, 7.0], [0.0, 1.0], [7.0, 4.0], [0.0, 8.0], [0.0, 7.0], [9.0, 8.0], [7.0, 6.0], [0.0, 4.0], [0.0, 2.0], [8.0, 7.0], [0.0, 0.0], [3.0, 4.0], [0.0, 4.0], [0.0, 6.0], [0.0, 6.0], [0.0, 8.0], [0.0, 2.0], [1.0, 4.0], [0.0, 0.0], [0.0, 2.0], [0.0, 2.0], [0.0, 4.0], [2.0, 6.0], [1.0, 7.0], [2.0, 2.0], [0.0, 4.0], [0.0, 2.0], [4.0, 3.0], [0.0, 4.0], [1.0, 4.0], [2.0, 5.0], [0.0, 0.0], [3.0, 1.0], [0.0, 7.0], [8.0, 6.0], [4.0, 8.0], [0.0, 0.0], [0.0, 1.0], [2.0, 6.0], [0.0, 2.0], [7.0, 6.0], [9.0, 8.0], [0.0, 1.0], [0.0, 2.0], [5.0, 1.0], [4.0, 3.0], [0.0, 3.0], [1.0, 0.0], [0.0, 1.0], [0.0, 6.0], [1.0, 6.0], [4.0, 6.0], [0.0, 6.0], [0.0, 5.0], [1.0, 6.0], [0.0, 1.0], [9.0, 8.0], [7.0, 6.0], [1.0, 6.0], [1.0, 3.0], [8.0, 7.0], [7.0, 8.0], [1.0, 4.0], [0.0, 1.0], [2.0, 8.0], [0.0, 0.0], [0.0, 1.0], [0.0, 3.0], [0.0, 0.0], [2.0, 5.0], [6.0, 5.0], [0.0, 1.0], [0.0, 1.0], [0.0, 4.0], [1.0, 4.0], [1.0, 8.0], [7.0, 6.0], [1.0, 3.0], [0.0, 2.0], [9.0, 6.0], [1.0, 1.0], [1.0, 8.0], [1.0, 4.0], [1.0, 4.0], [0.0, 8.0], [0.0, 8.0], [1.0, 4.0], [0.0, 6.0], [1.0, 6.0], [5.0, 8.0], [0.0, 0.0], [1.0, 3.0], [0.0, 1.0], [0.0, 1.0], [0.0, 5.0], [1.0, 0.0], [1.0, 2.0], [4.0, 6.0], [0.0, 2.0], [8.0, 6.0], [4.0, 8.0], [1.0, 6.0], [0.0, 2.0], [0.0, 6.0], [0.0, 0.0], [8.0, 8.0], [0.0, 1.0], [0.0, 5.0], [3.0, 7.0], [1.0, 8.0], [3.0, 8.0], [0.0, 0.0], [0.0, 1.0], [0.0, 1.0], [1.0, 4.0], [0.0, 7.0], [1.0, 7.0], [1.0, 0.0], [0.0, 3.0], [0.0, 9.0], [1.0, 7.0], [1.0, 3.0], [1.0, 4.0], [0.0, 6.0], [0.0, 1.0], [2.0, 6.0], [2.0, 0.0], [1.0, 3.0], [1.0, 3.0], [1.0, 7.0], [0.0, 1.0], [6.0, 4.0], [0.0, 5.0], [0.0, 1.0], [2.0, 6.0], [7.0, 6.0], [0.0, 4.0], [1.0, 6.0], [6.0, 6.0], [1.0, 8.0], [0.0, 6.0], [0.0, 1.0], [0.0, 6.0], [0.0, 6.0], [1.0, 8.0], [0.0, 1.0], [0.0, 8.0], [0.0, 8.0], [1.0, 4.0], [0.0, 6.0], [0.0, 3.0], [4.0, 8.0], [0.0, 6.0], [3.0, 4.0], [1.0, 6.0], [0.0, 1.0], [0.0, 4.0], [7.0, 8.0], [0.0, 0.0], [0.0, 2.0], [1.0, 6.0], [1.0, 8.0], [1.0, 8.0], [1.0, 8.0], [0.0, 0.0], [0.0, 1.0], [1.0, 4.0], [0.0, 3.0], [0.0, 4.0], [6.0, 3.0], [7.0, 4.0], [1.0, 8.0], [0.0, 6.0], [4.0, 1.0], [2.0, 3.0], [1.0, 3.0], [7.0, 6.0], [1.0, 6.0], [0.0, 4.0], [1.0, 5.0], [2.0, 7.0], [1.0, 8.0], [0.0, 2.0], [1.0, 6.0], [1.0, 4.0], [1.0, 3.0], [1.0, 4.0], [2.0, 4.0], [1.0, 6.0], [1.0, 8.0], [0.0, 2.0], [1.0, 4.0], [1.0, 6.0], [1.0, 4.0], [8.0, 6.0], [0.0, 1.0], [1.0, 3.0], [1.0, 3.0], [1.0, 1.0], [0.0, 7.0], [0.0, 4.0], [0.0, 9.0], [0.0, 2.0], [1.0, 5.0], [0.0, 2.0], [1.0, 8.0], [0.0, 4.0], [1.0, 3.0], [0.0, 4.0], [0.0, 2.0], [0.0, 1.0], [1.0, 4.0], [4.0, 6.0], [3.0, 8.0], [0.0, 2.0], [0.0, 8.0], [1.0, 8.0], [0.0, 7.0], [5.0, 6.0], [2.0, 4.0], [3.0, 6.0], [1.0, 3.0], [1.0, 8.0], [1.0, 4.0], [0.0, 8.0], [0.0, 3.0], [0.0, 0.0], [0.0, 1.0], [0.0, 8.0], [1.0, 9.0], [1.0, 4.0], [1.0, 8.0], [0.0, 6.0], [1.0, 8.0], [1.0, 2.0], [8.0, 7.0], [1.0, 8.0], [1.0, 3.0], [1.0, 2.0], [0.0, 8.0], [1.0, 6.0], [1.0, 4.0], [8.0, 6.0], [1.0, 6.0], [0.0, 7.0], [0.0, 1.0], [0.0, 8.0], [7.0, 6.0], [0.0, 6.0], [3.0, 2.0], [0.0, 6.0], [0.0, 0.0], [0.0, 6.0], [0.0, 1.0], [1.0, 5.0], [0.0, 1.0], [6.0, 3.0], [8.0, 4.0], [0.0, 0.0], [4.0, 3.0], [1.0, 2.0], [0.0, 6.0], [0.0, 1.0], [0.0, 6.0], [1.0, 7.0], [0.0, 6.0], [0.0, 6.0], [1.0, 6.0], [1.0, 3.0], [2.0, 8.0], [1.0, 4.0], [0.0, 3.0], [2.0, 4.0], [0.0, 4.0], [6.0, 4.0], [0.0, 6.0], [0.0, 1.0], [0.0, 9.0], [0.0, 1.0], [0.0, 0.0], [1.0, 7.0], [2.0, 6.0], [1.0, 2.0], [0.0, 1.0], [0.0, 2.0], [0.0, 0.0], [0.0, 1.0], [8.0, 7.0], [0.0, 0.0], [0.0, 4.0], [0.0, 6.0], [1.0, 2.0], [0.0, 2.0], [1.0, 2.0], [0.0, 4.0], [0.0, 8.0], [0.0, 2.0], [3.0, 2.0], [0.0, 1.0], [0.0, 5.0], [0.0, 6.0], [1.0, 6.0], [1.0, 6.0], [0.0, 5.0], [0.0, 4.0], [0.0, 0.0], [1.0, 7.0], [0.0, 4.0], [9.0, 8.0], [0.0, 1.0], [4.0, 5.0], [0.0, 0.0], [8.0, 7.0], [0.0, 5.0], [1.0, 7.0], [0.0, 0.0], [2.0, 7.0], [0.0, 0.0], [0.0, 3.0], [4.0, 3.0], [0.0, 7.0], [0.0, 3.0], [1.0, 6.0], [0.0, 0.0], [0.0, 4.0], [3.0, 4.0], [0.0, 1.0], [0.0, 7.0], [1.0, 4.0], [4.0, 6.0], [1.0, 2.0], [0.0, 1.0], [1.0, 5.0], [8.0, 3.0], [0.0, 8.0], [0.0, 8.0], [1.0, 4.0], [0.0, 2.0], [0.0, 6.0], [1.0, 4.0], [1.0, 4.0], [0.0, 0.0], [1.0, 3.0], [6.0, 2.0], [0.0, 0.0], [0.0, 7.0], [1.0, 4.0], [5.0, 3.0], [1.0, 3.0], [1.0, 2.0], [1.0, 3.0], [3.0, 4.0], [0.0, 8.0], [1.0, 2.0], [2.0, 6.0], [1.0, 5.0], [0.0, 1.0], [0.0, 7.0], [1.0, 4.0], [0.0, 2.0], [0.0, 4.0], [0.0, 3.0], [1.0, 7.0], [1.0, 6.0], [8.0, 6.0], [0.0, 3.0], [0.0, 2.0], [1.0, 4.0], [1.0, 6.0], [0.0, 2.0], [0.0, 2.0], [9.0, 9.0], [0.0, 6.0], [0.0, 1.0], [0.0, 1.0], [1.0, 5.0], [0.0, 4.0], [5.0, 6.0], [2.0, 6.0], [2.0, 6.0], [1.0, 3.0], [0.0, 0.0], [0.0, 4.0], [1.0, 6.0], [1.0, 4.0], [1.0, 6.0], [2.0, 3.0], [0.0, 4.0], [1.0, 7.0], [1.0, 3.0], [0.0, 1.0], [10.0, 8.0], [0.0, 6.0], [0.0, 0.0], [1.0, 5.0], [1.0, 8.0], [1.0, 8.0], [5.0, 2.0], [0.0, 0.0], [1.0, 4.0], [6.0, 7.0], [0.0, 8.0], [1.0, 1.0], [1.0, 3.0], [0.0, 6.0], [0.0, 7.0], [0.0, 7.0], [0.0, 2.0], [0.0, 2.0], [1.0, 7.0], [0.0, 3.0], [0.0, 2.0], [2.0, 4.0], [1.0, 6.0], [0.0, 1.0], [1.0, 4.0], [2.0, 5.0], [8.0, 7.0], [1.0, 8.0], [0.0, 0.0], [1.0, 8.0], [0.0, 6.0], [1.0, 4.0], [8.0, 6.0], [1.0, 1.0], [4.0, 2.0], [7.0, 8.0], [0.0, 1.0], [0.0, 2.0], [0.0, 4.0], [1.0, 8.0], [0.0, 0.0], [0.0, 2.0], [1.0, 5.0], [1.0, 9.0], [0.0, 1.0], [0.0, 6.0], [0.0, 2.0], [1.0, 2.0], [7.0, 6.0], [1.0, 6.0], [0.0, 0.0], [4.0, 3.0], [0.0, 2.0], [1.0, 8.0], [0.0, 1.0], [1.0, 7.0], [1.0, 4.0], [0.0, 2.0], [0.0, 3.0], [2.0, 1.0], [1.0, 4.0], [0.0, 7.0], [1.0, 4.0], [1.0, 3.0], [1.0, 6.0], [0.0, 8.0], [1.0, 6.0], [6.0, 3.0], [0.0, 6.0], [0.0, 4.0], [0.0, 2.0], [0.0, 3.0], [0.0, 3.0], [0.0, 2.0], [0.0, 6.0], [0.0, 0.0], [1.0, 6.0], [0.0, 0.0], [0.0, 0.0], [0.0, 3.0], [2.0, 3.0], [0.0, 2.0], [4.0, 5.0], [6.0, 5.0], [1.0, 4.0], [2.0, 7.0], [2.0, 4.0], [1.0, 4.0], [1.0, 6.0], [1.0, 8.0], [0.0, 6.0], [1.0, 0.0], [2.0, 6.0], [0.0, 8.0], [4.0, 6.0], [0.0, 7.0], [0.0, 2.0], [0.0, 4.0], [8.0, 7.0], [0.0, 0.0], [1.0, 8.0], [0.0, 6.0], [9.0, 8.0], [0.0, 2.0], [7.0, 6.0], [0.0, 3.0], [7.0, 6.0], [1.0, 1.0], [0.0, 2.0], [0.0, 6.0], [0.0, 0.0], [1.0, 5.0], [0.0, 8.0], [2.0, 1.0], [8.0, 7.0], [0.0, 1.0], [0.0, 7.0], [1.0, 6.0], [0.0, 8.0], [0.0, 2.0], [9.0, 1.0], [1.0, 6.0], [0.0, 2.0], [1.0, 0.0], [6.0, 5.0], [6.0, 2.0], [2.0, 3.0], [2.0, 4.0], [1.0, 4.0], [1.0, 5.0], [0.0, 1.0], [0.0, 0.0], [0.0, 4.0], [0.0, 6.0], [0.0, 8.0], [4.0, 6.0], [1.0, 4.0], [0.0, 1.0], [7.0, 9.0], [1.0, 8.0], [1.0, 6.0], [0.0, 0.0], [0.0, 3.0], [0.0, 9.0], [3.0, 5.0], [1.0, 4.0], [2.0, 3.0], [0.0, 1.0], [1.0, 7.0], [0.0, 1.0], [2.0, 7.0], [0.0, 2.0], [7.0, 8.0], [1.0, 5.0], [1.0, 8.0], [0.0, 6.0], [1.0, 6.0], [0.0, 1.0], [1.0, 3.0], [1.0, 6.0], [8.0, 6.0], [1.0, 8.0], [1.0, 8.0], [1.0, 4.0], [0.0, 1.0], [0.0, 0.0], [0.0, 6.0], [0.0, 0.0], [0.0, 5.0], [0.0, 3.0], [8.0, 7.0], [1.0, 8.0], [0.0, 8.0], [1.0, 6.0], [1.0, 5.0], [1.0, 8.0], [1.0, 4.0], [8.0, 9.0], [0.0, 0.0], [0.0, 1.0], [1.0, 8.0], [1.0, 4.0], [0.0, 8.0], [1.0, 8.0], [4.0, 6.0], [3.0, 8.0], [1.0, 8.0], [0.0, 9.0], [0.0, 6.0], [0.0, 2.0], [1.0, 8.0], [1.0, 4.0], [1.0, 6.0], [0.0, 1.0], [0.0, 4.0], [0.0, 1.0], [1.0, 3.0], [0.0, 7.0], [1.0, 3.0], [1.0, 2.0], [0.0, 2.0], [0.0, 8.0], [3.0, 2.0], [0.0, 8.0], [2.0, 4.0], [5.0, 6.0], [1.0, 1.0], [3.0, 7.0], [9.0, 7.0], [1.0, 6.0], [1.0, 2.0], [0.0, 0.0], [1.0, 4.0], [1.0, 8.0], [1.0, 2.0], [0.0, 8.0], [1.0, 6.0], [0.0, 4.0], [2.0, 7.0], [1.0, 3.0], [6.0, 3.0], [0.0, 8.0], [0.0, 1.0], [2.0, 6.0], [5.0, 4.0], [0.0, 1.0], [1.0, 5.0], [1.0, 6.0], [0.0, 6.0], [0.0, 8.0], [3.0, 2.0], [1.0, 6.0], [1.0, 2.0], [1.0, 3.0], [8.0, 7.0], [2.0, 6.0], [0.0, 1.0], [9.0, 7.0], [1.0, 0.0], [0.0, 2.0], [4.0, 3.0], [6.0, 4.0], [1.0, 1.0], [0.0, 2.0], [0.0, 4.0], [2.0, 1.0], [1.0, 7.0], [2.0, 4.0], [6.0, 4.0], [6.0, 7.0], [0.0, 1.0], [0.0, 2.0], [1.0, 7.0], [0.0, 0.0], [0.0, 8.0], [7.0, 8.0], [8.0, 7.0], [0.0, 7.0], [1.0, 0.0], [1.0, 9.0], [0.0, 3.0], [0.0, 0.0], [1.0, 3.0], [0.0, 3.0], [3.0, 8.0], [0.0, 2.0], [8.0, 6.0], [1.0, 6.0], [1.0, 8.0], [1.0, 6.0], [0.0, 2.0], [0.0, 3.0], [0.0, 0.0], [1.0, 4.0], [9.0, 8.0], [7.0, 4.0], [2.0, 8.0], [0.0, 6.0], [4.0, 6.0], [0.0, 6.0], [0.0, 1.0], [0.0, 8.0], [0.0, 1.0], [0.0, 9.0], [0.0, 6.0], [0.0, 0.0], [0.0, 2.0], [1.0, 6.0], [1.0, 7.0], [1.0, 3.0], [1.0, 6.0], [0.0, 3.0], [1.0, 4.0], [2.0, 6.0], [8.0, 8.0], [0.0, 6.0], [3.0, 8.0], [7.0, 6.0], [1.0, 7.0], [0.0, 2.0], [7.0, 6.0], [2.0, 6.0], [9.0, 8.0], [1.0, 8.0], [0.0, 3.0], [1.0, 3.0], [0.0, 0.0], [0.0, 0.0], [1.0, 6.0], [1.0, 4.0], [1.0, 4.0], [2.0, 6.0], [0.0, 3.0], [2.0, 3.0], [0.0, 8.0], [0.0, 0.0], [0.0, 6.0], [1.0, 6.0], [2.0, 9.0], [0.0, 2.0], [0.0, 1.0], [0.0, 1.0], [0.0, 2.0], [8.0, 7.0], [0.0, 2.0], [0.0, 7.0], [2.0, 4.0], [0.0, 8.0], [2.0, 3.0], [2.0, 7.0], [0.0, 0.0], [0.0, 1.0], [1.0, 2.0], [0.0, 4.0], [0.0, 3.0], [0.0, 4.0], [1.0, 8.0], [0.0, 4.0], [1.0, 2.0], [0.0, 4.0], [4.0, 3.0], [0.0, 6.0], [3.0, 6.0], [1.0, 8.0], [1.0, 7.0], [6.0, 7.0], [0.0, 2.0], [0.0, 3.0], [1.0, 6.0], [1.0, 1.0], [3.0, 5.0], [8.0, 8.0], [7.0, 4.0], [1.0, 2.0], [4.0, 8.0], [1.0, 6.0], [0.0, 0.0], [1.0, 4.0], [1.0, 2.0], [1.0, 6.0], [0.0, 6.0], [8.0, 9.0], [9.0, 8.0], [1.0, 6.0], [1.0, 6.0], [0.0, 0.0], [0.0, 1.0], [2.0, 6.0], [2.0, 4.0], [1.0, 2.0], [4.0, 6.0], [2.0, 5.0], [0.0, 0.0], [1.0, 5.0], [7.0, 6.0], [0.0, 1.0], [2.0, 6.0], [1.0, 3.0], [1.0, 2.0], [2.0, 7.0], [0.0, 0.0], [8.0, 8.0], [8.0, 6.0], [1.0, 6.0], [1.0, 3.0], [7.0, 4.0], [1.0, 3.0], [4.0, 6.0], [1.0, 6.0], [1.0, 4.0], [0.0, 3.0], [0.0, 1.0], [2.0, 4.0], [1.0, 4.0], [1.0, 4.0], [0.0, 5.0], [7.0, 3.0], [1.0, 3.0], [0.0, 6.0], [2.0, 6.0], [2.0, 3.0], [2.0, 6.0], [1.0, 4.0], [0.0, 6.0], [0.0, 3.0], [0.0, 0.0], [1.0, 0.0], [2.0, 6.0], [0.0, 0.0], [1.0, 3.0], [1.0, 2.0], [0.0, 9.0], [1.0, 3.0], [0.0, 8.0], [8.0, 7.0], [4.0, 6.0], [2.0, 7.0], [1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [0.0, 0.0], [0.0, 7.0], [1.0, 3.0], [1.0, 4.0], [1.0, 7.0], [1.0, 3.0], [1.0, 6.0], [1.0, 3.0], [0.0, 4.0], [0.0, 3.0], [1.0, 2.0], [1.0, 3.0], [1.0, 6.0], [7.0, 6.0], [0.0, 2.0], [2.0, 6.0], [6.0, 4.0], [2.0, 6.0], [0.0, 0.0], [4.0, 3.0], [1.0, 7.0], [1.0, 5.0], [3.0, 2.0], [0.0, 1.0], [1.0, 6.0], [1.0, 3.0], [6.0, 8.0], [8.0, 6.0], [0.0, 7.0], [1.0, 4.0], [0.0, 3.0], [1.0, 6.0], [1.0, 6.0], [1.0, 2.0], [3.0, 6.0], [1.0, 2.0], [0.0, 1.0], [0.0, 1.0], [1.0, 0.0], [1.0, 4.0], [0.0, 1.0], [0.0, 9.0], [2.0, 6.0], [8.0, 3.0], [1.0, 8.0], [2.0, 7.0], [1.0, 4.0], [3.0, 4.0], [1.0, 4.0], [0.0, 2.0], [1.0, 4.0], [0.0, 6.0], [0.0, 2.0], [1.0, 7.0], [0.0, 4.0], [1.0, 6.0], [2.0, 4.0], [0.0, 9.0], [1.0, 8.0], [0.0, 1.0], [1.0, 4.0], [4.0, 4.0], [1.0, 6.0], [2.0, 6.0], [8.0, 4.0], [0.0, 6.0], [0.0, 6.0], [1.0, 5.0], [0.0, 2.0], [2.0, 5.0], [0.0, 4.0], [0.0, 3.0], [0.0, 6.0], [1.0, 7.0], [7.0, 5.0], [1.0, 2.0], [0.0, 8.0], [2.0, 5.0], [1.0, 6.0], [0.0, 3.0], [1.0, 3.0], [0.0, 2.0], [2.0, 7.0], [1.0, 7.0], [0.0, 2.0], [0.0, 3.0], [4.0, 2.0], [1.0, 0.0], [1.0, 3.0], [1.0, 8.0], [0.0, 0.0], [1.0, 6.0], [0.0, 1.0], [1.0, 5.0], [8.0, 7.0], [1.0, 4.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [1.0, 3.0], [0.0, 0.0], [1.0, 5.0], [1.0, 5.0], [0.0, 1.0], [0.0, 6.0], [0.0, 5.0], [0.0, 2.0], [1.0, 6.0], [4.0, 2.0], [1.0, 4.0], [0.0, 0.0], [1.0, 7.0], [1.0, 3.0], [1.0, 6.0], [0.0, 6.0], [0.0, 8.0], [1.0, 2.0], [1.0, 8.0], [1.0, 3.0], [1.0, 3.0], [0.0, 6.0], [0.0, 7.0], [0.0, 1.0], [2.0, 4.0], [0.0, 0.0], [1.0, 6.0], [6.0, 9.0], [10.0, 6.0], [1.0, 7.0], [0.0, 6.0], [2.0, 1.0], [0.0, 5.0], [1.0, 4.0], [1.0, 3.0], [0.0, 1.0], [0.0, 2.0], [0.0, 1.0], [2.0, 9.0], [4.0, 5.0], [0.0, 4.0], [0.0, 1.0], [1.0, 4.0], [0.0, 8.0], [1.0, 8.0], [0.0, 0.0], [3.0, 6.0], [0.0, 5.0], [0.0, 8.0], [8.0, 4.0], [0.0, 0.0], [6.0, 5.0], [2.0, 5.0], [0.0, 0.0], [8.0, 8.0], [0.0, 2.0], [1.0, 8.0], [1.0, 2.0], [1.0, 8.0], [0.0, 2.0], [0.0, 0.0], [8.0, 6.0], [0.0, 0.0], [1.0, 6.0], [0.0, 2.0], [2.0, 4.0], [1.0, 5.0], [8.0, 6.0], [2.0, 3.0], [1.0, 6.0], [2.0, 6.0], [0.0, 2.0], [1.0, 5.0], [1.0, 6.0], [0.0, 6.0], [8.0, 5.0], [0.0, 2.0], [9.0, 7.0], [1.0, 6.0], [0.0, 8.0], [0.0, 8.0], [0.0, 6.0], [1.0, 4.0], [1.0, 6.0], [1.0, 4.0], [1.0, 2.0], [8.0, 7.0], [2.0, 3.0], [0.0, 1.0], [0.0, 0.0], [0.0, 0.0], [1.0, 4.0], [1.0, 6.0], [8.0, 9.0], [0.0, 5.0], [1.0, 6.0], [3.0, 7.0], [2.0, 3.0], [0.0, 0.0], [0.0, 2.0], [0.0, 2.0], [1.0, 8.0], [0.0, 8.0], [1.0, 8.0], [1.0, 6.0], [6.0, 4.0], [3.0, 4.0], [0.0, 2.0], [0.0, 1.0], [2.0, 4.0], [1.0, 4.0], [7.0, 6.0], [0.0, 1.0], [1.0, 5.0], [0.0, 1.0], [1.0, 5.0], [0.0, 6.0], [1.0, 8.0], [0.0, 8.0], [0.0, 1.0], [1.0, 7.0], [3.0, 4.0], [7.0, 2.0], [1.0, 6.0], [9.0, 8.0], [2.0, 6.0], [0.0, 0.0], [2.0, 7.0], [3.0, 6.0], [0.0, 1.0], [1.0, 7.0], [1.0, 1.0], [2.0, 4.0], [4.0, 3.0], [1.0, 9.0], [2.0, 5.0], [2.0, 4.0], [0.0, 2.0], [4.0, 6.0], [0.0, 8.0], [0.0, 2.0], [0.0, 0.0], [0.0, 1.0], [2.0, 1.0], [9.0, 8.0], [3.0, 4.0], [0.0, 2.0], [0.0, 4.0], [7.0, 4.0], [1.0, 8.0], [1.0, 4.0], [0.0, 8.0], [1.0, 3.0], [0.0, 8.0], [0.0, 6.0], [6.0, 4.0], [2.0, 6.0], [1.0, 2.0], [0.0, 6.0], [2.0, 8.0], [1.0, 7.0], [2.0, 7.0], [1.0, 4.0], [0.0, 7.0], [0.0, 7.0], [1.0, 6.0], [1.0, 4.0], [2.0, 4.0], [8.0, 3.0], [1.0, 2.0], [3.0, 4.0], [0.0, 2.0], [0.0, 3.0], [7.0, 6.0], [7.0, 5.0], [3.0, 6.0], [0.0, 2.0], [0.0, 7.0], [1.0, 1.0], [1.0, 4.0], [1.0, 2.0], [0.0, 0.0], [0.0, 9.0], [1.0, 6.0], [0.0, 0.0], [1.0, 1.0], [0.0, 2.0], [1.0, 4.0], [1.0, 4.0], [6.0, 6.0], [9.0, 8.0], [0.0, 3.0], [1.0, 2.0], [0.0, 8.0], [1.0, 5.0], [0.0, 4.0], [0.0, 4.0], [1.0, 0.0], [1.0, 2.0], [1.0, 6.0], [6.0, 7.0], [0.0, 1.0], [2.0, 4.0], [1.0, 3.0], [8.0, 9.0], [3.0, 4.0], [2.0, 4.0], [2.0, 3.0], [1.0, 7.0], [7.0, 1.0], [0.0, 2.0], [0.0, 1.0], [1.0, 4.0], [8.0, 6.0], [1.0, 6.0], [0.0, 1.0], [0.0, 4.0], [0.0, 0.0], [2.0, 7.0], [0.0, 6.0], [2.0, 3.0], [1.0, 3.0], [0.0, 0.0], [1.0, 2.0], [8.0, 6.0], [1.0, 5.0], [1.0, 3.0], [1.0, 9.0], [0.0, 1.0], [0.0, 6.0], [0.0, 4.0], [0.0, 5.0], [0.0, 9.0], [1.0, 3.0], [0.0, 4.0], [1.0, 4.0], [0.0, 1.0], [1.0, 6.0], [0.0, 5.0], [0.0, 0.0], [0.0, 1.0], [1.0, 7.0], [1.0, 7.0], [1.0, 7.0], [0.0, 4.0], [3.0, 6.0], [1.0, 6.0], [0.0, 1.0], [1.0, 4.0], [0.0, 4.0], [0.0, 2.0], [1.0, 5.0], [1.0, 2.0], [0.0, 3.0], [1.0, 0.0], [1.0, 2.0], [1.0, 4.0], [0.0, 1.0], [1.0, 3.0], [1.0, 6.0], [0.0, 1.0], [0.0, 3.0], [0.0, 0.0], [0.0, 2.0], [1.0, 8.0], [1.0, 2.0], [0.0, 6.0], [2.0, 6.0], [7.0, 5.0], [1.0, 5.0], [1.0, 8.0], [2.0, 6.0], [1.0, 6.0], [0.0, 1.0], [0.0, 3.0], [0.0, 4.0], [2.0, 6.0], [0.0, 5.0], [0.0, 1.0], [2.0, 3.0], [1.0, 7.0], [6.0, 4.0], [1.0, 5.0], [0.0, 0.0], [0.0, 6.0], [0.0, 1.0], [0.0, 6.0], [0.0, 0.0], [0.0, 2.0], [1.0, 3.0], [1.0, 6.0], [1.0, 7.0], [8.0, 4.0], [0.0, 5.0], [0.0, 2.0], [0.0, 2.0], [1.0, 4.0], [7.0, 6.0], [0.0, 6.0], [0.0, 1.0], [9.0, 8.0], [0.0, 0.0], [0.0, 6.0], [1.0, 6.0], [0.0, 0.0], [0.0, 2.0], [1.0, 4.0], [0.0, 6.0], [1.0, 8.0], [0.0, 0.0], [0.0, 6.0], [1.0, 1.0], [1.0, 8.0], [0.0, 0.0], [1.0, 8.0], [0.0, 4.0], [0.0, 8.0], [1.0, 6.0], [1.0, 8.0], [1.0, 9.0], [0.0, 6.0], [0.0, 6.0], [9.0, 7.0], [8.0, 3.0], [1.0, 8.0], [1.0, 3.0], [7.0, 8.0], [9.0, 6.0], [1.0, 8.0], [7.0, 6.0], [0.0, 1.0], [2.0, 6.0], [1.0, 8.0], [8.0, 6.0], [0.0, 6.0], [1.0, 4.0], [1.0, 5.0], [1.0, 8.0], [0.0, 3.0], [0.0, 6.0], [0.0, 1.0], [0.0, 1.0], [1.0, 8.0], [0.0, 2.0], [0.0, 1.0], [1.0, 8.0], [0.0, 2.0], [0.0, 2.0], [1.0, 8.0], [0.0, 0.0], [1.0, 1.0], [1.0, 7.0], [2.0, 1.0], [0.0, 1.0], [1.0, 4.0], [6.0, 2.0], [1.0, 7.0], [0.0, 1.0], [1.0, 8.0], [2.0, 4.0], [1.0, 8.0], [0.0, 2.0], [0.0, 1.0], [0.0, 1.0], [0.0, 3.0], [1.0, 1.0], [4.0, 8.0], [0.0, 2.0], [0.0, 1.0], [9.0, 8.0], [0.0, 6.0], [0.0, 1.0], [0.0, 2.0], [2.0, 3.0], [0.0, 1.0], [0.0, 3.0], [0.0, 1.0], [1.0, 2.0], [0.0, 1.0], [7.0, 3.0], [1.0, 4.0], [0.0, 0.0], [1.0, 7.0], [1.0, 8.0], [1.0, 4.0], [0.0, 3.0], [0.0, 8.0], [0.0, 0.0], [0.0, 0.0], [0.0, 7.0], [1.0, 6.0], [1.0, 7.0], [1.0, 3.0], [0.0, 0.0], [1.0, 6.0], [1.0, 3.0], [0.0, 1.0], [2.0, 4.0], [0.0, 0.0], [0.0, 1.0], [2.0, 4.0], [0.0, 0.0], [1.0, 6.0], [1.0, 0.0], [0.0, 0.0], [3.0, 6.0], [6.0, 8.0], [1.0, 6.0], [0.0, 5.0], [1.0, 8.0], [1.0, 7.0], [2.0, 3.0], [0.0, 0.0], [0.0, 3.0], [0.0, 3.0], [1.0, 6.0], [0.0, 0.0], [8.0, 8.0], [0.0, 0.0], [0.0, 1.0], [9.0, 8.0], [9.0, 6.0], [0.0, 6.0], [0.0, 6.0], [2.0, 3.0], [0.0, 7.0], [7.0, 6.0], [1.0, 5.0], [3.0, 5.0], [1.0, 6.0], [7.0, 8.0], [1.0, 8.0], [2.0, 8.0], [0.0, 6.0], [0.0, 3.0], [1.0, 9.0], [0.0, 9.0], [0.0, 3.0], [6.0, 2.0], [1.0, 7.0], [0.0, 1.0], [1.0, 6.0], [1.0, 8.0], [0.0, 7.0], [2.0, 1.0], [1.0, 5.0], [2.0, 3.0], [1.0, 5.0], [4.0, 3.0], [6.0, 3.0], [1.0, 8.0], [1.0, 2.0], [0.0, 1.0], [0.0, 1.0], [0.0, 2.0], [0.0, 8.0], [7.0, 6.0], [0.0, 8.0], [0.0, 2.0], [1.0, 4.0], [0.0, 0.0], [0.0, 8.0], [0.0, 1.0], [1.0, 6.0], [2.0, 8.0], [0.0, 1.0], [1.0, 5.0], [1.0, 2.0], [1.0, 5.0], [3.0, 4.0], [0.0, 8.0], [7.0, 8.0], [0.0, 1.0], [0.0, 6.0], [0.0, 0.0], [8.0, 6.0], [0.0, 0.0], [2.0, 5.0], [1.0, 2.0], [0.0, 1.0], [1.0, 3.0], [0.0, 0.0], [1.0, 3.0], [1.0, 8.0], [0.0, 1.0], [0.0, 6.0], [1.0, 7.0], [1.0, 7.0], [1.0, 5.0], [8.0, 6.0], [0.0, 2.0], [0.0, 1.0], [2.0, 8.0], [1.0, 3.0], [0.0, 2.0], [7.0, 8.0], [1.0, 7.0], [1.0, 0.0], [0.0, 8.0], [0.0, 7.0], [2.0, 4.0], [1.0, 2.0], [0.0, 0.0], [1.0, 4.0], [8.0, 6.0], [2.0, 6.0], [0.0, 6.0], [2.0, 4.0], [0.0, 4.0], [0.0, 1.0], [8.0, 6.0], [0.0, 3.0], [1.0, 2.0], [1.0, 2.0], [2.0, 6.0], [0.0, 4.0], [1.0, 2.0], [0.0, 3.0], [0.0, 3.0], [1.0, 7.0], [0.0, 4.0], [6.0, 4.0], [0.0, 2.0], [0.0, 7.0], [8.0, 6.0], [1.0, 8.0], [0.0, 8.0], [0.0, 1.0], [1.0, 6.0], [7.0, 8.0], [0.0, 6.0], [0.0, 6.0], [1.0, 3.0], [3.0, 4.0], [2.0, 6.0], [8.0, 6.0], [6.0, 4.0], [1.0, 4.0], [0.0, 6.0], [0.0, 4.0], [7.0, 6.0], [4.0, 5.0], [2.0, 4.0], [0.0, 6.0], [8.0, 6.0], [1.0, 3.0], [0.0, 7.0], [1.0, 7.0], [1.0, 4.0], [1.0, 6.0], [0.0, 4.0], [1.0, 3.0], [0.0, 6.0], [0.0, 3.0], [0.0, 6.0], [1.0, 8.0], [1.0, 0.0], [0.0, 5.0], [7.0, 8.0], [0.0, 6.0], [1.0, 3.0], [3.0, 6.0], [0.0, 7.0], [9.0, 7.0], [1.0, 4.0], [0.0, 1.0], [0.0, 1.0], [1.0, 4.0], [0.0, 0.0], [1.0, 2.0], [1.0, 2.0], [0.0, 8.0], [0.0, 1.0], [8.0, 6.0], [1.0, 6.0], [4.0, 3.0], [0.0, 8.0], [0.0, 8.0], [2.0, 6.0], [3.0, 8.0], [1.0, 6.0], [1.0, 3.0], [7.0, 1.0], [0.0, 7.0], [1.0, 8.0], [0.0, 2.0], [0.0, 5.0], [4.0, 6.0], [1.0, 6.0], [6.0, 7.0], [8.0, 4.0], [0.0, 3.0], [2.0, 8.0], [1.0, 3.0], [8.0, 6.0], [1.0, 1.0], [8.0, 7.0], [0.0, 0.0], [1.0, 6.0], [0.0, 9.0], [8.0, 2.0], [0.0, 1.0], [0.0, 7.0], [5.0, 3.0], [0.0, 0.0], [1.0, 2.0], [0.0, 1.0], [0.0, 2.0], [0.0, 5.0], [1.0, 6.0], [1.0, 6.0], [0.0, 1.0], [2.0, 6.0], [6.0, 5.0], [1.0, 3.0], [0.0, 1.0], [0.0, 0.0], [2.0, 4.0], [7.0, 6.0], [1.0, 6.0], [1.0, 6.0], [0.0, 1.0], [0.0, 1.0], [0.0, 6.0], [0.0, 0.0], [2.0, 7.0], [4.0, 6.0], [0.0, 8.0], [0.0, 5.0], [1.0, 8.0], [0.0, 1.0], [7.0, 6.0], [4.0, 6.0], [0.0, 6.0], [1.0, 6.0], [0.0, 4.0], [1.0, 3.0], [0.0, 7.0], [0.0, 8.0], [0.0, 2.0], [1.0, 1.0], [1.0, 4.0], [0.0, 2.0], [0.0, 0.0], [0.0, 7.0], [2.0, 3.0], [8.0, 6.0], [0.0, 2.0], [2.0, 1.0], [1.0, 4.0], [0.0, 1.0], [0.0, 6.0], [0.0, 4.0], [0.0, 1.0], [0.0, 2.0], [0.0, 2.0], [1.0, 2.0], [4.0, 2.0], [8.0, 6.0], [1.0, 4.0], [0.0, 1.0], [0.0, 3.0], [9.0, 8.0], [1.0, 6.0], [0.0, 0.0], [8.0, 3.0], [0.0, 2.0], [1.0, 4.0], [1.0, 4.0], [0.0, 6.0], [0.0, 3.0], [0.0, 7.0], [2.0, 8.0], [1.0, 4.0], [2.0, 3.0], [1.0, 8.0], [1.0, 1.0], [0.0, 4.0], [1.0, 8.0], [0.0, 8.0], [1.0, 4.0], [5.0, 6.0], [0.0, 6.0], [0.0, 2.0], [0.0, 3.0], [1.0, 6.0], [1.0, 0.0], [1.0, 6.0], [2.0, 6.0], [6.0, 6.0], [1.0, 4.0], [0.0, 2.0], [1.0, 3.0], [0.0, 8.0], [8.0, 6.0], [1.0, 5.0], [1.0, 6.0], [0.0, 9.0], [0.0, 3.0], [0.0, 0.0], [8.0, 7.0], [0.0, 3.0], [0.0, 3.0], [1.0, 2.0], [0.0, 1.0], [0.0, 6.0], [0.0, 2.0], [7.0, 4.0], [1.0, 3.0], [1.0, 8.0], [0.0, 4.0], [0.0, 3.0], [0.0, 1.0], [1.0, 4.0], [0.0, 0.0], [1.0, 2.0], [0.0, 3.0], [0.0, 0.0], [0.0, 2.0], [1.0, 0.0], [0.0, 0.0], [0.0, 1.0], [1.0, 6.0], [2.0, 8.0], [1.0, 6.0], [1.0, 0.0], [1.0, 7.0], [1.0, 3.0], [0.0, 1.0], [6.0, 8.0], [0.0, 3.0], [2.0, 7.0], [0.0, 4.0], [0.0, 0.0], [1.0, 6.0], [1.0, 2.0], [6.0, 4.0], [0.0, 0.0], [0.0, 2.0], [3.0, 1.0], [1.0, 2.0], [1.0, 4.0], [1.0, 8.0], [1.0, 6.0], [0.0, 0.0], [0.0, 5.0], [1.0, 8.0], [3.0, 6.0], [0.0, 1.0], [2.0, 0.0], [1.0, 3.0], [1.0, 4.0], [3.0, 5.0], [0.0, 3.0], [1.0, 6.0], [0.0, 1.0], [1.0, 8.0], [0.0, 6.0], [8.0, 6.0], [0.0, 7.0], [0.0, 8.0], [4.0, 8.0], [1.0, 7.0], [0.0, 0.0], [1.0, 8.0], [1.0, 3.0], [0.0, 1.0], [0.0, 2.0], [0.0, 2.0], [0.0, 1.0], [1.0, 3.0], [1.0, 8.0], [1.0, 4.0], [1.0, 8.0], [0.0, 8.0], [1.0, 1.0], [0.0, 8.0], [1.0, 2.0], [0.0, 1.0], [0.0, 2.0], [2.0, 6.0], [0.0, 7.0], [1.0, 7.0], [1.0, 2.0], [1.0, 4.0], [2.0, 7.0], [8.0, 8.0], [0.0, 9.0], [0.0, 2.0], [4.0, 3.0], [1.0, 6.0], [0.0, 2.0], [1.0, 6.0], [0.0, 0.0], [0.0, 0.0], [9.0, 8.0], [0.0, 8.0], [1.0, 6.0], [9.0, 8.0], [0.0, 8.0], [0.0, 4.0], [1.0, 7.0], [4.0, 6.0], [1.0, 6.0], [1.0, 8.0], [1.0, 5.0], [0.0, 6.0], [0.0, 5.0], [0.0, 0.0], [1.0, 4.0], [8.0, 9.0], [0.0, 2.0], [1.0, 4.0], [0.0, 2.0], [3.0, 2.0], [1.0, 6.0], [0.0, 0.0], [1.0, 8.0], [8.0, 6.0], [1.0, 5.0], [0.0, 0.0], [1.0, 3.0], [1.0, 4.0], [7.0, 8.0], [1.0, 6.0], [2.0, 6.0], [0.0, 2.0], [2.0, 6.0], [1.0, 6.0], [6.0, 3.0], [1.0, 2.0], [0.0, 6.0], [5.0, 1.0], [1.0, 6.0], [1.0, 6.0], [1.0, 8.0], [0.0, 2.0], [4.0, 2.0], [0.0, 2.0], [1.0, 0.0], [0.0, 1.0], [7.0, 6.0], [0.0, 1.0], [1.0, 3.0], [0.0, 4.0], [0.0, 8.0], [0.0, 0.0], [1.0, 8.0], [1.0, 3.0], [1.0, 6.0], [0.0, 2.0], [0.0, 2.0], [0.0, 2.0], [0.0, 0.0], [0.0, 4.0], [9.0, 7.0], [1.0, 2.0], [0.0, 2.0], [2.0, 6.0], [0.0, 1.0], [0.0, 3.0], [0.0, 4.0], [0.0, 1.0], [0.0, 5.0], [2.0, 6.0], [0.0, 3.0], [0.0, 0.0], [1.0, 4.0], [1.0, 8.0], [0.0, 8.0], [1.0, 7.0], [7.0, 3.0], [1.0, 9.0], [1.0, 3.0], [7.0, 6.0], [8.0, 8.0], [2.0, 5.0], [0.0, 6.0], [0.0, 4.0], [0.0, 1.0], [0.0, 1.0], [0.0, 4.0], [3.0, 2.0], [1.0, 3.0], [4.0, 2.0], [0.0, 6.0], [0.0, 1.0], [0.0, 1.0], [0.0, 5.0], [0.0, 8.0], [0.0, 8.0], [1.0, 6.0], [1.0, 7.0], [0.0, 7.0], [1.0, 2.0], [3.0, 3.0], [0.0, 6.0], [0.0, 6.0], [1.0, 6.0], [2.0, 9.0], [1.0, 2.0], [0.0, 4.0], [0.0, 4.0], [1.0, 8.0], [1.0, 4.0], [1.0, 6.0], [0.0, 3.0], [0.0, 1.0], [1.0, 1.0], [1.0, 4.0], [7.0, 8.0], [1.0, 2.0], [1.0, 4.0], [8.0, 2.0], [1.0, 6.0], [1.0, 6.0], [7.0, 4.0], [8.0, 6.0], [0.0, 6.0], [0.0, 8.0], [1.0, 2.0], [8.0, 6.0], [0.0, 8.0], [6.0, 4.0], [0.0, 8.0], [1.0, 8.0], [0.0, 3.0], [0.0, 0.0], [0.0, 3.0], [0.0, 0.0], [0.0, 3.0], [1.0, 6.0], [0.0, 4.0], [1.0, 1.0], [0.0, 2.0], [0.0, 1.0], [1.0, 8.0], [0.0, 1.0], [1.0, 4.0], [1.0, 6.0], [1.0, 2.0], [1.0, 6.0], [1.0, 4.0], [2.0, 7.0], [1.0, 3.0], [1.0, 2.0], [1.0, 4.0], [1.0, 3.0], [1.0, 3.0], [6.0, 8.0], [0.0, 6.0], [0.0, 0.0], [1.0, 1.0], [0.0, 1.0], [0.0, 0.0], [2.0, 6.0], [0.0, 6.0], [0.0, 0.0], [1.0, 4.0], [0.0, 1.0], [0.0, 4.0], [2.0, 4.0], [1.0, 6.0], [1.0, 4.0], [1.0, 2.0], [4.0, 2.0], [4.0, 1.0], [0.0, 4.0], [1.0, 4.0], [1.0, 3.0], [0.0, 3.0], [1.0, 6.0], [0.0, 6.0], [1.0, 6.0], [2.0, 7.0], [1.0, 6.0], [3.0, 4.0], [8.0, 6.0], [0.0, 2.0], [6.0, 6.0], [0.0, 2.0], [0.0, 8.0], [0.0, 2.0], [1.0, 6.0], [1.0, 7.0], [1.0, 7.0], [0.0, 6.0], [0.0, 2.0], [2.0, 6.0], [1.0, 0.0], [1.0, 2.0], [0.0, 8.0], [1.0, 4.0], [9.0, 8.0], [0.0, 2.0], [1.0, 2.0], [0.0, 2.0], [7.0, 6.0], [0.0, 2.0], [1.0, 6.0], [1.0, 4.0], [0.0, 1.0], [1.0, 3.0], [4.0, 2.0], [1.0, 0.0], [0.0, 0.0], [0.0, 4.0], [0.0, 6.0], [0.0, 2.0], [0.0, 1.0], [0.0, 3.0], [0.0, 4.0], [1.0, 4.0], [0.0, 9.0], [0.0, 7.0], [1.0, 6.0], [1.0, 7.0], [1.0, 6.0], [3.0, 2.0], [4.0, 3.0], [1.0, 8.0], [0.0, 1.0], [2.0, 4.0], [2.0, 6.0], [0.0, 4.0], [7.0, 3.0], [9.0, 4.0], [1.0, 6.0], [0.0, 2.0], [0.0, 6.0], [2.0, 6.0], [0.0, 6.0], [0.0, 1.0], [0.0, 1.0], [7.0, 1.0], [1.0, 4.0], [0.0, 1.0], [1.0, 6.0], [1.0, 1.0], [1.0, 3.0], [3.0, 6.0], [0.0, 4.0], [0.0, 4.0], [0.0, 0.0], [1.0, 4.0], [1.0, 6.0], [0.0, 2.0], [1.0, 2.0], [0.0, 6.0], [1.0, 6.0], [1.0, 5.0], [0.0, 4.0], [0.0, 5.0], [0.0, 1.0], [0.0, 2.0], [1.0, 3.0], [0.0, 4.0], [4.0, 8.0], [0.0, 4.0], [3.0, 4.0], [2.0, 6.0], [6.0, 7.0], [0.0, 4.0], [0.0, 1.0], [1.0, 6.0], [1.0, 8.0], [1.0, 4.0], [0.0, 4.0], [1.0, 4.0], [7.0, 8.0], [1.0, 2.0], [1.0, 4.0], [0.0, 1.0], [0.0, 1.0], [1.0, 6.0], [0.0, 1.0], [8.0, 6.0], [9.0, 8.0], [0.0, 6.0], [0.0, 1.0], [7.0, 6.0], [1.0, 8.0], [0.0, 3.0], [8.0, 4.0], [2.0, 1.0], [9.0, 8.0], [0.0, 6.0], [1.0, 8.0], [1.0, 7.0], [0.0, 8.0], [0.0, 2.0], [0.0, 1.0], [6.0, 6.0], [1.0, 2.0], [0.0, 4.0], [2.0, 1.0], [1.0, 6.0], [1.0, 6.0], [0.0, 8.0], [0.0, 6.0], [6.0, 4.0], [0.0, 2.0], [0.0, 1.0], [1.0, 2.0], [1.0, 2.0], [1.0, 6.0], [9.0, 8.0], [0.0, 3.0], [1.0, 5.0], [0.0, 0.0], [0.0, 5.0], [2.0, 4.0], [1.0, 8.0], [0.0, 7.0], [0.0, 1.0], [1.0, 7.0], [0.0, 3.0], [0.0, 1.0], [0.0, 9.0], [1.0, 6.0], [0.0, 3.0], [0.0, 0.0], [0.0, 6.0], [1.0, 3.0], [1.0, 4.0], [0.0, 1.0], [1.0, 4.0], [1.0, 6.0], [0.0, 5.0], [0.0, 0.0], [1.0, 4.0], [0.0, 0.0], [1.0, 6.0], [0.0, 2.0], [1.0, 3.0], [4.0, 7.0], [4.0, 6.0], [0.0, 6.0], [0.0, 3.0], [3.0, 7.0], [1.0, 4.0], [0.0, 7.0], [1.0, 4.0], [8.0, 6.0], [0.0, 4.0], [1.0, 8.0], [0.0, 6.0], [0.0, 2.0], [0.0, 2.0], [1.0, 4.0], [2.0, 4.0], [0.0, 3.0], [0.0, 0.0], [0.0, 6.0], [0.0, 4.0], [1.0, 0.0], [2.0, 6.0], [1.0, 2.0], [4.0, 6.0], [2.0, 4.0], [0.0, 2.0], [0.0, 3.0], [1.0, 6.0], [1.0, 6.0], [1.0, 1.0], [1.0, 2.0], [1.0, 0.0], [1.0, 8.0], [1.0, 2.0], [0.0, 4.0], [1.0, 6.0], [7.0, 7.0], [0.0, 2.0], [6.0, 2.0], [2.0, 4.0], [8.0, 6.0], [1.0, 2.0], [0.0, 5.0], [1.0, 6.0], [0.0, 8.0], [1.0, 7.0], [1.0, 6.0], [1.0, 7.0], [0.0, 4.0], [1.0, 6.0], [0.0, 7.0], [1.0, 5.0], [1.0, 7.0], [8.0, 7.0], [0.0, 4.0], [1.0, 4.0], [2.0, 4.0], [0.0, 0.0], [5.0, 3.0], [1.0, 8.0], [0.0, 3.0], [0.0, 1.0], [1.0, 8.0], [0.0, 8.0], [0.0, 0.0], [1.0, 2.0], [2.0, 1.0], [1.0, 6.0], [2.0, 6.0], [1.0, 6.0], [0.0, 0.0], [0.0, 4.0], [7.0, 3.0], [1.0, 1.0], [0.0, 0.0], [0.0, 1.0], [0.0, 6.0], [1.0, 6.0], [0.0, 1.0], [2.0, 3.0]];
+const meanVals    = [3.144, 4.788, 4.938, 4.789, 4.684, 5.087, 5.151, 5.864, 6.327, 7.278, 6.286];
+const ciUpper     = [3.195, 4.837, 5.032, 4.944, 4.845, 5.342, 5.304, 5.973, 6.423, 7.401, 7.352];
+const ciLower     = [3.094, 4.74, 4.844, 4.634, 4.523, 4.832, 4.998, 5.755, 6.23, 7.155, 5.22];
+const meanCounts  = [10878, 8224, 1980, 750, 706, 196, 681, 794, 820, 424, 21];
+const regLineX    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const regLineY    = [3.674, 4.044, 4.414, 4.784, 5.154, 5.524, 5.894, 6.264, 6.634, 7.004, 7.374];
+const gamDistData = [[0, 10878], [1, 8224], [2, 1981], [3, 751], [4, 707], [5, 196], [6, 681], [7, 794], [8, 820], [9, 424], [10, 21]];
+const ivDistData  = [[0, 2145], [1, 2765], [2, 2946], [3, 2767], [4, 3212], [5, 1137], [6, 5135], [7, 1936], [8, 2942], [9, 463], [10, 29]];
+const ctData      = [["civilian", 0.17, 1.63, 1797], ["casualty", 0.45, 7.78, 451], ["aftermath", 0.55, 6.2, 778], ["destruction", 0.63, 6.5, 3727], ["police/military confrontation", 1.0, 4.0, 1], ["explosion", 1.1, 7.15, 1375], ["other", 1.17, 1.62, 3677], ["soldier POV", 1.31, 3.85, 2245], ["political", 1.38, 3.09, 6348], ["weapon system", 1.8, 4.5, 1997], ["propaganda meme", 1.95, 5.57, 1082], ["combat footage", 2.53, 6.03, 393], ["drone strike", 6.88, 6.81, 1603]];
+const frameData   = [["civilian recording", 0.43, 4.57, 8076], ["professional production", 0.62, 3.36, 2961], ["other", 0.81, 3.19, 2206], ["soldier POV", 1.68, 4.43, 699], ["combat footage", 1.8, 6.8, 5], ["screenshot", 1.94, 3.77, 6547], ["composite/meme", 2.09, 4.75, 2942], ["drone POV", 5.57, 5.94, 2038]];
+const corrMatrix  = [[1.0, 0.327, 0.567, 0.34, 0.472], [0.327, 1.0, 0.584, 0.397, 0.349], [0.567, 0.584, 1.0, 0.427, 0.587], [0.34, 0.397, 0.427, 1.0, 0.581], [0.472, 0.349, 0.587, 0.581, 1.0]];
+const corrLabels  = ['Impl.Violence','Gamification','Dehumanization','Aestheticization','Narr.Framing'];
+
+Chart.defaults.color = '#7a90b8';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 12;
+const gridCol  = 'rgba(0,91,187,0.1)';
+const BLUE     = '#005BBB';
+const BLUE_L   = '#3a8ff5';
+const BLUE_B   = '#5aaeff';
+const YELLOW   = '#FFD500';
+const YELLOW_D = '#c9a800';
+
+// ── SCATTER ──────────────────────────────────────────────────────────────────
+new Chart(document.getElementById('scatterChart'), {
+  type: 'scatter',
+  data: { datasets: [
+    {
+      label: 'Images',
+      data: scatterRaw.map(d => ({ x: d[0]+(Math.random()-.5)*.35, y: d[1]+(Math.random()-.5)*.35 })),
+      backgroundColor: 'rgba(0,91,187,0.18)', pointRadius: 2.5,
+    },
+    {
+      label: 'Regression',
+      data: regLineX.map((x,i) => ({ x, y: regLineY[i] })),
+      type: 'line', borderColor: YELLOW, borderWidth: 2.5,
+      pointRadius: 0, fill: false, tension: 0,
+    }
+  ]},
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { title:{display:true,text:'Gamification Score',color:'#7a90b8'}, min:-0.5, max:10.5, grid:{color:gridCol} },
+      y: { title:{display:true,text:'Implied Violence Score',color:'#7a90b8'}, min:-0.5, max:10.5, grid:{color:gridCol} }
+    },
+    plugins: { legend:{display:true,labels:{color:'#7a90b8'}},
+      tooltip:{ callbacks:{ label: ctx => ctx.dataset.label==='Images'
+        ? `Gam: ${ctx.raw.x.toFixed(0)}  Violence: ${ctx.raw.y.toFixed(0)}`
+        : `Predicted: ${ctx.raw.y.toFixed(2)}` } }
+    }
+  }
+});
+
+// ── MEAN LINE ────────────────────────────────────────────────────────────────
+(function(){
+  const labels = Array.from({length:11},(_,i)=>i);
+  new Chart(document.getElementById('meanLineChart'), {
+    data: {
+      labels,
+      datasets: [
+        {
+          type:'line', label:'Mean Violence',
+          data: meanVals,
+          borderColor: BLUE_B, borderWidth: 2.5,
+          pointBackgroundColor: meanVals.map(v => v>6?YELLOW:BLUE_B),
+          pointBorderColor: meanVals.map(v => v>6?YELLOW_D:BLUE),
+          pointRadius: 6, pointHoverRadius: 8,
+          fill: false, tension: 0.3, order:1,
+        },
+        {
+          type:'line', label:'95% CI Upper',
+          data: ciUpper,
+          borderColor:'transparent', pointRadius:0,
+          fill:'+1', backgroundColor:'rgba(255,213,0,0.1)',
+          tension:0.3, order:2,
+        },
+        {
+          type:'line', label:'95% CI Lower',
+          data: ciLower,
+          borderColor:'transparent', pointRadius:0,
+          fill:false, tension:0.3, order:3,
+        }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      scales: {
+        x: { title:{display:true,text:'Gamification Score',color:'#7a90b8'}, grid:{color:gridCol} },
+        y: { title:{display:true,text:'Mean Implied Violence',color:'#7a90b8'}, min:0, max:10, grid:{color:gridCol} }
+      },
+      plugins: {
+        legend:{display:false},
+        tooltip: { callbacks: { label: ctx => ctx.datasetIndex===0
+          ? `Mean: ${ctx.raw.toFixed(2)}  n=${meanCounts[ctx.dataIndex].toLocaleString()}`
+          : null } }
+      }
+    }
+  });
+})();
+
+// ── DISTRIBUTIONS ─────────────────────────────────────────────────────────────
+function makeArea(id, data, col, fillCol) {
+  new Chart(document.getElementById(id), {
+    type:'line',
+    data:{
+      labels: data.map(d=>d[0]),
+      datasets:[{
+        label:'Count', data: data.map(d=>d[1]),
+        borderColor: col, borderWidth:2,
+        backgroundColor: fillCol,
+        fill:true, tension:0.4, pointRadius:4,
+        pointBackgroundColor: col,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{grid:{color:gridCol}},
+        y:{grid:{color:gridCol},ticks:{callback:v=>v>=1000?v/1000+'k':v}}
+      },
+      plugins:{legend:{display:false}}
+    }
+  });
+}
+makeArea('gamDist', gamDistData, BLUE_B, 'rgba(0,91,187,0.18)');
+makeArea('ivDist',  ivDistData,  YELLOW, 'rgba(255,213,0,0.12)');
+
+// ── BUBBLE CHARTS ─────────────────────────────────────────────────────────────
+function makeBubble(id, data) {
+  const maxCount = Math.max(...data.map(d=>d[3]));
+  // Alternate blue shades and yellow tones
+  const palette = [
+    BLUE_B, YELLOW, '#7ab8ff', YELLOW_D,
+    '#004a99', '#ffea4d', '#2266cc', '#e6be00',
+    '#1a4fa0', '#ffd000', '#3378dd', '#c9a800',
+    '#5599ff'
+  ];
+  new Chart(document.getElementById(id), {
+    type:'bubble',
+    data:{
+      datasets: data.map((d,i) => ({
+        label: d[0],
+        data: [{ x:d[1], y:d[2], r: Math.max(5, Math.sqrt(d[3]/maxCount)*38) }],
+        backgroundColor: palette[i % palette.length] + (palette[i%palette.length].length===7?'99':''),
+        borderColor: i%2===0 ? BLUE_B : YELLOW,
+        borderWidth: 1.5,
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ title:{display:true,text:'Mean Gamification Score',color:'#7a90b8'}, min:-.2, max:8, grid:{color:gridCol} },
+        y:{ title:{display:true,text:'Mean Implied Violence Score',color:'#7a90b8'}, min:0, max:10, grid:{color:gridCol} }
+      },
+      plugins:{
+        legend:{ position:'right', labels:{ boxWidth:10, font:{size:11}, color:'#7a90b8' } },
+        tooltip:{ callbacks:{ label: ctx =>
+          `${ctx.dataset.label}  gam=${ctx.raw.x.toFixed(2)}  viol=${ctx.raw.y.toFixed(2)}  n=${data[ctx.datasetIndex][3].toLocaleString()}` } }
+      }
+    }
+  });
+}
+makeBubble('ctBubble', ctData);
+makeBubble('frameBubble', frameData);
+
+// ── HEATMAP ───────────────────────────────────────────────────────────────────
+(function(){
+  const canvas = document.getElementById('corrChart');
+  const ctx2 = canvas.getContext('2d');
+  // Blue to dark to yellow gradient
+  function getCol(v) {
+    if (v >= 0) {
+      // 0 → dark, 1 → blue
+      const t = v;
+      const r = Math.round(15 + (0-15)*t + t*(0-15) + Math.round(0+t*0)),
+            g = Math.round(22 + (91-22)*t),
+            b = Math.round(53 + (187-53)*t);
+      return `rgb(${Math.round(t*0)}, ${Math.round(22+(91-22)*t)}, ${Math.round(53+(187-53)*t)})`;
+    } else {
+      // 0 → dark, -1 → yellow
+      const t = -v;
+      return `rgb(${Math.round(255*t+15*(1-t))}, ${Math.round(213*t+22*(1-t))}, ${Math.round(0*t+53*(1-t))})`;
+    }
+  }
+  function draw() {
+    const W = canvas.parentElement.offsetWidth-40, labelW=115, cellH=46;
+    const n=corrLabels.length, cellW=(W-labelW)/n, H=cellH*n+55;
+    canvas.width=W; canvas.height=H;
+    ctx2.clearRect(0,0,W,H);
+    corrLabels.forEach((l,i)=>{
+      ctx2.save(); ctx2.translate(labelW+cellW*i+cellW/2,18);
+      ctx2.rotate(-Math.PI/7); ctx2.textAlign='right';
+      ctx2.fillStyle='#7a90b8'; ctx2.font='11px DM Mono,monospace';
+      ctx2.fillText(l,0,0); ctx2.restore();
+    });
+    corrMatrix.forEach((row,ri)=>{
+      ctx2.textAlign='right'; ctx2.fillStyle='#7a90b8'; ctx2.font='11px DM Mono,monospace';
+      ctx2.fillText(corrLabels[ri], labelW-8, 55+ri*cellH+cellH/2+4);
+      row.forEach((val,ci)=>{
+        const cx=labelW+ci*cellW, cy=55+ri*cellH;
+        ctx2.fillStyle=getCol(val);
+        ctx2.globalAlpha=Math.abs(val)*0.85+0.12;
+        ctx2.beginPath(); ctx2.roundRect(cx+2,cy+2,cellW-4,cellH-4,4); ctx2.fill();
+        ctx2.globalAlpha=1;
+        // text: white on strong cells, muted on weak
+        ctx2.fillStyle=Math.abs(val)>0.35?'#fff':'#7a90b8';
+        ctx2.textAlign='center'; ctx2.font='bold 12px DM Mono,monospace';
+        ctx2.fillText(val.toFixed(2), cx+cellW/2, cy+cellH/2+5);
+      });
+    });
+  }
+  setTimeout(draw,100); window.addEventListener('resize',draw);
+})();
+</script>
+</body>
+</html>

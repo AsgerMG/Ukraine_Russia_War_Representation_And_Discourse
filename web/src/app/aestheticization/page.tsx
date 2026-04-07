@@ -6,7 +6,7 @@ export default function AestheticizationPage() {
       chapter="Chapter 05"
       title="Aestheticization"
       subtitle="How the war is turned into a visual style, mood or brand across feeds and formats."
-      accentColor="bg-[#ffefad]"
+      pillBg="#ffdd00" pillText="#111"
     >
       <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }}>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "16px" }}>
