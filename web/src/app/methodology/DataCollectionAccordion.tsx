@@ -10,7 +10,12 @@ function Chevron({ open }: { open: boolean }) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className={`h-4 w-4 shrink-0 text-zinc-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+      style={{
+        width: "16px", height: "16px", flexShrink: 0,
+        color: "var(--text-muted)",
+        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+        transition: "transform 0.3s",
+      }}
     >
       <path
         fillRule="evenodd"
@@ -58,22 +63,22 @@ const panels: Panel[] = [
     id: "collection",
     label: "Data collection",
     content: (
-      <div className="space-y-5">
-        <p className="text-sm leading-relaxed text-zinc-700">
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
           Data were collected from ten Russian-language Telegram channels
           associated with pro-Russian war correspondents and military
           commentators active during the Russo-Ukrainian conflict. Channels were
           selected based on their prominence in the Russian military information
           ecosystem, subscriber base and sustained posting activity throughout
           the study period:{" "}
-          <span className="font-medium text-zinc-900">
+          <span style={{ color: "var(--accent)", fontWeight: 500 }}>
             24 February 2022 – 23 February 2023
           </span>
           .
         </p>
-        <p className="text-sm leading-relaxed text-zinc-700">
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
           Data were extracted programmatically via the Telegram API using the{" "}
-          <span className="font-mono text-xs font-medium text-zinc-900">
+          <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--accent)" }}>
             Telethon
           </span>{" "}
           client library (v1.36.0). Only messages containing attached media
@@ -82,28 +87,25 @@ const panels: Panel[] = [
           analysis centres on visual and multimedia content.
         </p>
 
-        <div className="overflow-hidden rounded-xl border border-zinc-200">
-          <table className="w-full text-left text-sm">
+        <div style={{ overflowX: "auto", borderRadius: "10px", border: "1px solid var(--border)" }}>
+          <table style={{ width: "100%", textAlign: "left", fontSize: "0.85rem", borderCollapse: "collapse" }}>
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50">
-                <th className="px-4 py-3 font-semibold text-zinc-800">
+              <tr style={{ borderBottom: "1px solid var(--border)", background: "var(--surface2)" }}>
+                <th style={{ padding: "10px 16px", fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)", fontWeight: 500 }}>
                   Channel
                 </th>
-                <th className="px-4 py-3 font-semibold text-zinc-800">
+                <th style={{ padding: "10px 16px", fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)", fontWeight: 500 }}>
                   Description
                 </th>
               </tr>
             </thead>
             <tbody>
               {channels.map((ch, i) => (
-                <tr
-                  key={ch.handle}
-                  className={i % 2 === 0 ? "bg-white" : "bg-zinc-50"}
-                >
-                  <td className="px-4 py-2.5 font-mono text-xs font-medium text-[#0057b8]">
+                <tr key={ch.handle} style={{ background: i % 2 === 0 ? "transparent" : "var(--surface2)", borderBottom: "1px solid var(--border)" }}>
+                  <td style={{ padding: "9px 16px", fontFamily: "var(--mono)", fontSize: "11px", fontWeight: 500, color: "var(--accent)" }}>
                     {ch.handle}
                   </td>
-                  <td className="px-4 py-2.5 text-zinc-600">
+                  <td style={{ padding: "9px 16px", fontSize: "0.85rem", color: "var(--text-dim)" }}>
                     {ch.description}
                   </td>
                 </tr>
@@ -118,28 +120,28 @@ const panels: Panel[] = [
     id: "sampling",
     label: "Sampling strategy",
     content: (
-      <div className="space-y-5">
-        <p className="text-sm leading-relaxed text-zinc-700">
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
           Due to the high volume of media posts — often exceeding 2,000 per
           channel per month — a{" "}
-          <span className="font-medium text-zinc-900">
+          <span style={{ color: "var(--accent)", fontWeight: 500 }}>
             systematic positional sampling strategy
           </span>{" "}
           was applied independently to each channel-month pair.
         </p>
 
-        <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+        <div style={{ background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "20px" }}>
+          <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "12px" }}>
             Procedure
           </p>
-          <ol className="space-y-2 text-sm leading-relaxed text-zinc-700 list-none">
+          <ol style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
             {[
               "All messages containing attached media were enumerated and ordered chronologically by publication timestamp (oldest first), producing an ordered list of M messages indexed 0 to M − 1.",
               "If M ≤ 50, all messages were retained without sampling.",
               "If M > 50, exactly 50 messages were selected using evenly spaced index interpolation.",
             ].map((step, i) => (
-              <li key={i} className="flex gap-3">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ffd700] text-[10px] font-bold text-zinc-900">
+              <li key={i} style={{ display: "flex", gap: "12px", fontSize: "0.875rem", color: "var(--text-dim)", lineHeight: 1.7 }}>
+                <span style={{ display: "flex", width: "20px", height: "20px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "10px", fontWeight: 700, color: "var(--bg)", marginTop: "2px" }}>
                   {i + 1}
                 </span>
                 <span>{step}</span>
@@ -147,51 +149,37 @@ const panels: Panel[] = [
             ))}
           </ol>
 
-          <div className="mt-3 rounded-lg bg-white border border-zinc-200 px-4 py-3 font-mono text-xs text-zinc-700 space-y-1">
-            <p className="text-[10px] uppercase tracking-widest text-zinc-400 mb-2">Sampling formula</p>
+          <div style={{ marginTop: "16px", background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "8px", padding: "12px 16px", fontFamily: "var(--mono)", fontSize: "11px", color: "var(--text-dim)" }}>
+            <p style={{ fontSize: "9px", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "8px" }}>Sampling formula</p>
             <p>step = (M − 1) / (n − 1)   where n = 50</p>
-            <p>I = {"{ round(i × step) | i ∈ {0, 1, …, n−1} }"}</p>
+            <p style={{ marginTop: "4px" }}>I = {"{ round(i × step) | i ∈ {0, 1, …, n−1} }"}</p>
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#c5e0ff] bg-[#e3f0ff] p-5 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0057b8]">
+        <div style={{ background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "20px" }}>
+          <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "10px" }}>
             Worked example — April 2022, M = 2,400
           </p>
-          <ul className="space-y-1 text-sm text-zinc-700 list-none">
-            <li className="flex gap-2"><span className="text-[#0057b8]">→</span> step = 2399 / 49 ≈ 48.96</li>
-            <li className="flex gap-2"><span className="text-[#0057b8]">→</span> Selected indices: {"{0, 49, 98, 147, …, 2351, 2399}"}</li>
-            <li className="flex gap-2"><span className="text-[#0057b8]">→</span> 1st, 50th, 99th, 148th … 2,400th media messages retained</li>
+          <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
+            <li style={{ display: "flex", gap: "8px", fontSize: "0.875rem", color: "var(--text-dim)" }}><span style={{ color: "var(--accent)" }}>→</span> step = 2399 / 49 ≈ 48.96</li>
+            <li style={{ display: "flex", gap: "8px", fontSize: "0.875rem", color: "var(--text-dim)" }}><span style={{ color: "var(--accent)" }}>→</span> Selected indices: {"{0, 49, 98, 147, …, 2351, 2399}"}</li>
+            <li style={{ display: "flex", gap: "8px", fontSize: "0.875rem", color: "var(--text-dim)" }}><span style={{ color: "var(--accent)" }}>→</span> 1st, 50th, 99th, 148th … 2,400th media messages retained</li>
           </ul>
         </div>
 
-        <div className="space-y-3 text-sm text-zinc-700">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)" }}>
             Important clarifications
           </p>
-          <p>
-            <span className="font-medium text-zinc-900">Positional, not temporal spacing.</span>{" "}
-            The interval is computed over ordinal position in the
-            chronologically sorted list, not over calendar time. This ensures
-            the sample reflects the channel&apos;s actual output distribution rather
-            than artificially equalising quiet and active periods.
-          </p>
-          <p>
-            <span className="font-medium text-zinc-900">Rounding collisions.</span>{" "}
-            Because indices are computed via floating-point arithmetic and
-            rounded to the nearest integer, two indices could theoretically
-            collapse to the same value, yielding fewer than 50 selections. In
-            practice this only occurs when M is very close to 50 and the
-            effect is the omission of at most one observation.
-          </p>
-          <p>
-            <span className="font-medium text-zinc-900">No randomisation.</span>{" "}
-            The method is fully deterministic: given the same ordered message
-            list and sample size, the identical subset will always be selected.
-            This ensures reproducibility but means the sample is not a
-            probability sample in the inferential-statistics sense. Confidence
-            intervals derived from it should be interpreted with caution.
-          </p>
+          {[
+            { head: "Positional, not temporal spacing.", body: "The interval is computed over ordinal position in the chronologically sorted list, not over calendar time. This ensures the sample reflects the channel\u2019s actual output distribution rather than artificially equalising quiet and active periods." },
+            { head: "Rounding collisions.", body: "Because indices are computed via floating-point arithmetic and rounded to the nearest integer, two indices could theoretically collapse to the same value, yielding fewer than 50 selections. In practice this only occurs when M is very close to 50 and the effect is the omission of at most one observation." },
+            { head: "No randomisation.", body: "The method is fully deterministic: given the same ordered message list and sample size, the identical subset will always be selected. This ensures reproducibility but means the sample is not a probability sample in the inferential-statistics sense. Confidence intervals derived from it should be interpreted with caution." },
+          ].map(item => (
+            <p key={item.head} style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
+              <span style={{ color: "var(--text)", fontWeight: 500 }}>{item.head}</span>{" "}{item.body}
+            </p>
+          ))}
         </div>
       </div>
     ),
@@ -200,48 +188,27 @@ const panels: Panel[] = [
     id: "variables",
     label: "Variables captured",
     content: (
-      <div className="space-y-4">
-        <p className="text-sm leading-relaxed text-zinc-700">
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
           For each sampled message the following variables were recorded and
           stored in a local SQLite relational database with deduplication
           enforced via unique constraints on the{" "}
-          <span className="font-mono text-xs">(channel, message_id)</span>{" "}
+          <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--accent)" }}>(channel, message_id)</span>{" "}
           pair.
         </p>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "12px" }}>
           {[
-            {
-              label: "Content",
-              value: "Message text / caption in original language",
-            },
-            {
-              label: "Media metadata",
-              value:
-                "Type (photo, video, voice, document, geo), file size, resolution (w × h), duration (video/audio)",
-            },
-            {
-              label: "Thumbnail",
-              value:
-                "Compressed image preview for subsequent computer vision analysis",
-            },
-            {
-              label: "Engagement metrics",
-              value:
-                "View count, forward count, reply count, emoji reaction distribution (frequency counts per emoji)",
-            },
-            {
-              label: "Temporal metadata",
-              value: "UTC timestamp of original publication",
-            },
+            { label: "Content", value: "Message text / caption in original language" },
+            { label: "Media metadata", value: "Type (photo, video, voice, document, geo), file size, resolution (w × h), duration (video/audio)" },
+            { label: "Thumbnail", value: "Compressed image preview for subsequent computer vision analysis" },
+            { label: "Engagement metrics", value: "View count, forward count, reply count, emoji reaction distribution (frequency counts per emoji)" },
+            { label: "Temporal metadata", value: "UTC timestamp of original publication" },
           ].map((v) => (
-            <div
-              key={v.label}
-              className="rounded-xl border border-zinc-200 bg-white p-4 space-y-1"
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+            <div key={v.label} style={{ background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "16px" }}>
+              <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "6px" }}>
                 {v.label}
               </p>
-              <p className="text-sm text-zinc-700">{v.value}</p>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-dim)", lineHeight: 1.6 }}>{v.value}</p>
             </div>
           ))}
         </div>
@@ -252,18 +219,15 @@ const panels: Panel[] = [
     id: "limitations",
     label: "Limitations",
     content: (
-      <div className="space-y-3">
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {limitationItems.map((item) => (
-          <div
-            key={item.title}
-            className="flex gap-4 rounded-xl border border-zinc-200 bg-white p-4"
-          >
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#ffd700] text-[10px] font-bold text-zinc-900">
+          <div key={item.title} style={{ display: "flex", gap: "16px", background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "16px" }}>
+            <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--red)", fontSize: "11px", fontWeight: 700, color: "#fff", marginTop: "1px" }}>
               !
             </span>
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-zinc-900">{item.title}</p>
-              <p className="text-sm leading-relaxed text-zinc-600">{item.body}</p>
+            <div>
+              <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--text)", marginBottom: "4px" }}>{item.title}</p>
+              <p style={{ fontSize: "0.85rem", lineHeight: 1.7, color: "var(--text-dim)" }}>{item.body}</p>
             </div>
           </div>
         ))}
@@ -276,22 +240,29 @@ export default function DataCollectionAccordion() {
   const [open, setOpen] = useState<string | null>("collection");
 
   return (
-    <div className="divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
-      {panels.map((panel) => {
+    <div style={{ border: "1px solid var(--border)", borderRadius: "14px", overflow: "hidden", background: "var(--surface)" }}>
+      {panels.map((panel, idx) => {
         const isOpen = open === panel.id;
         return (
-          <div key={panel.id}>
+          <div key={panel.id} style={{ borderTop: idx > 0 ? "1px solid var(--border)" : undefined }}>
             <button
               onClick={() => setOpen(isOpen ? null : panel.id)}
-              className="flex w-full items-center justify-between px-6 py-4 text-left transition hover:bg-zinc-50"
+              style={{
+                display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between",
+                padding: "16px 24px", textAlign: "left",
+                background: "transparent", border: "none", cursor: "pointer",
+                transition: "background 0.15s",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "var(--surface2)")}
+              onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
             >
-              <span className="text-sm font-semibold text-zinc-900">
+              <span style={{ fontFamily: "var(--sans)", fontSize: "0.9rem", fontWeight: 500, color: "var(--text)" }}>
                 {panel.label}
               </span>
               <Chevron open={isOpen} />
             </button>
             {isOpen && (
-              <div className="border-t border-zinc-100 px-6 py-5">
+              <div style={{ borderTop: "1px solid var(--border)", padding: "20px 24px" }}>
                 {panel.content}
               </div>
             )}

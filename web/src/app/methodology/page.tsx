@@ -3,28 +3,39 @@ import DataCollectionAccordion from "./DataCollectionAccordion";
 
 export default function MethodologyPage() {
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+    <div className="min-h-screen" style={{ color: "var(--text)" }}>
       <main className="mx-auto flex max-w-4xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <header className="space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-zinc-500">
-            Methods
-          </p>
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            Methodology
-          </h1>
-          <p className="max-w-2xl text-base leading-relaxed text-zinc-600 sm:text-lg">
-            A transparent account of the corpus, coding scheme, analytical
-            choices and limitations behind this report.
-          </p>
+
+        <header className="space-y-5">
+          <div className="flex items-center gap-3">
+            <Link href="/" style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--text-muted)", textDecoration: "none", letterSpacing: "0.05em" }}>
+              ← Overview
+            </Link>
+            <span style={{ color: "var(--border)" }}>/</span>
+            <span className="rounded-full bg-[#e3f0ff] px-3 py-1 text-xs font-semibold italic text-zinc-900">
+              Methodology
+            </span>
+          </div>
+          <div style={{ borderLeft: "3px solid var(--accent)", paddingLeft: "20px" }} className="space-y-3">
+            <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)" }}>
+              Methods
+            </p>
+            <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.8rem,4vw,3rem)", fontWeight: 700, lineHeight: 1.2, color: "var(--accent)" }}>
+              Methodology
+            </h1>
+            <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
+              A transparent account of the corpus, coding scheme, analytical choices and limitations behind this report.
+            </p>
+          </div>
         </header>
 
         {/* ── Data collection ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057b8] text-xs font-bold text-white">
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "12px", fontWeight: 700, color: "var(--bg)" }}>
               1
             </span>
-            <h2 className="text-base font-semibold text-zinc-900">
+            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
               Data collection
             </h2>
           </div>
@@ -34,15 +45,15 @@ export default function MethodologyPage() {
         {/* ── Analytical framework ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ffd700] text-xs font-bold text-zinc-900">
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--red)", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
               2
             </span>
-            <h2 className="text-base font-semibold text-zinc-900">
+            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
               Analytical framework
             </h2>
           </div>
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm leading-relaxed text-zinc-700 shadow-sm space-y-3">
-            <p>
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }} className="space-y-3">
+            <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
               Here you can outline your discourse or media analysis framework,
               the categories used (content type, implied violence, gamification,
               dehumanization, aestheticization, narrative framing, technical
@@ -54,15 +65,15 @@ export default function MethodologyPage() {
         {/* ── Procedures, reliability and limitations ── */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0057b8] text-xs font-bold text-white">
+            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--blue)", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
               3
             </span>
-            <h2 className="text-base font-semibold text-zinc-900">
+            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
               Procedures, reliability and limitations
             </h2>
           </div>
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm leading-relaxed text-zinc-700 shadow-sm space-y-3">
-            <p>
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }} className="space-y-3">
+            <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
               Use this part for coder training, intercoder reliability (if
               applicable), tools and software, and a short reflection on ethical
               considerations and constraints.
@@ -70,11 +81,12 @@ export default function MethodologyPage() {
           </div>
         </section>
 
-        <footer className="border-t border-zinc-200 pt-6 text-sm text-zinc-500">
-          <Link href="/" className="underline underline-offset-2">
-            Back to overview
+        <footer style={{ borderTop: "1px solid var(--border)", paddingTop: "24px", fontFamily: "var(--mono)", fontSize: "11px" }}>
+          <Link href="/" style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+            ← Back to overview
           </Link>
         </footer>
+
       </main>
     </div>
   );

@@ -70,13 +70,13 @@ function droneByChannel(raw: typeof CH_RAW) {
 /* ─── shared chart styles ───────────────────────────────────────────────── */
 const tt = {
   fontSize: 11,
-  background: "#fff",
-  border: "1px solid #e4e4e7",
+  background: "#111111",
+  border: "1px solid #2a2a2a",
   borderRadius: 6,
-  color: "#18181b",
+  color: "#e8e8e0",
 };
 
-const axisProps = { tick: { fill: "#a1a1aa", fontSize: 11 } };
+const axisProps = { tick: { fill: "#555550", fontSize: 11 } };
 
 /* ─── tab config ────────────────────────────────────────────────────────── */
 const TABS = [
@@ -112,18 +112,23 @@ export default function VisualAnalysis() {
   }), [droneData]);
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* tab bar */}
-      <div className="flex flex-wrap gap-2">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`rounded-full px-4 py-1.5 text-xs font-medium transition ${
-              tab === t.id
-                ? "bg-zinc-900 text-white"
-                : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-            }`}
+            style={{
+              borderRadius: "99px", padding: "6px 16px",
+              fontSize: "11px", fontFamily: "var(--mono)", letterSpacing: "0.08em",
+              border: "1px solid",
+              cursor: "pointer", transition: "all 0.15s",
+              background: tab === t.id ? "var(--accent)" : "var(--surface2)",
+              color: tab === t.id ? "var(--bg)" : "var(--text-dim)",
+              borderColor: tab === t.id ? "var(--accent)" : "var(--border)",
+              fontWeight: tab === t.id ? 600 : 400,
+            }}
           >
             {t.label}
           </button>
@@ -131,19 +136,23 @@ export default function VisualAnalysis() {
       </div>
 
       {/* chart panel */}
-      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm space-y-6">
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
         {/* per-channel channel selector */}
         {tab === "per-channel" && (
-          <div className="flex flex-wrap gap-2">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
             {CHANNELS.map(ch => (
               <button
                 key={ch}
                 onClick={() => setSelChannel(ch)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-                  selChannel === ch
-                    ? "bg-[#0057b8] text-white"
-                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                }`}
+                style={{
+                  borderRadius: "99px", padding: "4px 12px",
+                  fontSize: "11px", fontFamily: "var(--mono)",
+                  border: "1px solid",
+                  cursor: "pointer", transition: "all 0.15s",
+                  background: selChannel === ch ? "var(--accent)" : "var(--surface2)",
+                  color: selChannel === ch ? "var(--bg)" : "var(--text-dim)",
+                  borderColor: selChannel === ch ? "var(--accent)" : "var(--border)",
+                }}
               >
                 {ch}
               </button>
@@ -152,7 +161,7 @@ export default function VisualAnalysis() {
         )}
 
         {/* chart title */}
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+        <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)" }}>
           {tab === "aggregate"    && "Frame type distribution over time (% of all images)"}
           {tab === "drone"        && "Drone POV share (%) by channel over time"}
           {tab === "per-channel"  && `${selChannel} — frame distribution (%)`}
@@ -164,35 +173,35 @@ export default function VisualAnalysis() {
         <ResponsiveContainer width="100%" height={380}>
           {(tab === "aggregate" || tab === "per-channel") ? (
             <AreaChart data={tab === "aggregate" ? aggData : chData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
               <XAxis dataKey="period" {...axisProps} />
               <YAxis domain={[0, 100]} {...axisProps} />
               <Tooltip contentStyle={tt} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#888880" }} />
               {FRAMES.map(f => (
                 <Area key={f} type="monotone" dataKey={f} stackId="1"
-                  fill={FRAME_COLORS[f]} stroke={FRAME_COLORS[f]} fillOpacity={0.82} />
+                  fill={FRAME_COLORS[f]} stroke={FRAME_COLORS[f]} fillOpacity={0.75} />
               ))}
             </AreaChart>
           ) : tab === "drone" ? (
             <LineChart data={droneTable}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
               <XAxis dataKey="period" {...axisProps} />
               <YAxis domain={[0, 35]} {...axisProps} />
               <Tooltip contentStyle={tt} />
-              <Legend wrapperStyle={{ fontSize: 10 }} />
+              <Legend wrapperStyle={{ fontSize: 10, color: "#888880" }} />
               {CHANNELS.map((ch, i) => (
                 <Line key={ch} type="monotone" dataKey={ch}
-                  stroke={`hsl(${i * 36},65%,50%)`} strokeWidth={2} dot={{ r: 2.5 }} />
+                  stroke={`hsl(${i * 36},65%,55%)`} strokeWidth={2} dot={{ r: 2.5 }} />
               ))}
             </LineChart>
           ) : (
             <LineChart data={tab === "scores" ? SCORES_AGG : SCORES_FRAME}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
               <XAxis dataKey="period" {...axisProps} />
               <YAxis domain={[0, tab === "drone-scores" ? 8 : 7]} {...axisProps} />
               <Tooltip contentStyle={tt} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#888880" }} />
               {Object.keys(SCORE_COLORS).map(k => (
                 <Line key={k} type="monotone" dataKey={k} name={SCORE_LABELS[k]}
                   stroke={SCORE_COLORS[k]} strokeWidth={2} dot={{ r: 2.5 }} />
@@ -202,12 +211,12 @@ export default function VisualAnalysis() {
         </ResponsiveContainer>
 
         {/* finding callout */}
-        <div className="flex gap-3 rounded-xl border border-[#e3f0ff] bg-[#e3f0ff] p-4">
-          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#0057b8] text-[10px] font-bold text-white">
+        <div style={{ display: "flex", gap: "12px", background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "16px" }}>
+          <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "var(--accent)", fontSize: "11px", fontWeight: 700, color: "var(--bg)", marginTop: "1px" }}>
             →
           </span>
-          <p className="text-sm leading-relaxed text-zinc-700">
-            <span className="font-semibold text-zinc-900">Key finding: </span>
+          <p style={{ fontSize: "0.875rem", lineHeight: 1.7, color: "var(--text-dim)" }}>
+            <span style={{ fontWeight: 600, color: "var(--accent)" }}>Key finding: </span>
             {FINDINGS[tab]}
           </p>
         </div>
