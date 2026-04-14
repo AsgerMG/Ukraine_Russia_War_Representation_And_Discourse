@@ -24,7 +24,7 @@ export default function ContentTypePage() {
               Channel Content
             </h1>
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
-              How different formats, genres and platform-native features shape how the Ukraine war appears in feeds and interfaces.
+              How the distribution of content categories changes across ten Russian and Ukrainian Telegram channels, revealing how political commentary, destruction, propaganda, and combat imagery rise or recede over time.
             </p>
           </div>
         </header>
@@ -36,15 +36,18 @@ export default function ContentTypePage() {
               1
             </span>
             <h2 style={{ fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-dim)" }}>
-              Overview
+              Report finding
             </h2>
           </div>
           <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-            Use this page to present your main findings on content types
-            (e.g. short-form video, livestreams, memes, infographics, long-form
-            explainers). You can structure the analysis as 3–5 short sections,
-            each combining a key observation with one or two illustrative
-            examples or visuals.
+            The channel content analysis shows a structural divergence between
+            Russian and Ukrainian channels. Russian channels increasingly orient
+            towards political commentary, with wargonzo the clearest example of
+            sustained ideological concentration, while Ukrainian channels rooted
+            in occupied territories remain dominated by destruction, aftermath,
+            and civilian harm. Read proportionally rather than in absolute
+            volume, the heatmaps below show how each channel's editorial profile
+            shifts over time.
           </p>
         </section>
 
@@ -60,7 +63,7 @@ export default function ContentTypePage() {
                   Channel Content heatmaps
                 </h2>
                 <p style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--text-muted)" }}>
-                  Distribution of content types by month across all channels
+                  Interactive companion to the report's channel content analysis
                 </p>
               </div>
             </div>

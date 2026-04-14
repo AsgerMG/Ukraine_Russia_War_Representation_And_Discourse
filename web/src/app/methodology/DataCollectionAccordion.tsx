@@ -99,7 +99,7 @@ const panels: Panel[] = [
         </p>
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
           To ensure temporal representativeness while managing data volume, a systematic sampling method was applied: up to 50 evenly spaced media posts per channel per month were selected, yielding a corpus of approximately{" "}
-          <span style={{ color: "var(--accent)", fontWeight: 500 }}>24,000 sampled observations</span>.
+          <span style={{ color: "var(--accent)", fontWeight: 500 }}>24.000+ sampled observations</span>.
           All cross-channel and cross-temporal comparisons are therefore <em>proportional</em> rather than absolute — a deliberate methodological constraint that precludes analysis of absolute publication volume but enables reliable comparative analysis of content composition over time.
         </p>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)" }}>
@@ -218,7 +218,7 @@ const panels: Panel[] = [
     content: (
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-          To explore correlatory effects across the five annotation dimensions, a series of bivariate ordinary least squares (OLS) regression analyses were conducted on the full annotated corpus of 24,000+ images. For each model, one score was designated the independent variable and a theoretically related score the dependent variable, drawing on prior literature on visual propaganda and conflict media.
+          To explore correlatory effects across the five annotation dimensions, a series of bivariate ordinary least squares (OLS) regression analyses were conducted on the full annotated corpus of 24.000+ images. For each model, one score was designated the independent variable and a theoretically related score the dependent variable, drawing on prior literature on visual propaganda and conflict media.
         </p>
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
           Pearson correlation coefficients, regression slopes, intercepts, and R² values were computed, and statistical significance was assessed via p-values derived from the t-distribution on the regression slope. Three targeted models were constructed:

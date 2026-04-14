@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Representation and Discourse — Ukraine War",
+  title: "Picturing the War — Visual Representation on Telegram, 2022–2026",
   description:
-    "A visual and analytical exploration of how the Ukraine war is represented across digital platforms.",
+    "Visual representation and discourse on Telegram, 2022–2026. A comparative study of ten Russian and Ukrainian channels, combining channel content, frontline violence, technical means, correlatory effects, and methodology.",
 };
 
 const BG_IMAGES = [

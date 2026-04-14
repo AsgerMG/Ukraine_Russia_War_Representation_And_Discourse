@@ -14,18 +14,20 @@ export default function DehumanizationPage() {
     <PageShell
       chapter="Chapter 04"
       title="🚧 Dehumanization"
-      subtitle="How language and imagery reduce people to categories, abstractions or targets instead of individuals."
+      subtitle="How visual representation strips opponents of individuality, turning people into categories, symbols, or targets."
       pillBg="#ffdd00" pillText="#111"
     >
       <WipBanner />
       <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }}>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "16px" }}>
-          Overview
+          Current direction
         </p>
         <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-          Use this page to document explicit and subtle forms of dehumanization,
-          from metaphors and labels to visual tropes. You can contrast examples
-          across outlets or platforms and indicate where counter-discourses appear.
+          This chapter remains in development. The report already indicates that
+          dehumanization is the strongest predictor of implied violence and a
+          central node in the wider score network. The final chapter will trace
+          how this logic operates through drone imagery, composite memes, and
+          enemy-targeting visual conventions across channels.
         </p>
       </section>
     </PageShell>

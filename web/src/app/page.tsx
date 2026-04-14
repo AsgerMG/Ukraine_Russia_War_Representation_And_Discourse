@@ -93,13 +93,13 @@ export default function Home() {
             Research report
           </p>
           <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem,5vw,3.5rem)", fontWeight: 700, lineHeight: 1.15, color: "var(--accent)" }}>
-            Representation and discourse of the Ukraine war
+            Picturing the War
           </h1>
           <p style={{ color: "var(--text-dim)", fontSize: "1.05rem", lineHeight: 1.75 }}>
-            A visual and analytical exploration of how the Ukraine war is
-            represented across digital platforms, with a focus on channel content,
-            violence on the front, gamification, dehumanization, aestheticization and
-            narrative framing.
+            Visual representation and discourse on Telegram, 2022–2026. A
+            comparative study of ten Russian and Ukrainian channels, combining
+            channel content, frontline violence, technical means, correlatory
+            effects, and methodology in one shared analytical framework.
           </p>
         </header>
 
@@ -146,7 +146,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-3 rounded-xl p-2" style={{ background: "var(--accent)" }}>
               <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: "var(--accent-dim)" }}>📄</span>
               <div className="inline-flex rounded-full px-3 py-1 text-sm font-semibold italic" style={{ background: "var(--accent)", color: "var(--bg)" }}>
-                Project report
+                Full report
               </div>
             </div>
             <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontFamily: "var(--mono)", textAlign: "center", lineHeight: 1.6 }}>
@@ -239,13 +239,13 @@ export default function Home() {
             How to read this
           </p>
           <p style={{ fontSize: "0.875rem", color: "var(--text-dim)", lineHeight: 1.8 }}>
-            Start anywhere: each chapter can be read on its own, but together
-            they sketch a broader picture of how the war is framed and made
-            visible. For readers interested in the research design, the{" "}
+            Each chapter is self-contained but contributes to a cumulative
+            argument. For readers interested in the research design, the{" "}
             <a href="/methodology" style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
               Methodology
             </a>{" "}
-            page details data sources, coding and limitations.
+            page details data sources, the annotation pipeline, and
+            limitations.
           </p>
         </section>
 

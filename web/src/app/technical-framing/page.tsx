@@ -27,14 +27,18 @@ export default function TechnicalFramingPage() {
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
               How image-production modes — drone POV, soldier POV, civilian recording,
               professional production, composite/meme and screenshot — shift across ten
-              Russian-language Telegram channels between February 2022 and December 2025.
+              Russian and Ukrainian Telegram channels. This half-year analysis runs
+              through H2 2025; the partial 2026 period is excluded to avoid
+              truncation bias.
             </p>
             <div className="flex flex-wrap gap-4" style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--text-muted)" }}>
-              <span>n = 24,559 images</span>
+              <span>n = 24.000+ images</span>
               <span style={{ color: "var(--border)" }}>·</span>
               <span>10 Telegram channels</span>
               <span style={{ color: "var(--border)" }}>·</span>
-              <span>Feb 2022 – Dec 2025</span>
+              <span>H1 2022 – H2 2025</span>
+              <span style={{ color: "var(--border)" }}>·</span>
+              <span>partial 2026 excluded</span>
             </div>
           </div>
         </header>
@@ -67,7 +71,7 @@ export default function TechnicalFramingPage() {
               1
             </span>
             <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-              Frame type analysis
+              Interactive companion
             </h2>
           </div>
           <VisualAnalysis />
@@ -80,7 +84,7 @@ export default function TechnicalFramingPage() {
               2
             </span>
             <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-              Interpretation
+              Report interpretation
             </h2>
           </div>
           <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }} className="space-y-4">

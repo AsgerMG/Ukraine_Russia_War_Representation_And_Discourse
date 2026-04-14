@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Violence on the Front — Telegram War Imagery Analysis</title>
+<title>Frontline Violence — Telegram War Imagery Analysis</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -703,15 +703,15 @@ nav {
 <div class="container">
   <div class="hero-eyebrow">War Imagery on Telegram · 2022–2026</div>
   <h1 class="hero-title">
-    Violence<br>
-    <span class="line-accent">on the Front</span>
+    Frontline<br>
+    <span class="line-accent">violence</span>
   </h1>
   <p class="hero-subtitle">
-    A corpus analysis of 26,707 images and video thumbnails scraped from 10 Telegram war channels — five Russian, five Ukrainian — spanning the full-scale invasion from February 24, 2022 to February 24, 2026. Each image was annotated by AI across multiple dimensions. This is the violence thread.
+    A corpus analysis of 24.000+ images and video thumbnails scraped from 10 Telegram war channels — five Russian, five Ukrainian — spanning the full-scale invasion from February 24, 2022 to February 24, 2026. Each image was annotated by AI across multiple dimensions. This interactive companion isolates the violence dimension.
   </p>
   <div class="hero-stats">
     <div class="stat-box">
-      <div class="stat-number" id="statTotal">26,707</div>
+      <div class="stat-number" id="statTotal">24.000+</div>
       <div class="stat-label">Images Analysed</div>
     </div>
     <div class="stat-box">
@@ -742,7 +742,7 @@ nav {
   </div>
 
   <div class="chart-wrap">
-    <div class="chart-title">Score Distribution — All 26,707 Images</div>
+    <div class="chart-title">Score Distribution — Full 24.000+ Image Corpus</div>
     <svg id="distChart" width="100%" height="280"></svg>
   </div>
 
@@ -919,7 +919,7 @@ nav {
   <div class="footer-inner">
     <div class="footer-note">
       VIOLENCE ON THE FRONT · TELEGRAM WAR IMAGERY ANALYSIS<br>
-      26,707 images · 10 channels · Feb 2022 – Feb 2026<br>
+      24.000+ images · 10 channels · Feb 2022 – Feb 2026<br>
       AI annotation: implied violence, gamification, dehumanization, aestheticization, narrative framing
     </div>
     <div class="footer-note" style="text-align:right;">
@@ -1012,7 +1012,7 @@ bgFiles.forEach(f => {
 
 // TICKER
 const tickerTrack = document.getElementById('tickerTrack');
-const tickerText = '10 Telegram channels · 26,707 images · 4 years of war · 41% explicitly violent · mean violence score 4.23 · February 24 2022 – February 24 2026 · RVvoenkor · rusich_army · voenkorKotenok · wargonzo · voenacher · donbassrealii · kherson_non_fake · a_shtirlitz · hyevuy_dnepr · ZA_FROHT · ';
+const tickerText = '10 Telegram channels · 24.000+ images · 4 years of war · 41% explicitly violent · mean violence score 4.23 · February 24 2022 – February 24 2026 · RVvoenkor · rusich_army · voenkorKotenok · wargonzo · voenacher · donbassrealii · kherson_non_fake · a_shtirlitz · hyevuy_dnepr · ZA_FROHT · ';
 tickerTrack.innerHTML = `<span>${tickerText}</span><span>${tickerText}</span>`;
 
 // ═══════════════════════════════════════

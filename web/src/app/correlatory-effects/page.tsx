@@ -18,7 +18,7 @@ const dashboards = [
   {
     id: "aestheticization",
     title: "Aestheticization × Narrative framing",
-    subtitle: "Dashboard",
+    subtitle: "Regression dashboard",
     src: "/aestheticization-framing-dashboard.html",
     badge: 3,
   },
@@ -48,7 +48,9 @@ export default function CorrelatoryEffectsPage() {
               Correlatory effects
             </h1>
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
-              How analytical dimensions interact — examining the statistical relationships between gamification, dehumanization, aestheticization, implied violence and narrative framing across the corpus.
+              How the five continuous annotation dimensions relate to one
+              another across the corpus, using bivariate OLS models and
+              correlation summaries as an interactive companion to the report.
             </p>
           </div>
         </header>

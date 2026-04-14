@@ -24,9 +24,9 @@ export default function ImpliedViolencePage() {
               Frontline violence
             </h1>
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
-              How violence is suggested, obscured or made visible through language,
-              imagery and platform constraints across ten Russian-language Telegram
-              channels — February 2022 to December 2025.
+              How violence is depicted, implied, and normalised across ten Russian
+              and Ukrainian Telegram channels — tracing its distribution, evolution
+              over time, and relationship to engagement across the wider corpus.
             </p>
           </div>
         </header>
@@ -38,14 +38,17 @@ export default function ImpliedViolencePage() {
               1
             </span>
             <h2 style={{ fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-dim)" }}>
-              Overview
+              Report finding
             </h2>
           </div>
           <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-            Use this page to unpack how violence appears directly versus being
-            hinted at or kept off-screen. You might compare different outlet
-            policies, content warnings and visual strategies, supported by
-            annotated examples.
+            Violence is the study's most revealing dimension because it cuts across
+            content types, channels, and periods. The central finding is not that
+            Russian channels are simply more violent, but that Ukrainian channels
+            rooted in occupied territories score highest, documenting destruction
+            happening to their own communities. Across the corpus, violence
+            stabilises early, persists over time, and only partially translates
+            into wider reach.
           </p>
         </section>
 
@@ -58,10 +61,10 @@ export default function ImpliedViolencePage() {
               </span>
               <div>
                 <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-                  Violence on the front
+                  Frontline violence
                 </h2>
                 <p style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--text-muted)" }}>
-                  Interactive D3 analysis of violence imagery across the corpus
+                  Interactive companion to the report's violence analysis
                 </p>
               </div>
             </div>
