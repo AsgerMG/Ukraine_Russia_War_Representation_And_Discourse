@@ -39,25 +39,6 @@ const dimensions = [
   { label: "Camera frame / POV", desc: "Compositional and perspectival choices shaping viewer identification" },
 ];
 
-const limitationItems = [
-  {
-    title: "Sampling and volume",
-    body: "The sampling method — capped at 50 posts per channel per month — ensures temporal comparability but precludes any analysis of absolute engagement or publication volume. All cross-channel and cross-temporal comparisons are therefore proportional rather than absolute. Channels that post more frequently are not systematically better represented, which is methodologically defensible but means the study cannot speak to questions of reach or total output.",
-  },
-  {
-    title: "Annotation quality",
-    body: "The automated annotation pipeline rests on a training set of only 50 manually coded images, which introduces subjectivity into the scoring framework. The codebook dimensions — particularly implied violence, aestheticization, and dehumanization — involve inherently interpretive judgements that are relative to this dataset and difficult to replicate without access to the original training material. A technical limitation was also observed whereby the model displayed a tendency to avoid extreme scores, particularly at the upper end of scales, which may compress variance in the results.",
-  },
-  {
-    title: "Corpus scope",
-    body: "The corpus is limited to ten Telegram channels — a fraction of the Russian and Ukrainian military information ecosystems, which each comprise dense networks of channels that actively repost and amplify each other's content. Channels that are less visible, operate under pseudonyms, or have since been deleted are systematically excluded. Moreover, restricting the analysis to Telegram leaves aside VKontakte, Twitter/X, and YouTube.",
-  },
-  {
-    title: "Video treatment",
-    body: "Video content constitutes a significant share of posts on military Telegram channels. The pipeline processes only the thumbnail image extracted from each video rather than the full audiovisual file. A single static frame cannot capture narrative progression, motion effects, editing rhythm, or the affective dimensions of sound — music, explosions, voiceovers, silence. The drone POV findings in particular may be systematically underestimated, as the gamified qualities of drone footage are often most pronounced in the dynamic visual elements of the full clip.",
-  },
-];
-
 function ChannelTable({ channels, flagLabel, flagColor }: { channels: typeof russianChannels, flagLabel: string, flagColor: string }) {
   return (
     <div style={{ overflowX: "auto", borderRadius: "10px", border: "1px solid var(--border)" }}>
@@ -178,43 +159,36 @@ const panels: Panel[] = [
     ),
   },
   {
-    id: "sampling",
-    label: "V. Sampling strategy",
+    id: "violence-analysis",
+    label: "V. Violence analysis",
     content: (
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-          Due to the high volume of media posts — often exceeding 2,000 per channel per month — a{" "}
-          <span style={{ color: "var(--accent)", fontWeight: 500 }}>systematic positional sampling strategy</span>{" "}
-          was applied independently to each channel-month pair.
+          Of the seven annotated dimensions, implied violence was selected for dedicated in-depth analysis. Violence is the dimension most directly constitutive of wartime visual communication — present across content types, channels, and time periods in ways that cut across all other analytical categories. Its dedicated treatment is further justified by the density of interpretive information available: beyond the numerical score, each annotation includes a justification text describing the specific visual cues that informed the rating, enabling qualitative analysis at scale.
         </p>
-        <div style={{ background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "20px" }}>
-          <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "12px" }}>Procedure</p>
-          <ol style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
-            {[
-              "All media-bearing messages were enumerated and ordered chronologically by publication timestamp, producing an ordered list of M messages indexed 0 to M − 1.",
-              "If M ≤ 50, all messages were retained without sampling.",
-              "If M > 50, exactly 50 messages were selected using evenly spaced index interpolation.",
-            ].map((step, i) => (
-              <li key={i} style={{ display: "flex", gap: "12px", fontSize: "0.875rem", color: "var(--text-dim)", lineHeight: 1.7 }}>
-                <span style={{ display: "flex", width: "20px", height: "20px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: i % 2 === 0 ? "#0057b7" : "#ffdd00", fontSize: "10px", fontWeight: 700, color: i % 2 === 0 ? "#fff" : "#111", marginTop: "2px" }}>
-                  {i + 1}
-                </span>
-                <span>{step}</span>
-              </li>
-            ))}
-          </ol>
-          <div style={{ marginTop: "16px", background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "8px", padding: "12px 16px", fontFamily: "var(--mono)", fontSize: "11px", color: "var(--text-dim)" }}>
-            <p style={{ fontSize: "9px", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "8px" }}>Sampling formula</p>
-            <p>step = (M − 1) / (n − 1)   where n = 50</p>
-            <p style={{ marginTop: "4px" }}>I = {"{ round(i × step) | i ∈ {0, 1, …, n−1} }"}</p>
-          </div>
-        </div>
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
+          The analysis is structured in two stages. The first is quantitative, examining four aspects of the violence scores across the corpus: their overall distribution, their evolution over the four-year observation period, their variation across channels and between Russian and Ukrainian channel groups, and their relationship to post engagement as measured by view counts. The second stage is qualitative, constructing an inductive typology of violence by systematically reading annotation descriptions and grouping images by shared visual logic — rather than relying solely on the model's content type classifications. This process identified eight distinct visual genres through which violence is represented across the corpus, ranging from direct casualty imagery to aestheticised memorial memes (the Груз 200 genre).
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: "technical-means",
+    label: "VI. Technical means analysis",
+    content: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
+          To track shifts in the technical mode of visual representation over time, images were grouped into half-year periods (H1/H2) from the first half of 2022 through the second half of 2025, yielding eight time bins. The partial 2026 period was excluded to avoid truncation bias. The primary dependent variable is <em>frame type</em>, a seven-category classification of how each image was technically produced: drone POV, soldier POV, civilian recording, professional production, composite/meme, screenshot, and other.
+        </p>
+        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
+          For each period, proportional shares were calculated at both the aggregate corpus level and per individual channel, to distinguish corpus-wide trends from channel-specific behaviour — a two-level approach necessary because aggregate shifts can be driven by a small number of high-volume channels rather than reflecting uniform change. As a secondary lens, mean scores for the five continuous annotation dimensions were computed per period and cross-tabulated by frame type, to assess whether changing frame composition corresponds to qualitative shifts in how violence is represented.
+        </p>
       </div>
     ),
   },
   {
     id: "correlatory",
-    label: "VI. Correlatory effects",
+    label: "VII. Correlatory effects",
     content: (
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
@@ -240,26 +214,6 @@ const panels: Panel[] = [
         <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
           To contextualise each relationship, mean scores per discrete score level were computed with 95% confidence intervals (±1.96 × σ/√n), and results were disaggregated by content type, frame type, and channel. A full 5×5 Pearson correlation heatmap was produced to identify second-order relationships across the score network.
         </p>
-      </div>
-    ),
-  },
-  {
-    id: "limitations",
-    label: "VII. Limitations",
-    content: (
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        <p style={{ fontSize: "0.875rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-          The study is best understood as an exploratory contribution rather than a definitive empirical account. Its primary value lies in demonstrating the methodological feasibility of large-scale automated visual analysis in conflict contexts, and in generating hypotheses for more rigorously resourced future research.
-        </p>
-        {limitationItems.map((item) => (
-          <div key={item.title} style={{ display: "flex", gap: "16px", background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "16px" }}>
-            <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#ffdd00", fontSize: "11px", fontWeight: 700, color: "#111", marginTop: "1px" }}>!</span>
-            <div>
-              <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--text)", marginBottom: "4px" }}>{item.title}</p>
-              <p style={{ fontSize: "0.85rem", lineHeight: 1.7, color: "var(--text-dim)" }}>{item.body}</p>
-            </div>
-          </div>
-        ))}
       </div>
     ),
   },
