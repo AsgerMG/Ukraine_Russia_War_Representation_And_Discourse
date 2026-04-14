@@ -647,6 +647,9 @@
     <p>
       Yet despite a growing body of scholarship on digital propaganda and platform-mediated witnessing, no study had systematically examined the visual content of this war at scale, across both sides, and over its full duration. This research addresses that gap.
     </p>
+    <p>
+      Drawing on a corpus of approximately 24.000+ media items scraped from ten Telegram channels — five Russian and five Ukrainian — spanning February 2022 to February 2026, the study applies a structured annotation framework across seven analytical dimensions: content type, implied violence, gamification, dehumanization, aestheticization, narrative framing, and camera frame. By coding these dimensions symmetrically across channels ranging from state-affiliated institutions to independent milbloggers, it offers a comparative and longitudinal account of how wartime visual strategies evolved and diverged across four years of conflict.
+    </p>
 
     <div class="pull">
       <p>"Despite sharp ideological opposition, Russian and Ukrainian channels share a common visual vocabulary — differing not in the types of imagery deployed, but in their narrative function."</p>
@@ -775,7 +778,7 @@
 
     <h3>I. Data Collection</h3>
     <p>
-      The corpus was assembled using a custom Python script built on the Telethon library, which interfaces with the Telegram API to retrieve message metadata programmatically. The scraping pipeline was designed to collect media-bearing posts — photographs, videos (retrieved via thumbnail), and documents — published between 24 February 2022 and 24 February 2026. For each message, the following metadata was extracted: channel identifier, publication date, media type, file size, view count, forward count, reply count, and user reactions.
+      The corpus was assembled using a custom Python script built on the Telethon library, which interfaces with the Telegram API to retrieve message metadata programmatically. The ten channels were selected to represent a range of pro-Russian and pro-Ukrainian information ecosystems, including front-line reporting accounts, official military-linked channels, and occupied-territory outlets. The scraping pipeline was designed to collect media-bearing posts — photographs, videos (retrieved via thumbnail), and documents — published between 24 February 2022 and 24 February 2026. For each message, the following metadata was extracted: channel identifier, publication date, media type, file size, view count, forward count, reply count, and user reactions.
     </p>
     <p>
       To ensure temporal representativeness while managing data volume, a systematic sampling method was applied: up to 50 evenly spaced media posts per channel per month were selected, yielding a corpus of approximately 24.000+ sampled observations. All cross-channel and cross-temporal comparisons are therefore <em>proportional</em> rather than absolute — a deliberate methodological constraint that precludes analysis of absolute publication volume but enables reliable comparative analysis of content composition over time.
@@ -822,7 +825,7 @@
       Of the seven annotated dimensions, implied violence was selected for dedicated in-depth analysis. Violence is the dimension most directly constitutive of wartime visual communication — present across content types, channels, and time periods in ways that cut across all other analytical categories. Its dedicated treatment is further justified by the density of interpretive information available: beyond the numerical score, each annotation includes a justification text describing the specific visual cues that informed the rating, enabling qualitative analysis at scale.
     </p>
     <p>
-      The analysis is structured in two stages. The first is quantitative, examining four aspects of the violence scores across the corpus: their overall distribution, their evolution over the four-year observation period, their variation across channels and between Russian and Ukrainian channel groups, and their relationship to post engagement as measured by view counts. The second stage is qualitative, constructing an inductive typology of violence by systematically reading annotation descriptions and grouping images by shared visual logic — rather than relying solely on the model's content type classifications. This process identified eight distinct visual genres through which violence is represented across the corpus, ranging from direct casualty imagery to aestheticised memorial memes (the Груз 200 genre).
+      The analysis is structured in two stages. The first is quantitative, examining four aspects of the violence scores across the corpus: their overall distribution, their evolution over the four-year observation period, their variation across channels and between Russian and Ukrainian channel groups, and their relationship to post engagement as measured by view counts. The second stage is qualitative, constructing an inductive typology of violence by systematically reading annotation descriptions and grouping images by shared visual logic — rather than relying solely on the model's content type classifications. This process identified eight distinct visual genres through which violence is represented across the corpus, ranging from direct casualty imagery to aestheticised memorial memes (the Груз 200 genre). All results are presented through an interactive web-based visualisation developed specifically for this analysis, allowing dynamic exploration across time, channel, and violence category.
     </p>
 
     <h3>VI. Technical Means Analysis</h3>
@@ -873,6 +876,9 @@
     <p>
       The most structurally significant finding from the channel content analysis is the divergence between Russian and Ukrainian channels in their balance of political versus kinetic content (<em>political</em> here referring to ideological commentary, state messaging, and interpretive framing rather than battlefield events themselves).
     </p>
+    <p>
+      Initial observations suggest that in the early stages of the conflict, content types were highly fragmented. Over time, channels began to specialise their messaging, visible in the channel-view heatmaps as increasingly stable horizontal bands. The heatmaps therefore show not only group-level divergence between Russian and Ukrainian channels, but also the emergence of distinct channel-specific posting cultures.
+    </p>
 
     <div class="two-col reveal">
       <div>
@@ -887,7 +893,7 @@
       <div>
         <h3>The Ukrainian pattern</h3>
         <p>
-          Ukrainian channels show more variation. Channels anchored in occupied territories — donbassrealii and kherson_non_fake — are dominated by destruction and civilian content, reflecting their geographic position under sustained bombardment. Their editorial profile is not a choice but a condition.
+          Ukrainian channels show more variation. A_shtirlitz is the notable exception, combining high political shares with exceptional propaganda meme volumes in 2022 — a combination consistent with an explicit information-warfare function. Channels anchored in occupied territories — donbassrealii and kherson_non_fake — are dominated by destruction and civilian content, reflecting their geographic position under sustained bombardment. Their editorial profile is not a choice but a condition.
         </p>
         <p>
           The civilian category remains consistently more prominent across Ukrainian channels than Russian ones. Humanising the civilian population is a structural narrative priority that Russian channels largely subordinate to military, political, and ideological content.
@@ -903,7 +909,7 @@
     <div class="section-label">07 — Finding III</div>
     <h2>Violence is a Ukrainian documentary reality, not a Russian narrative choice</h2>
     <p>
-      The violence analysis produces the study's most counterintuitive result. Across the full corpus, the mean implied violence score is <span class="hl">4.23 out of 10</span>, with a strikingly bimodal distribution — clustering around scores 1–4, dropping at 5, then spiking again at 6 and 8. The valley at 5 likely reflects a threshold effect in the annotation model, treating moderate and explicit violence as categorically distinct.
+      The violence analysis produces the study's most counterintuitive result. Across the full corpus, the mean implied violence score is <span class="hl">4.23 out of 10</span>, with a strikingly bimodal distribution — clustering around scores 1–4, dropping at 5, then spiking again at 6 and 8. The valley at 5 likely reflects a threshold effect in the annotation model, treating moderate and explicit violence as categorically distinct. Most consequentially, <span class="hl">41% of all images score 6 or above</span> — the threshold at which violence shifts from implied to explicit — meaning that nearly one in two posts depicts violence in unambiguous terms.
     </p>
 
     <div class="finding reveal">
@@ -928,6 +934,9 @@
     <div class="pull">
       <p>"Extreme violence does not drive engagement in the way platform logic predicts. Mean view counts peak at score 4 and <em>decline</em> at higher scores — violent content circulates in narrower, self-selecting networks rather than reaching mass audiences."</p>
     </div>
+    <p>
+      The qualitative typology further identifies eight distinct visual genres of violence, ranging from drone strike footage — characterised by a gamified HUD aesthetic that abstracts killing into a targeting interface — to Груз 200 memorial memes, in which portrait photographs of soldiers are overlaid with flame effects and death notation, producing aestheticised grief without graphic imagery.
+    </p>
   </div>
 </section>
 
@@ -1016,7 +1025,7 @@
         Drone imagery rose from 3.4% of all images in early 2022 to a peak of 12% in H1 2024, before declining to 6.1% by late 2025. This shift was not uniform — it was driven by battlefield-proximate channels like ZA_FROHT, voenacher, and rusich_army, which reached <span class="hl">29–31% drone content at peak</span>. Commentary channels never exceeded 5%. The drone shift is a property of combat-proximate channels, not the ecosystem as a whole.
       </p>
       <p>
-        The rise came at the direct expense of civilian recording, which fell from 41% to 28%. The war's dominant visual perspective shifted from the horizontal, ground-level viewpoint of a bystander to the vertical, overhead viewpoint of a drone operator. The camera moved from <em>witnessing</em> violence to being <em>embedded in the system producing it</em>.
+        The rise came at the direct expense of civilian recording, which fell from 41% to 28%. The war's dominant visual perspective shifted from the horizontal, ground-level viewpoint of a bystander to the vertical, overhead viewpoint of a drone operator. The camera moved from <em>witnessing</em> violence to being <em>embedded in the system producing it</em>. Soldier POV, despite GoPro proliferation, declined from 3.5% to 2% — the drone displaced rather than complemented the helmet cam.
       </p>
     </div>
 
@@ -1029,6 +1038,9 @@
         <p>Drone footage is not just more common — it is qualitatively different. HUD overlays, targeting reticles, and top-down framing reduce human figures to points of impact, producing a visual register closer to a video game than to documentation. Dehumanization scores within drone content hit 5.0 against a corpus average of 2.1. These are not marginal gaps. The technical mode of image production is not neutral — the same event filmed from the ground and from a drone generates fundamentally different representations of violence.</p>
       </div>
     </div>
+    <p style="max-width: 65ch; margin-top: 2rem;">
+      The partial retreat from the 2024 peak likely reflects both electronic-warfare countermeasures reducing successful strike recordings and a possible novelty decay, as composite and meme content rose simultaneously. The visual economy of the war therefore does not follow a linear trajectory toward technological mediation; it exhibits a rise-plateau-retreat pattern shaped by operational constraints and audience dynamics. Aggregate gamification and aestheticization scores also trended upward across frame types, suggesting a broader normalisation of stylised violence representation beyond any single technology.
+    </p>
   </div>
 </section>
 
@@ -1129,7 +1141,7 @@
 
     <h3>On violence as documentary condition</h3>
     <p>
-      The finding that Ukrainian channels score higher on implied violence inverts the common framing of the conflict's information war. The data reveals a structural asymmetry: Russian channels subordinate violence to operational and ideological framing; Ukrainian channels in Kherson and Donbas document destruction as an ongoing reality. Violence here is not principally a rhetorical choice but an empirical condition of certain communities.
+      The finding that Ukrainian channels score higher on implied violence inverts the common framing of the conflict's information war. The data reveals a structural asymmetry: Russian channels subordinate violence to operational and ideological framing; Ukrainian channels in Kherson and Donbas document destruction as an ongoing reality. Violence here is not principally a rhetorical choice but an empirical condition of certain communities. The result also suggests that asymmetry in violent visual output reflects asymmetry in material experience rather than simply propagandistic intent.
     </p>
 
     <h3>On the drone camera</h3>
@@ -1140,6 +1152,10 @@
     <h3>On dehumanization as policy lever</h3>
     <p>
       If dehumanization functions as a structural carrier for the other dimensions of propaganda — violence, aestheticization, narrative framing — then targeting it specifically, rather than addressing individual content types in isolation, may offer greater analytical and policy leverage for counter-disinformation interventions. The r=0.43 to 0.59 correlation range across all five dimensions is a finding with direct implications for media literacy design.
+    </p>
+    <h3>On engagement and virality</h3>
+    <p>
+      The finding that engagement peaks at moderate violence scores and declines at extreme levels also complicates familiar platform-logic assumptions about virality. Extreme violence appears to circulate within narrower, self-selecting networks rather than driving maximum reach, which has implications for how researchers and policymakers model the spread of harmful wartime content online.
     </p>
   </div>
 </section>
@@ -1188,6 +1204,12 @@
     </p>
     <p>
       The study is best understood as generative rather than conclusive. Its primary contribution is to have made these threads visible — and to have demonstrated the methodological feasibility of large-scale automated visual analysis in conflict contexts. Each analytical thread opened here merits dedicated follow-up research: the gamification of drone warfare, the Груз 200 memorial genre, the relationship between violence and engagement, the editorial divergence between Russian and Ukrainian channels.
+    </p>
+    <p>
+      Several directions for further research follow directly from these findings and limitations. Future work should expand the corpus substantially, both in channel volume to capture the broader and more volatile ecosystem of smaller milblogger accounts, and in platform diversity by extending the analysis to VKontakte, Twitter/X, and YouTube where complementary visual strategies operate. The annotation framework would also benefit from grounding in established theoretical literature on visual framing, propaganda aesthetics, and conflict photography, moving beyond inductive category construction toward hypotheses derived from prior research.
+    </p>
+    <p>
+      The treatment of video content remains an unresolved limitation: analysing full audiovisual material rather than static thumbnails would substantially deepen the analysis of how sound, editing rhythm, and motion construct meaning in wartime posts. More broadly, the study maps the terrain sufficiently to identify where deeper investigation is warranted; what it offers is not closure, but a clearer set of problems for subsequent research to pursue.
     </p>
 
     <div class="pull">
