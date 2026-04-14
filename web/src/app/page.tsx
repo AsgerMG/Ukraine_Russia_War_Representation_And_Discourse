@@ -4,6 +4,7 @@ type SectionConfig = {
   bgColor: string;
   iconBgColor: string;
   textColor: string;
+  wip?: boolean;
   Icon: () => JSX.Element;
 };
 
@@ -32,33 +33,33 @@ const sections: SectionConfig[] = [
   {
     href: "/gamification",
     title: "Gamification",
-    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
+    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff", wip: true,
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🎮</span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🚧</span>
     ),
   },
   {
     href: "/dehumanization",
     title: "Dehumanization",
-    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
+    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff", wip: true,
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🧱</span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🚧</span>
     ),
   },
   {
     href: "/aestheticization",
     title: "Aestheticization",
-    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
+    bgColor: YELL, iconBgColor: YELL2, textColor: "#111", wip: true,
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>✨</span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>🚧</span>
     ),
   },
   {
     href: "/narrative-framing",
     title: "Narrative framing",
-    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
+    bgColor: YELL, iconBgColor: YELL2, textColor: "#111", wip: true,
     Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>📣</span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>🚧</span>
     ),
   },
   {
@@ -133,13 +134,44 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Project report entry ── */}
+        <section style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <a
+            href="/project-report"
+            className="transition section-tile"
+            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "var(--surface)", border: "1px solid var(--accent-dim)", borderRadius: "16px", padding: "24px 40px", textDecoration: "none", minWidth: "280px" }}
+          >
+            <div className="inline-flex items-center gap-3 rounded-xl p-2" style={{ background: "var(--accent)" }}>
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: "var(--accent-dim)" }}>📄</span>
+              <div className="inline-flex rounded-full px-3 py-1 text-sm font-semibold italic" style={{ background: "var(--accent)", color: "var(--bg)" }}>
+                Project report
+              </div>
+            </div>
+            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontFamily: "var(--mono)", textAlign: "center", lineHeight: 1.6 }}>
+              Picturing the War — Visual Representation on Telegram, 2022–2026
+            </p>
+            <p style={{ fontSize: "0.75rem", color: "var(--accent-dim)", fontFamily: "var(--mono)" }}>
+              Open report →
+            </p>
+          </a>
+
+          {/* connector line down into chapters */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", marginTop: "24px" }}>
+            <div style={{ width: "1px", height: "24px", background: "var(--accent)" }} />
+            <p style={{ fontFamily: "var(--mono)", fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--accent-dim)" }}>
+              analytical chapters
+            </p>
+            <div style={{ width: "1px", height: "48px", background: "linear-gradient(to bottom, var(--accent), transparent)" }} />
+          </div>
+        </section>
+
         {/* ── Analytical section tiles ── */}
         <section>
           <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "20px" }}>
             Analytical chapters
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {sections.map(({ href, title, Icon, bgColor, textColor }) => (
+            {sections.map(({ href, title, Icon, bgColor, textColor, wip }) => (
               <a
                 key={href}
                 href={href}
@@ -152,8 +184,13 @@ export default function Home() {
                     {title}
                   </div>
                 </div>
+                {wip && (
+                  <p style={{ fontSize: "0.7rem", fontFamily: "var(--mono)", letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--accent-dim)", marginBottom: "4px" }}>
+                    🚧 Work in progress
+                  </p>
+                )}
                 <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontFamily: "var(--mono)" }}>
-                  Open chapter →
+                  {wip ? "Chapter coming soon →" : "Open chapter →"}
                 </p>
               </a>
             ))}

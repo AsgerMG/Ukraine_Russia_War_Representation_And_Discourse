@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Picturing the War — Visual Representation on Telegram, 2022–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #08080e;
+    --bg-2: #0f0f1a;
+    --bg-3: #14141f;
+    --text: #ddd8cc;
+    --text-muted: #7a7669;
+    --text-dim: #4a4840;
+    --accent: #c8392b;
+    --accent-dim: #6b1f18;
+    --amber: #d4892a;
+    --border: rgba(255,255,255,0.07);
+    --serif: 'Playfair Display', Georgia, serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --body: 'Lora', Georgia, serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 18px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.1s linear;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 clamp(1.5rem, 8vw, 10rem) 5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--serif);
+    font-size: clamp(6rem, 22vw, 22rem);
+    font-weight: 900;
+    color: rgba(255,255,255,0.015);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.04em;
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 6.5vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 16ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .hero-lede {
+    max-width: 56ch;
+    font-size: 1.1rem;
+    color: rgba(221,216,204,0.75);
+    line-height: 1.7;
+  }
+
+  .hero-details {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 2.2;
+    letter-spacing: 0.04em;
+    border-left: 1px solid var(--border);
+    padding-left: 2rem;
+    flex-shrink: 0;
+  }
+
+  .hero-details span { color: var(--text); }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-cell {
+    padding: 3rem clamp(1.5rem, 4vw, 3.5rem);
+    border-right: 1px solid var(--border);
+  }
+  .stat-cell:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--text);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-num.accent { color: var(--accent); }
+  .stat-num.amber { color: var(--amber); }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── LAYOUT ── */
+  .section {
+    padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 8vw, 10rem);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-inner {
+    max-width: 68ch;
+  }
+
+  .section-inner.wide {
+    max-width: 100%;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--accent-dim);
+    max-width: 3rem;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  h3 {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+    font-style: italic;
+    margin: 2.5rem 0 1rem;
+    color: var(--text);
+  }
+
+  p { margin-bottom: 1.4rem; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── PULL QUOTE ── */
+  .pull {
+    border-left: 3px solid var(--accent);
+    margin: 3rem 0;
+    padding: 1.5rem 0 1.5rem 2.5rem;
+  }
+
+  .pull p {
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0;
+  }
+
+  /* ── BIG FINDING ── */
+  .finding {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    margin: 3.5rem 0;
+  }
+
+  @media (max-width: 700px) {
+    .finding { grid-template-columns: 1fr; }
+  }
+
+  .finding-num {
+    background: var(--bg-3);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .finding-num .big {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--accent);
+    display: block;
+  }
+
+  .finding-num .big.white { color: var(--text); }
+  .finding-num .big.amber { color: var(--amber); }
+
+  .finding-num .sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .finding-text {
+    padding: 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .finding-text p {
+    font-size: 0.95rem;
+    color: rgba(221,216,204,0.8);
+    margin: 0;
+  }
+
+  /* ── TWO-COL TEXT ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 800px) {
+    .two-col { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  /* ── CHANNEL CARDS ── */
+  .channel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  .channel-card {
+    background: var(--bg);
+    padding: 1.75rem;
+  }
+
+  .channel-flag {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .flag-ru { color: #e05c5c; }
+  .flag-ua { color: #5b9bd5; }
+
+  .channel-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .channel-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── REGRESSION TABLE ── */
+  .reg-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    margin: 2.5rem 0;
+  }
+
+  .reg-table th {
+    text-align: left;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    font-size: 10.5px;
+    text-transform: uppercase;
+  }
+
+  .reg-table td {
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  .reg-table td.num { color: var(--amber); }
+  .reg-table td.strong { color: var(--accent); font-weight: 500; }
+
+  .reg-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .reg-bar {
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* ── TIMELINE STRIP ── */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  .tl-cell {
+    background: var(--bg);
+    padding: 1.25rem 1rem;
+    text-align: center;
+  }
+
+  .tl-period {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .tl-bar-wrap {
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 0.75rem;
+  }
+
+  .tl-bar {
+    width: 10px;
+    border-radius: 1px 1px 0 0;
+  }
+
+  .bar-drone { background: var(--accent); }
+  .bar-civ { background: rgba(91,155,213,0.5); }
+
+  .tl-pct {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+  }
+
+  /* ── BIBLIOGRAPHY ── */
+  .bib-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .bib-toggle:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .bib-list {
+    display: none;
+  }
+
+  .bib-list.open {
+    display: block;
+  }
+
+  .bib-entry {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .bib-entry a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ── FOOTNOTE STRIP ── */
+  .footer-strip {
+    padding: 2.5rem clamp(1.5rem, 8vw, 10rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-strip p {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-dim);
+    margin: 0;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── INLINE HIGHLIGHT ── */
+  .hl { color: var(--accent); font-style: normal; }
+  .hl-amber { color: var(--amber); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .divider span {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ── METHODOLOGY BOX ── */
+  .method-box {
+    border: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+    background: var(--bg-2);
+  }
+
+  .method-box h4 {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1rem;
+  }
+
+  .method-box p {
+    font-size: 14px;
+    color: rgba(221,216,204,0.65);
+    line-height: 1.7;
+  }
+
+  .dimension-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .dim-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .dim-item::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .stat-cell { border-right: none; border-bottom: 1px solid var(--border); }
+    .timeline { grid-template-columns: repeat(4, 1fr); }
+    .tl-cell:nth-child(n+5) { display: none; }
+    .hero h1 { font-size: 2.5rem; }
+    .finding { grid-template-columns: 1fr; }
+    .finding-num { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg-text" aria-hidden="true">WAR</div>
+  <div class="kicker">Research Report &nbsp;·&nbsp; Computational Visual Analysis &nbsp;·&nbsp; 2022–2026</div>
+  <h1>Picturing the <em>War</em></h1>
+  <div class="hero-meta">
+    <p class="hero-lede">
+      A comparative, longitudinal analysis of visual content across ten Telegram channels — five Russian, five Ukrainian — over four years of conflict. 24,000 images. Seven annotation dimensions. One finding keeps surfacing: both sides speak the same visual language, but use it to say opposite things.
+    </p>
+    <div class="hero-details">
+      <div>Corpus &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>~24,000 media items</span></div>
+      <div>Channels &nbsp;&nbsp; <span>10 (5 RU · 5 UA)</span></div>
+      <div>Period &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Feb 2022 – Feb 2026</span></div>
+      <div>Method &nbsp;&nbsp;&nbsp;&nbsp; <span>Automated annotation (GPT)</span></div>
+      <div>Dimensions <span>7 per image</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar" aria-label="Key statistics">
+  <div class="stat-cell reveal">
+    <span class="stat-num accent">41%</span>
+    <span class="stat-label">of all posts contain<br>explicit violence (score ≥6)</span>
+  </div>
+  <div class="stat-cell reveal reveal-delay-1">
+    <span class="stat-num">12%</span>
+    <span class="stat-label">drone POV at peak<br>(H1 2024, up from 3.4%)</span>
+  </div>
+  <div class="stat-cell reveal reveal-delay-2">
+    <span class="stat-num amber">0.57</span>
+    <span class="stat-label">Pearson r: dehumanization<br>→ implied violence</span>
+  </div>
+  <div class="stat-cell reveal reveal-delay-3">
+    <span class="stat-num">4.23</span>
+    <span class="stat-label">mean implied violence score<br>across full corpus (out of 10)</span>
+  </div>
+</div>
+
+<!-- INTRODUCTION -->
+<section class="section" id="introduction">
+  <div class="section-inner">
+    <div class="section-label">01 — Introduction</div>
+    <h2>The primary arena of visual narrative contestation</h2>
+    <p>
+      Since Russia's full-scale invasion on 24 February 2022, Telegram has functioned as the central arena of visual narrative contestation in the conflict. Top pro-Kremlin channels accumulated <em class="hl">95.5 billion views</em> in 2022 alone. Telegram citations across pro-Russian media surged by 481%. The platform did not merely transmit the war — it became a structural component of it.
+    </p>
+    <p>
+      Yet despite a growing body of scholarship on digital propaganda and platform-mediated witnessing, no study had systematically examined the visual content of this war at scale, across both sides, and over its full duration. This research addresses that gap.
+    </p>
+
+    <div class="pull">
+      <p>"Despite sharp ideological opposition, Russian and Ukrainian channels share a common visual vocabulary — differing not in the types of imagery deployed, but in their narrative function."</p>
+    </div>
+
+    <p>
+      The study is motivated by three questions: How do Russian and Ukrainian channels differ in their visual strategies, and have those differences converged or intensified over time? How has the technical mode of visual production shifted — particularly with the rise of drone warfare? And what structural relationships exist between the dimensions of visual propaganda?
+    </p>
+  </div>
+</section>
+
+<!-- LITERATURE REVIEW -->
+<section class="section" id="literature">
+  <div class="section-inner">
+    <div class="section-label">02 — Literature Review</div>
+    <h2>What prior scholarship establishes — and where it stops</h2>
+
+    <p>
+      The Russo-Ukrainian conflict is frequently characterised as a "hybrid war" in which digital platforms serve as primary theatres of narrative control, with Telegram emerging as its most consequential visual arena (Bareikytė &amp; Skop, 2022). A foundational precedent was established by Makhortykh and Sydorova (2017), who demonstrated that image-based communication during the 2014 Donbas conflict intensified polarisation rather than producing shared understanding — a finding this study revisits at significantly greater scale and over a longer temporal frame.
+    </p>
+
+    <p>
+      The scale of Telegram's subsequent growth is documented by DFRLab (2024), whose analysis reveals a 481% increase in Telegram citations across pro-Kremlin media, with top channels accumulating 95.5 billion views in 2022 alone. RIA Novosti nearly tripled its annual viewership by 2023, while anonymous milblogger channels leveraged their opacity as a trust-building branding tactic. This infrastructure of mass visual dissemination was not improvised. Theisen et al. (2025) found an 8,925% surge in posts and a 5,352% increase in images shared by Russian milblogger accounts in the two weeks preceding the February 2022 invasion, suggesting that coordinated visual escalation on Telegram functions as a structural precursor to conflict rather than merely its by-product.
+    </p>
+
+    <div class="pull">
+      <p>"Coordinated visual escalation on Telegram functions as a structural precursor to conflict rather than merely its by-product." — Theisen et al. (2025)</p>
+    </div>
+
+    <h3>Asymmetric framing strategies</h3>
+    <p>
+      Research into the content of wartime visual production reveals deeply asymmetric framing on each side. Ptaszek et al. (2024) found that Russian institutional coverage maintained a stable technical-military register insulated from battlefield realities, while Ukrainian output remained more event-responsive — demonstrating how Telegram amplifies propagandistic framing rather than correcting for it. At the grassroots level, Bareikytė and Makhortykh (2024) show that the platform simultaneously enables authentic civilian testimony and strategic propaganda within overlapping channel ecosystems, a duality they term "inconspicuous digital witnessing."
+    </p>
+    <p>
+      Visually, content on both sides relies on metonymic strategies — ruins and soldiers substituting for abstract concepts of destruction — producing imagery that is "agonised, localized, and politicized" and designed to bridge psychological distance for international audiences (Nagy-Béni, 2025). Official and independent accounts alike deploy what Mejova et al. (2025) term "memetic warfare," mobilising archetypal hero/victim/villain narratives to shape opinion, with victim-centred imagery shown to generate significantly higher engagement.
+    </p>
+
+    <h3>Representation, disinformation, and epistemological instability</h3>
+    <p>
+      The broader visual economy of the conflict is constrained by a crisis of representation. Conventional coverage defaults to sensationalist clichés — tanks, explosions, devastation — that flatten the complexity of lived conflict (Sopova, 2021), while "war influencers" must navigate what Heřmanová et al. (2025) term "ambivalent visibility," reconciling the ethics of witnessing with a platform logic that rewards spectacular subject matter.
+    </p>
+    <p>
+      This tension is compounded by a disinformation environment of unprecedented scale. DFRLab (2024) documents how anonymous channels use their opacity to circulate manipulated imagery structurally difficult to attribute or refute, while Standaert (2024) shows that Telegram functions as an "anteroom" where fabricated content consolidates before migrating to mainstream platforms. The deployment of deepfakes — including those targeting President Zelenskyy — further demands computational detection methods to distinguish authentic from synthetic footage (Boháček &amp; Farid, 2022), while the platform's archival instability makes civic archiving essential for preserving wartime visual evidence (Bareikytė &amp; Skop, 2022).
+    </p>
+
+    <h3>The methodological gap this study addresses</h3>
+    <p>
+      The existing scholarship, while establishing critical foundations, leaves a significant methodological gap. Studies are predominantly qualitative, focus on a single actor or platform, or rely on text-mining that treats visual content as secondary. No prior study has systematically annotated a large-scale, longitudinal corpus of visual media drawn simultaneously from Russian and Ukrainian Telegram channels across the full duration of the 2022–2026 conflict.
+    </p>
+    <p>
+      This research addresses that gap by scraping and annotating approximately 24,000 media items from ten channels — five Russian, five Ukrainian — spanning state-affiliated institutions to independent milbloggers, and coding for violence, aesthetic register, and content type over time. By applying this framework symmetrically to both sides, the study offers a comparative, longitudinal account of how visual strategies have evolved and mutually responded across the war's duration — directly engaging questions raised but unanswered by the DFRLab (2024), whose aggregate platform patterns are here grounded in granular visual content analysis.
+    </p>
+  </div>
+</section>
+
+<!-- CHANNELS -->
+<section class="section" id="channels">
+  <div class="section-inner wide">
+    <div class="section-label">03 — The Corpus</div>
+    <h2>Ten channels. Two information ecosystems.</h2>
+    <p style="max-width: 65ch; margin-bottom: 2.5rem;">Channels were selected to span the range of each ecosystem — from state-affiliated institutions to independent milbloggers, from front-line combat reporting to occupied-territory documentation.</p>
+
+    <div class="channel-grid reveal">
+      <div class="channel-card">
+        <div class="channel-flag flag-ru">Russia</div>
+        <div class="channel-name">wargonzo</div>
+        <div class="channel-desc">Senior milblogger. 40–67% political content — the most ideologically oriented channel in the corpus.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ru">Russia</div>
+        <div class="channel-name">RVvoenkor</div>
+        <div class="channel-desc">War correspondent. Growing orientation toward political commentary over kinetic content.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ru">Russia</div>
+        <div class="channel-name">ZA_FROHT</div>
+        <div class="channel-desc">Front-line channel. Drone POV reached 29–31% at peak — one of the highest in the corpus.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ru">Russia</div>
+        <div class="channel-name">voenacher</div>
+        <div class="channel-desc">Military blogger. High drone content, combat-proximate reporting.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ru">Russia</div>
+        <div class="channel-name">rusich_army</div>
+        <div class="channel-desc">Paramilitary-linked. Elevated dehumanization and aestheticization scores throughout.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ua">Ukraine</div>
+        <div class="channel-name">a_shtirlitz</div>
+        <div class="channel-desc">High political share combined with exceptional propaganda meme volumes — explicit information warfare.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ua">Ukraine</div>
+        <div class="channel-name">donbassrealii</div>
+        <div class="channel-desc">Donbas-based. Highest mean violence score in the corpus (4.73). Documents occupation as lived reality.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ua">Ukraine</div>
+        <div class="channel-name">kherson_non_fake</div>
+        <div class="channel-desc">Kherson-based. Second-highest violence score (4.59). Local documentation under sustained bombardment.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ua">Ukraine</div>
+        <div class="channel-name">hyevuy_dnepr</div>
+        <div class="channel-desc">Dnipro regional channel. Dominated by destruction and civilian content.</div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-flag flag-ua">Ukraine</div>
+        <div class="channel-name">voenkorKotenok</div>
+        <div class="channel-desc">Correspondent account. Event-responsive coverage across the conflict's major phases.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="section" id="methodology">
+  <div class="section-inner">
+    <div class="section-label">04 — Methodology</div>
+    <h2>Five analytical pipelines, one shared framework</h2>
+    <p>
+      The study's analytical architecture comprises five interconnected methodological components, each designed to address a distinct research sub-question while drawing on the same underlying annotated corpus. They are described here in the order in which they were executed.
+    </p>
+
+    <h3>I. Data Collection</h3>
+    <p>
+      The corpus was assembled using a custom Python script built on the Telethon library, which interfaces with the Telegram API to retrieve message metadata programmatically. The scraping pipeline was designed to collect media-bearing posts — photographs, videos (retrieved via thumbnail), and documents — published between 24 February 2022 and 24 February 2026. For each message, the following metadata was extracted: channel identifier, publication date, media type, file size, view count, forward count, reply count, and user reactions.
+    </p>
+    <p>
+      To ensure temporal representativeness while managing data volume, a systematic sampling method was applied: up to 50 evenly spaced media posts per channel per month were selected, yielding a corpus of approximately 24,000 sampled observations. All cross-channel and cross-temporal comparisons are therefore <em>proportional</em> rather than absolute — a deliberate methodological constraint that precludes analysis of absolute publication volume but enables reliable comparative analysis of content composition over time.
+    </p>
+
+    <h3>II. Content Annotation Pipeline</h3>
+    <p>
+      A structured annotation framework was developed to systematically code each media item across seven analytical dimensions, enabling standardised comparative analysis across channels and time. The codebook captures both descriptive and interpretive features of each image or video.
+    </p>
+
+    <div class="method-box reveal">
+      <h4>The Seven Annotation Dimensions</h4>
+      <p>Each image received a score on all seven dimensions simultaneously via a single API call returning a structured JSON object.</p>
+      <div class="dimension-list">
+        <div class="dim-item">Content type — primary subject (combatants, equipment, territory, casualties, etc.)</div>
+        <div class="dim-item">Implied violence — degree to which content suggests or depicts harm (0–10)</div>
+        <div class="dim-item">Gamification — visual/rhetorical elements framing warfare in ludic or competitive terms (0–10)</div>
+        <div class="dim-item">Dehumanization — representations stripping enemy actors of human attributes (0–10)</div>
+        <div class="dim-item">Aestheticization — degree to which violence or destruction is rendered visually appealing (0–10)</div>
+        <div class="dim-item">Narrative framing — broader discursive register (victorious, defensive, martyrological, etc.) (0–10)</div>
+        <div class="dim-item">Camera frame / POV — compositional and perspectival choices shaping viewer identification</div>
+      </div>
+    </div>
+
+    <p>
+      The pipeline was developed in three stages. A first batch was annotated using the Claude API as a gold-standard reference. The research team then manually coded 50 images, which were fed into the model as few-shot demonstrations to transfer codebook logic to the automated pipeline. Final annotation at scale was carried out using GPT. A recurring challenge was the model's reluctance to code violent content due to built-in safety constraints; this was addressed by prompting the model to adopt the persona of an academic researcher in conflict studies, which proved effective in eliciting consistent annotations across the full dataset.
+    </p>
+
+    <h3>III. 2D Visual Map</h3>
+    <p>
+      To provide an exploratory overview of the corpus structure prior to annotation, a 2D visual map was produced by passing 400 manually selected images through CLIP (ViT-B-32), a vision-language model that generates high-dimensional semantic embeddings for visual content. The 400 images were selected to ensure representativity both across channels and across content type. Embeddings were computed using the sentence-transformers library, and dimensionality reduction was applied via t-SNE (scikit-learn) to produce a two-dimensional scatter plot. The pipeline was implemented in Python, executed in Google Colab. The resulting map was used to inform the categories of the annotation codebook and to identify the primary visual clusters in the corpus before large-scale annotation.
+    </p>
+
+    <h3>IV. Channel Content Analysis</h3>
+    <p>
+      The primary goal of the channel content analysis is to identify shifts in communication strategies across individual Telegram channels over the four-year observation period. By normalising the data (posts by channel and month) into percentages, the relative importance of different content types — combat, civilian victims, propaganda, political commentary, drone strikes — can be compared across channels and over time without the confounding effects of differential posting frequency.
+    </p>
+    <p>
+      Results are rendered as interactive Plotly heatmaps with a shared colour scale ranging from 0% to 80%. The scale is capped at 80% to accommodate the extreme dominance of certain categories in certain channels (notably the political category in wargonzo, which reaches above 60% in some months) while preserving gradient resolution for the more commonly observed 0–40% range. Each cell in the heatmaps represents the percentage share of a given content type within a given channel in a given month. The interface offers two complementary views: a "category" view presenting one heatmap per content type (allowing cross-channel comparison) and a "channel" view presenting one heatmap per channel (allowing holistic reading of each channel's editorial profile over time).
+    </p>
+
+    <h3>V. Violence Analysis</h3>
+    <p>
+      Of the seven annotated dimensions, implied violence was selected for dedicated in-depth analysis. Violence is the dimension most directly constitutive of wartime visual communication — present across content types, channels, and time periods in ways that cut across all other analytical categories. Its dedicated treatment is further justified by the density of interpretive information available: beyond the numerical score, each annotation includes a justification text describing the specific visual cues that informed the rating, enabling qualitative analysis at scale.
+    </p>
+    <p>
+      The analysis is structured in two stages. The first is quantitative, examining four aspects of the violence scores across the corpus: their overall distribution, their evolution over the four-year observation period, their variation across channels and between Russian and Ukrainian channel groups, and their relationship to post engagement as measured by view counts. The second stage is qualitative, constructing an inductive typology of violence by systematically reading annotation descriptions and grouping images by shared visual logic — rather than relying solely on the model's content type classifications. This process identified eight distinct visual genres through which violence is represented across the corpus, ranging from direct casualty imagery to aestheticised memorial memes (the Груз 200 genre).
+    </p>
+
+    <h3>VI. Technical Means Analysis</h3>
+    <p>
+      To track shifts in the technical mode of visual representation over time, images were grouped into half-year periods (H1/H2) from the first half of 2022 through the second half of 2025, yielding eight time bins. The partial 2026 period (989 images) was excluded to avoid truncation bias. The primary dependent variable is <em>frame type</em>, a seven-category classification of how each image was technically produced: drone POV, soldier POV, civilian recording, professional production, composite/meme, screenshot, and other.
+    </p>
+    <p>
+      For each period, proportional shares were calculated at both the aggregate corpus level and per individual channel, to distinguish corpus-wide trends from channel-specific behaviour — a two-level approach necessary because aggregate shifts can be driven by a small number of high-volume channels rather than reflecting uniform change. As a secondary lens, mean scores for the five continuous annotation dimensions were computed per period and cross-tabulated by frame type, to assess whether changing frame composition corresponds to qualitative shifts in how violence is represented.
+    </p>
+
+    <h3>VII. Correlatory Effects</h3>
+    <p>
+      To explore correlatory effects across the five annotation dimensions, a series of bivariate ordinary least squares (OLS) regression analyses were conducted on the full annotated corpus of 24,000+ images. For each model, one score was designated the independent variable and a theoretically related score the dependent variable, drawing on prior literature on visual propaganda and conflict media to motivate each pairing. Pearson correlation coefficients, regression slopes, intercepts, and R² values were computed, and statistical significance was assessed via p-values derived from the t-distribution on the regression slope. Three targeted models were constructed: (1) gamification → implied violence; (2) dehumanization → implied violence; (3) aestheticization → narrative framing. To contextualise each relationship, mean scores per discrete score level were computed with 95% confidence intervals (±1.96 × σ/√n), and results were disaggregated by content type, frame type, and channel. A full 5×5 Pearson correlation heatmap was produced to identify second-order relationships across the score network.
+    </p>
+  </div>
+</section>
+
+<!-- FINDING 1: SHARED VISUAL GRAMMAR -->
+<section class="section" id="visual-grammar">
+  <div class="section-inner">
+    <div class="section-label">05 — Finding I</div>
+    <h2>A shared iconographic language</h2>
+    <p>
+      A 2D cluster map, produced by passing 400 representative images through CLIP (ViT-B-32) and reducing dimensions via t-SNE, reveals an unexpected structural result: images group primarily by <em>content type</em> rather than by channel affiliation. Maps and infographics, military portraiture, hardware and weapons systems, and scenes of physical destruction each form distinct visual clusters that cut across the Russian–Ukrainian divide.
+    </p>
+
+    <div class="finding reveal">
+      <div class="finding-num">
+        <span class="big white">Both</span>
+        <span class="sub">sides draw on the same visual<br>pool of maps, hardware,<br>portraiture, and destruction</span>
+      </div>
+      <div class="finding-text">
+        <p>Russian channels frame this shared repertoire within a register of strategic control and heroic agency — maps emphasising territorial gains, soldier portraiture in the vein of Soviet propaganda conventions. Ukrainian channels orient the same content toward documentation and accountability: portraits of dead Russian soldiers, aftermath photography, scenes of civilian destruction. The visual vocabulary is shared. Its <em>narrative deployment</em> is not.</p>
+      </div>
+    </div>
+
+    <p>
+      This finding challenges the intuition that wartime visual production is fundamentally differentiated along national or political lines. Both sides inhabit the same iconographic language differently, rather than separately — a structural duality between propaganda and witnessing that runs through the entire corpus.
+    </p>
+  </div>
+</section>
+
+<!-- FINDING 2: CHANNELS DIVERGE -->
+<section class="section" id="channel-content">
+  <div class="section-inner">
+    <div class="section-label">06 — Finding II</div>
+    <h2>Russian channels talk politics. Ukrainian channels document destruction.</h2>
+    <p>
+      The most structurally significant finding from the channel content analysis is the divergence between Russian and Ukrainian channels in their balance of political versus kinetic content.
+    </p>
+
+    <div class="two-col reveal">
+      <div>
+        <h3>The Russian pattern</h3>
+        <p>
+          Russian channels — particularly wargonzo and RVvoenkor — show a sustained and growing orientation toward political commentary. Wargonzo reached <span class="hl">40–67% political content share</span> for most of the observation period. The pattern holds at lower magnitude across all Russian channels, suggesting it is a feature of the Russian military blogger ecosystem as a whole rather than individual editorial choices.
+        </p>
+        <p>
+          In early 2022, content was highly fragmented. Over time, Russian channels progressively consolidated around ideology, commentary, and framing — the war as argument rather than event.
+        </p>
+      </div>
+      <div>
+        <h3>The Ukrainian pattern</h3>
+        <p>
+          Ukrainian channels show more variation. Channels anchored in occupied territories — donbassrealii and kherson_non_fake — are dominated by destruction and civilian content, reflecting their geographic position under sustained bombardment. Their editorial profile is not a choice but a condition.
+        </p>
+        <p>
+          The civilian category remains consistently more prominent across Ukrainian channels than Russian ones. Humanising the civilian population is a structural narrative priority that Russian channels largely subordinate to military, political, and ideological content.
+        </p>
+      </div>
+    </div>
+
+    <div class="divider"><span>temporal pattern</span></div>
+
+    <p>
+      One clear trend cuts across all channels: drone strike content emerges from late 2022 and grows steadily through 2023–2025. This directly tracks the escalating centrality of drone warfare to the conflict — one of the few moments where the data reflects a material change in the war rather than an editorial strategy.
+    </p>
+  </div>
+</section>
+
+<!-- FINDING 3: VIOLENCE -->
+<section class="section" id="violence">
+  <div class="section-inner">
+    <div class="section-label">07 — Finding III</div>
+    <h2>Violence is a Ukrainian documentary reality, not a Russian narrative choice</h2>
+    <p>
+      The violence analysis produces the study's most counterintuitive result. Across the full corpus, the mean implied violence score is <span class="hl">4.23 out of 10</span>, with a strikingly bimodal distribution — clustering around scores 1–4, dropping at 5, then spiking again at 6 and 8. The valley at 5 likely reflects a threshold effect in the annotation model, treating moderate and explicit violence as categorically distinct.
+    </p>
+
+    <div class="finding reveal">
+      <div class="finding-num">
+        <span class="big accent">4.31</span>
+        <span class="sub">mean violence score,<br>Ukrainian channels</span>
+      </div>
+      <div class="finding-text">
+        <p>Ukrainian channels score <em>higher</em> on implied violence than Russian channels (mean 4.16) — inverting the common assumption that violent imagery is primarily a feature of Russian information aggression. The two channels with the highest violence scores in the entire corpus are both Ukrainian: donbassrealii (4.73) and kherson_non_fake (4.59). Both are anchored in Russian-occupied territories. They document violence inflicted upon their communities — producing a visual register of destruction and aftermath that systematically outscores the operational and propagandistic content dominant on Russian channels.</p>
+      </div>
+    </div>
+
+    <p>
+      Violence, in other words, is not primarily a Russian narrative choice in this corpus — it is a Ukrainian documentary reality. This distinction is consequential for how international audiences interpret the visual output of the conflict.
+    </p>
+
+    <h3>The normalisation curve</h3>
+    <p>
+      Mean violence scores rise from approximately 3.8 in February 2022 to stabilise around 4.3–4.6 from mid-2022 onwards, with a notable peak in early 2023 coinciding with the Battle of Bakhmut. Rather than escalating progressively, the visual register of violence reaches a plateau relatively early and then persists. Normalisation is rapid and durable, not gradual.
+    </p>
+
+    <div class="pull">
+      <p>"Extreme violence does not drive engagement in the way platform logic predicts. Mean view counts peak at score 4 and <em>decline</em> at higher scores — violent content circulates in narrower, self-selecting networks rather than reaching mass audiences."</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINDING 4: DRONE -->
+<section class="section" id="drone">
+  <div class="section-inner wide">
+    <div class="section-label">08 — Finding IV</div>
+    <h2>The drone camera changes what violence <em>is</em></h2>
+    <p style="max-width: 65ch; margin-bottom: 3rem;">
+      The most significant structural shift in the corpus is the rise and partial retreat of drone POV footage — and what it did to every other annotation dimension when it arrived.
+    </p>
+
+    <!-- TIMELINE VIZ -->
+    <div class="timeline reveal" aria-label="Drone POV share by half-year period">
+      <div class="tl-cell">
+        <div class="tl-period">2022 H1</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:82px"></div>
+          <div class="tl-bar bar-drone" style="height:7px"></div>
+        </div>
+        <div class="tl-pct">3.4%</div>
+      </div>
+      <div class="tl-cell">
+        <div class="tl-period">2022 H2</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:81px"></div>
+          <div class="tl-bar bar-drone" style="height:8px"></div>
+        </div>
+        <div class="tl-pct">3.9%</div>
+      </div>
+      <div class="tl-cell">
+        <div class="tl-period">2023 H1</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:68px"></div>
+          <div class="tl-bar bar-drone" style="height:14px"></div>
+        </div>
+        <div class="tl-pct">6.8%</div>
+      </div>
+      <div class="tl-cell">
+        <div class="tl-period">2023 H2</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:62px"></div>
+          <div class="tl-bar bar-drone" style="height:20px"></div>
+        </div>
+        <div class="tl-pct">9.5%</div>
+      </div>
+      <div class="tl-cell">
+        <div class="tl-period">2024 H1</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:56px"></div>
+          <div class="tl-bar bar-drone" style="height:24px; background: var(--accent)"></div>
+        </div>
+        <div class="tl-pct" style="color:var(--accent); font-weight:500">12% ↑</div>
+      </div>
+      <div class="tl-cell">
+        <div class="tl-period">2024 H2</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:59px"></div>
+          <div class="tl-bar bar-drone" style="height:18px"></div>
+        </div>
+        <div class="tl-pct">8.8%</div>
+      </div>
+      <div class="tl-cell">
+        <div class="tl-period">2025 H1</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:61px"></div>
+          <div class="tl-bar bar-drone" style="height:15px"></div>
+        </div>
+        <div class="tl-pct">7.4%</div>
+      </div>
+      <div class="tl-cell">
+        <div class="tl-period">2025 H2</div>
+        <div class="tl-bar-wrap">
+          <div class="tl-bar bar-civ" style="height:56px"></div>
+          <div class="tl-bar bar-drone" style="height:12px"></div>
+        </div>
+        <div class="tl-pct">6.1%</div>
+      </div>
+    </div>
+    <p style="font-family: var(--mono); font-size: 10.5px; color: var(--text-dim); margin-bottom: 3rem;">
+      ▪ Blue: civilian recording share &nbsp;·&nbsp; ▪ Red: drone POV share &nbsp;·&nbsp; Heights scaled within each column
+    </p>
+
+    <div style="max-width: 65ch;">
+      <p>
+        Drone imagery rose from 3.4% of all images in early 2022 to a peak of 12% in H1 2024, before declining to 6.1% by late 2025. This shift was not uniform — it was driven by battlefield-proximate channels like ZA_FROHT, voenacher, and rusich_army, which reached <span class="hl">29–31% drone content at peak</span>. Commentary channels never exceeded 5%. The drone shift is a property of combat-proximate channels, not the ecosystem as a whole.
+      </p>
+      <p>
+        The rise came at the direct expense of civilian recording, which fell from 41% to 28%. The war's dominant visual perspective shifted from the horizontal, ground-level viewpoint of a bystander to the vertical, overhead viewpoint of a drone operator. The camera moved from <em>witnessing</em> violence to being <em>embedded in the system producing it</em>.
+      </p>
+    </div>
+
+    <div class="finding reveal" style="margin-top: 3rem;">
+      <div class="finding-num">
+        <span class="big accent">6.0</span>
+        <span class="sub">mean gamification score<br>in drone POV footage<br>(corpus average: 1.7)</span>
+      </div>
+      <div class="finding-text">
+        <p>Drone footage is not just more common — it is qualitatively different. HUD overlays, targeting reticles, and top-down framing reduce human figures to points of impact, producing a visual register closer to a video game than to documentation. Dehumanization scores within drone content hit 5.0 against a corpus average of 2.1. These are not marginal gaps. The technical mode of image production is not neutral — the same event filmed from the ground and from a drone generates fundamentally different representations of violence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINDING 5: REGRESSION -->
+<section class="section" id="regression">
+  <div class="section-inner">
+    <div class="section-label">09 — Finding V</div>
+    <h2>Dehumanization is the load-bearing variable</h2>
+    <p>
+      Three targeted OLS regression models were run on the full corpus of 24,000+ images. For each model, one annotation score was designated the independent variable, with a theoretically motivated dependent variable. The results reveal a layered structure in which dehumanization functions as the central organising variable across the entire annotation network.
+    </p>
+
+    <table class="reg-table reveal">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Independent → Dependent</th>
+          <th>r</th>
+          <th>R²</th>
+          <th>β</th>
+          <th>Strength</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Gamification → Implied violence</td>
+          <td class="num">0.327</td>
+          <td class="num">0.107</td>
+          <td class="num">+0.370</td>
+          <td>
+            <div class="reg-bar-wrap">
+              <div class="reg-bar" style="width:33px"></div>
+              <span style="font-size:10px;color:var(--text-muted)">Modest</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Dehumanization → Implied violence</td>
+          <td class="num strong">0.567</td>
+          <td class="num strong">0.321</td>
+          <td class="num">+0.735</td>
+          <td>
+            <div class="reg-bar-wrap">
+              <div class="reg-bar" style="width:57px"></div>
+              <span style="font-size:10px;color:var(--text-muted)">Strong</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Aestheticization → Narrative framing</td>
+          <td class="num strong">0.581</td>
+          <td class="num strong">0.338</td>
+          <td class="num">+0.687</td>
+          <td>
+            <div class="reg-bar-wrap">
+              <div class="reg-bar" style="width:58px"></div>
+              <span style="font-size:10px;color:var(--text-muted)">Strongest</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      The weakest model — gamification onto implied violence (r=0.327, R²=0.107) — is almost entirely driven by drone strike footage, which records the highest mean gamification score of any content type at 6.88. Other content types scoring highly on implied violence, including casualty imagery and explosion footage, score near zero on gamification. The gamified register is a specialised visual grammar confined to a specific technological framing of warfare, not a pervasive feature of violent imagery.
+    </p>
+
+    <p>
+      The dehumanization model is substantially stronger (r=0.567, R²=0.321) — approximately three times the explanatory power of gamification. The mean implied violence score rises steadily from 2.28 at dehumanization score zero to 9.0 at dehumanization score ten, with no plateau effect at any intermediate level. Casualty imagery is the key driver, recording a mean dehumanization score of 4.59 and a mean implied violence score of 7.78 — the highest of any content type.
+    </p>
+
+    <div class="pull">
+      <p>"Across the full correlation heatmap, dehumanization correlates with every other dimension at r = 0.43 to 0.59 — functioning as a mediating pathway through which other visual registers partly produce their effects."</p>
+    </div>
+
+    <p>
+      The aestheticization-to-narrative framing model is the strongest (r=0.581, R²=0.338). Visual polish and ideological messaging are tightly coupled in this content ecosystem. Propaganda memes are the decisive outlier: mean scores of 6.64 on aestheticization and 7.27 on narrative framing — values entirely detached from every other content type. Notably, screenshots including tactical maps record a narrative framing mean of 4.29 despite a modest aestheticization score of 3.40, indicating that ideological messaging can travel through information design without requiring high visual production values.
+    </p>
+  </div>
+</section>
+
+<!-- DISCUSSION -->
+<section class="section" id="discussion">
+  <div class="section-inner">
+    <div class="section-label">10 — Discussion</div>
+    <h2>What the findings resist</h2>
+    <p>
+      The visual dimension of this conflict operates according to logics that are neither straightforwardly propagandistic nor uniformly escalatory. The analytical frameworks inherited from prior work require revision when applied at scale.
+    </p>
+
+    <h3>On the shared visual grammar</h3>
+    <p>
+      The cluster map finding challenges the intuition that wartime visual production is fundamentally differentiated along national lines. Both functions — propaganda and witnessing — draw on a common pool of visual tropes, suggesting the conflict has generated a shared iconographic language that both sides <em>inhabit differently</em> rather than separately.
+    </p>
+
+    <h3>On violence as documentary condition</h3>
+    <p>
+      The finding that Ukrainian channels score higher on implied violence inverts the common framing of the conflict's information war. The data reveals a structural asymmetry: Russian channels subordinate violence to operational and ideological framing; Ukrainian channels in Kherson and Donbas document destruction as an ongoing reality. Violence here is not principally a rhetorical choice but an empirical condition of certain communities.
+    </p>
+
+    <h3>On the drone camera</h3>
+    <p>
+      The drone analysis offers the clearest evidence of technology reshaping representation. The drone camera does not merely document violence — it reframes it within a targeting interface that strips human figures of individuality and consequence. This may be the most transformative representational shift in this conflict: not deepfake fabrication, but the routinisation of a real visual grammar that produces analogous epistemological effects through legitimate footage.
+    </p>
+
+    <h3>On dehumanization as policy lever</h3>
+    <p>
+      If dehumanization functions as a structural carrier for the other dimensions of propaganda — violence, aestheticization, narrative framing — then targeting it specifically, rather than addressing individual content types in isolation, may offer greater analytical and policy leverage for counter-disinformation interventions. The r=0.43 to 0.59 correlation range across all five dimensions is a finding with direct implications for media literacy design.
+    </p>
+  </div>
+</section>
+
+<!-- LIMITATIONS -->
+<section class="section" id="limitations">
+  <div class="section-inner">
+    <div class="section-label">12 — Limitations</div>
+    <h2>What this study cannot claim</h2>
+    <p>
+      Several limitations must be acknowledged. The study is best understood as an exploratory contribution rather than a definitive empirical account. Its primary value lies in demonstrating the methodological feasibility of large-scale automated visual analysis in conflict contexts, and in generating hypotheses for more rigorously resourced future research.
+    </p>
+
+    <h3>Sampling and volume</h3>
+    <p>
+      The sampling method — capped at 50 posts per channel per month — ensures temporal comparability but precludes any analysis of absolute engagement or publication volume. All cross-channel and cross-temporal comparisons are therefore proportional rather than absolute. Channels that post more frequently are not systematically better represented, which is methodologically defensible but means the study cannot speak to questions of reach or total output.
+    </p>
+
+    <h3>Annotation quality</h3>
+    <p>
+      The automated annotation pipeline rests on a training set of only 50 manually coded images, which introduces subjectivity into the scoring framework. The codebook dimensions — particularly implied violence, aestheticization, and dehumanization — involve inherently interpretive judgements that are relative to this dataset and difficult to replicate without access to the original training material. A technical limitation was also observed whereby the model displayed a tendency to avoid extreme scores, particularly at the upper end of scales, which may compress variance in the results. Future iterations should incorporate larger and more systematically validated training sets.
+    </p>
+
+    <h3>Corpus scope</h3>
+    <p>
+      The corpus is limited to ten Telegram channels — a fraction of the Russian and Ukrainian military information ecosystems, which each comprise dense networks of channels that actively repost and amplify each other's content. Channels that are less visible, operate under pseudonyms, or have since been deleted are systematically excluded, meaning the dataset skews toward the most prominent and stable accounts. Moreover, restricting the analysis to Telegram leaves aside VKontakte, Twitter/X, and YouTube, which play significant roles in wartime visual communication.
+    </p>
+
+    <h3>Video treatment</h3>
+    <p>
+      Video content constitutes a significant share of posts on military Telegram channels. For operational and computational reasons, the pipeline processes only the thumbnail image extracted from each video rather than the full audiovisual file. This introduces a substantial reduction in analytical depth: a single static frame cannot capture narrative progression, motion effects, editing rhythm, or the affective dimensions of sound — music, explosions, voiceovers, silence — all of which are central to how war videos construct meaning and emotional impact. The drone POV findings in particular may be systematically underestimated, as the gamified qualities of drone footage are often most pronounced in the dynamic visual elements of the full clip.
+    </p>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section class="section" id="conclusion">
+  <div class="section-inner">
+    <div class="section-label">13 — Conclusion</div>
+    <h2>Threads made visible</h2>
+    <p>
+      This study set out to examine how visual content — violence, aesthetic register, content type — is represented across a longitudinal corpus of 24,000+ media items from ten Telegram channels spanning four years of conflict. Several findings stand out.
+    </p>
+    <p>
+      The 2D visual map reveals that content clusters primarily by type rather than channel affiliation: the visual grammar of this war is <em>shared</em> across sides even where its narrative function differs sharply. The channel content analysis shows that Russian channels have progressively oriented toward political commentary, while Ukrainian channels anchored in occupied territories maintain a documentary register dominated by destruction and civilian harm. The violence analysis confirms that explicit violent imagery is pervasive — in 41% of all posts — but its distribution is uneven in analytically significant ways.
+    </p>
+    <p>
+      The study is best understood as generative rather than conclusive. Its primary contribution is to have made these threads visible — and to have demonstrated the methodological feasibility of large-scale automated visual analysis in conflict contexts. Each analytical thread opened here merits dedicated follow-up research: the gamification of drone warfare, the Груз 200 memorial genre, the relationship between violence and engagement, the editorial divergence between Russian and Ukrainian channels.
+    </p>
+
+    <div class="pull">
+      <p>"The most consequential shift may not be <em>what</em> is being shown, but <em>from where</em> — the camera has moved from witnessing violence to being embedded in the system producing it."</p>
+    </div>
+  </div>
+</section>
+
+<!-- BIBLIOGRAPHY -->
+<section class="section" id="bibliography">
+  <div class="section-inner">
+    <div class="section-label">Bibliography</div>
+    <h2>References</h2>
+
+    <button class="bib-toggle" onclick="this.nextElementSibling.classList.toggle('open'); this.textContent = this.nextElementSibling.classList.contains('open') ? '− Collapse references' : '+ Show references'">+ Show references</button>
+
+    <div class="bib-list">
+      <div class="bib-entry">Bareikytė, M., & Makhortykh, M. (2024). Digitally witnessable war: Inconspicuous witnessing and propaganda on Telegram during Russia's war against Ukraine. <em>Media, War &amp; Conflict.</em> <a href="https://doi.org/10.1177/17506352241249486">doi:10.1177/17506352241249486</a></div>
+      <div class="bib-entry">Bareikytė, M., & Skop, Y. (2022). Archiving the present: Critical data practices during Russia's war in Ukraine. <em>Sociologica, 16</em>(2), 199–215. <a href="https://doi.org/10.6092/issn.1971-8853/15361">doi:10.6092/issn.1971-8853/15361</a></div>
+      <div class="bib-entry">Boháček, M., & Farid, H. (2022). Protecting President Zelenskyy against deep fakes. <em>arXiv.</em> <a href="https://doi.org/10.48550/arXiv.2206.02707">doi:10.48550/arXiv.2206.02707</a></div>
+      <div class="bib-entry">DFRLab. (2024). Another battlefield: Telegram as a digital front in Russia's war against Ukraine. <em>Atlantic Council.</em> <a href="https://dfrlab.org/2024/06/10/another-battlefield-russian-telegram/">dfrlab.org</a></div>
+      <div class="bib-entry">Heřmanová, M., Eriksson Krutrök, M., & Divon, T. (2025). "The algorithm loves the war": Ambivalent visibility in content creator practices during war. <em>Continuum.</em> <a href="https://doi.org/10.1080/10304312.2025.2507777">doi:10.1080/10304312.2025.2507777</a></div>
+      <div class="bib-entry">Makhortykh, M., & Sydorova, M. (2017). Social media and visual framing of the conflict in Eastern Ukraine. <em>Media, War &amp; Conflict, 10</em>(3), 359–381. <a href="https://doi.org/10.1177/1750635217702539">doi:10.1177/1750635217702539</a></div>
+      <div class="bib-entry">Mejova, Y., Capozzi, A., Monti, C., & De Francisci Morales, G. (2025). Narratives of war: Ukrainian memetic warfare on Twitter. <em>Proceedings of the ACM on Human-Computer Interaction, 9</em>(CSCW). <a href="https://doi.org/10.1145/3711037">doi:10.1145/3711037</a></div>
+      <div class="bib-entry">Nagy-Béni, A. (2025). Agonised, localized and politicized: The visual representation of the Russo-Ukrainian War in online news. <em>Media, War &amp; Conflict.</em> <a href="https://doi.org/10.1177/17506352251355521">doi:10.1177/17506352251355521</a></div>
+      <div class="bib-entry">Ptaszek, G., Yuskiv, B., & Khomych, M. (2024). War on frames: Comparative framing analysis of the Russia-Ukraine war on Telegram. <em>Media, War &amp; Conflict.</em> <a href="https://doi.org/10.1177/17506352241287470">doi:10.1177/17506352241287470</a></div>
+      <div class="bib-entry">Sopova, A. (2021). Visuals and the invisible in the 'forgotten' war in Ukraine. <em>Digital Icons,</em> (21), 65–83.</div>
+      <div class="bib-entry">Standaert, O. (2024). The war in Ukraine through the prism of visual disinformation. <em>Digital Journalism, 12</em>(6), 746–764. <a href="https://doi.org/10.1080/21670811.2024.2341516">doi:10.1080/21670811.2024.2341516</a></div>
+      <div class="bib-entry">Theisen, A., Tuters, M., Wiedemann, G., & Harbers, F. (2025). Visual narratives and political instability. <em>Information, Communication &amp; Society.</em> <a href="https://doi.org/10.1080/1369118X.2025.2452049">doi:10.1080/1369118X.2025.2452049</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer-strip">
+  <p>Picturing the War · Computational Visual Analysis · Sciences Po Paris · 2026</p>
+  <p>~24,000 images · 10 Telegram channels · Feb 2022 – Feb 2026</p>
+</footer>
+
+<script>
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = Math.min(pct, 100) + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

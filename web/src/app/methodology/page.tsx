@@ -24,62 +24,16 @@ export default function MethodologyPage() {
               Methodology
             </h1>
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
-              A transparent account of the corpus, coding scheme, analytical choices and limitations behind this report.
+              A transparent account of the corpus, annotation pipeline, analytical choices and limitations behind this report — covering ten channels, five Russian and five Ukrainian, over four years of conflict.
             </p>
           </div>
         </header>
 
         {/* ── Data collection ── */}
         <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
-              1
-            </span>
-            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-              Data collection
-            </h2>
-          </div>
           <DataCollectionAccordion />
         </section>
 
-        {/* ── Analytical framework ── */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#ffdd00", fontSize: "12px", fontWeight: 700, color: "#111" }}>
-              2
-            </span>
-            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-              Analytical framework
-            </h2>
-          </div>
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }} className="space-y-3">
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-              Here you can outline your discourse or media analysis framework,
-              the categories used (channel content, violence on the front, gamification,
-              dehumanization, aestheticization, narrative framing, technical
-              framing) and how they were operationalised.
-            </p>
-          </div>
-        </section>
-
-        {/* ── Procedures, reliability and limitations ── */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
-              3
-            </span>
-            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-              Procedures, reliability and limitations
-            </h2>
-          </div>
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }} className="space-y-3">
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-              Use this part for coder training, intercoder reliability (if
-              applicable), tools and software, and a short reflection on ethical
-              considerations and constraints.
-            </p>
-          </div>
-        </section>
 
         <footer style={{ borderTop: "1px solid var(--border)", paddingTop: "24px", fontFamily: "var(--mono)", fontSize: "11px" }}>
           <Link href="/" style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
