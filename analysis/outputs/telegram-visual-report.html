@@ -770,7 +770,7 @@
     <div class="section-label">04 — Methodology</div>
     <h2>Five analytical pipelines, one shared framework</h2>
     <p>
-      The study's analytical architecture comprises five interconnected methodological components, each designed to address a distinct research sub-question while drawing on the same underlying annotated corpus. They are described here in the order in which they were executed.
+      The study's analytical architecture rests on a single shared foundation: a corpus of approximately 24.000+ annotated media items scored across seven dimensions. From this corpus, five complementary lenses are applied, each designed to address a distinct research sub-question. The following sections describe the data collection and annotation process, then present each analytical component in the order it was executed.
     </p>
 
     <h3>I. Data Collection</h3>
@@ -846,7 +846,7 @@
     <div class="section-label">05 — Finding I</div>
     <h2>A shared iconographic language</h2>
     <p>
-      A 2D cluster map, produced by passing 400 representative images through CLIP (ViT-B-32) and reducing dimensions via t-SNE, reveals an unexpected structural result: images group primarily by <em>content type</em> rather than by channel affiliation. Maps and infographics, military portraiture, hardware and weapons systems, and scenes of physical destruction each form distinct visual clusters that cut across the Russian–Ukrainian divide.
+      The 2D map reveals two overlapping axes of clustering. The first is content-based: images group into broad visual categories regardless of source channel, including geographic maps and infographic cards, military portraiture, hardware and weapons systems, and scenes of physical destruction. The second axis, partly overlaid on the first, reflects channel affiliation.
     </p>
 
     <div class="finding reveal">
@@ -855,12 +855,12 @@
         <span class="sub">sides draw on the same visual<br>pool of maps, hardware,<br>portraiture, and destruction</span>
       </div>
       <div class="finding-text">
-        <p>Russian channels frame this shared repertoire within a register of strategic control and heroic agency — maps emphasising territorial gains, soldier portraiture in the vein of Soviet propaganda conventions. Ukrainian channels orient the same content toward documentation and accountability: portraits of dead Russian soldiers, aftermath photography, scenes of civilian destruction. The visual vocabulary is shared. Its <em>narrative deployment</em> is not.</p>
+        <p>Russian channels cluster heavily around maps and operational infographics, heroic soldier portraiture, and technological warfare imagery. This visual repertoire displays the war as strategic and controlled, highlighting territorial gains and framing the soldier as a heroic agent, in line with Soviet propaganda conventions. Ukrainian channels, by contrast, cluster around portraits of dead Russian soldiers and scenes of physical destruction photographed in a documentary register, oriented toward witness and accountability rather than narrative triumph.</p>
       </div>
     </div>
 
     <p>
-      This finding challenges the intuition that wartime visual production is fundamentally differentiated along national or political lines. Both sides inhabit the same iconographic language differently, rather than separately — a structural duality between propaganda and witnessing that runs through the entire corpus.
+      The map therefore does not sort cleanly along a single dimension. Content type remains the clearest organizing force, but it is inflected by a second pattern of channel affiliation that distinguishes strategic-display imagery from documentary aftermath.
     </p>
   </div>
 </section>
@@ -871,7 +871,7 @@
     <div class="section-label">06 — Finding II</div>
     <h2>Russian channels talk politics. Ukrainian channels document destruction.</h2>
     <p>
-      The most structurally significant finding from the channel content analysis is the divergence between Russian and Ukrainian channels in their balance of political versus kinetic content.
+      The most structurally significant finding from the channel content analysis is the divergence between Russian and Ukrainian channels in their balance of political versus kinetic content (<em>political</em> here referring to ideological commentary, state messaging, and interpretive framing rather than battlefield events themselves).
     </p>
 
     <div class="two-col reveal">
@@ -894,12 +894,6 @@
         </p>
       </div>
     </div>
-
-    <div class="divider"><span>temporal pattern</span></div>
-
-    <p>
-      One clear trend cuts across all channels: drone strike content emerges from late 2022 and grows steadily through 2023–2025. This directly tracks the escalating centrality of drone warfare to the conflict — one of the few moments where the data reflects a material change in the war rather than an editorial strategy.
-    </p>
   </div>
 </section>
 
@@ -1153,7 +1147,7 @@
 <!-- LIMITATIONS -->
 <section class="section" id="limitations">
   <div class="section-inner">
-    <div class="section-label">12 — Limitations</div>
+    <div class="section-label">11 — Limitations</div>
     <h2>What this study cannot claim</h2>
     <p>
       Several limitations must be acknowledged. The study is best understood as an exploratory contribution rather than a definitive empirical account. Its primary value lies in demonstrating the methodological feasibility of large-scale automated visual analysis in conflict contexts, and in generating hypotheses for more rigorously resourced future research.
@@ -1166,7 +1160,7 @@
 
     <h3>Annotation quality</h3>
     <p>
-      The automated annotation pipeline rests on a training set of only 50 manually coded images, which introduces subjectivity into the scoring framework. The codebook dimensions — particularly implied violence, aestheticization, and dehumanization — involve inherently interpretive judgements that are relative to this dataset and difficult to replicate without access to the original training material. A technical limitation was also observed whereby the model displayed a tendency to avoid extreme scores, particularly at the upper end of scales, which may compress variance in the results. Future iterations should incorporate larger and more systematically validated training sets.
+      The automated annotation pipeline rests on a training set of only 50 manually coded images, which introduces subjectivity into the scoring framework. The codebook dimensions — particularly implied violence, aestheticization, and dehumanization — involve inherently interpretive judgements that are relative to this dataset and difficult to replicate without access to the original training material. A technical limitation was also observed whereby the model displayed a tendency to avoid extreme scores, particularly at the upper end of scales, which may compress variance in the results. Future iterations should incorporate larger and more systematically validated training sets, drawing on established academic literature on automated image analysis in conflict contexts; improved annotation quality would also benefit from dedicated funding.
     </p>
 
     <h3>Corpus scope</h3>
@@ -1184,13 +1178,13 @@
 <!-- CONCLUSION -->
 <section class="section" id="conclusion">
   <div class="section-inner">
-    <div class="section-label">13 — Conclusion</div>
+    <div class="section-label">12 — Conclusion</div>
     <h2>Threads made visible</h2>
     <p>
       This study set out to examine how visual content — violence, aesthetic register, content type — is represented across a longitudinal corpus of 24,000+ media items from ten Telegram channels spanning four years of conflict. Several findings stand out.
     </p>
     <p>
-      The 2D visual map reveals that content clusters primarily by type rather than channel affiliation: the visual grammar of this war is <em>shared</em> across sides even where its narrative function differs sharply. The channel content analysis shows that Russian channels have progressively oriented toward political commentary, while Ukrainian channels anchored in occupied territories maintain a documentary register dominated by destruction and civilian harm. The violence analysis confirms that explicit violent imagery is pervasive — in 41% of all posts — but its distribution is uneven in analytically significant ways.
+      The channel content analysis shows that Russian channels have progressively oriented toward political commentary, while Ukrainian channels anchored in occupied territories maintain a documentary register dominated by destruction and civilian harm. The violence analysis confirms that explicit violent imagery is pervasive — in 41% of all posts — but its distribution is uneven in analytically significant ways.
     </p>
     <p>
       The study is best understood as generative rather than conclusive. Its primary contribution is to have made these threads visible — and to have demonstrated the methodological feasibility of large-scale automated visual analysis in conflict contexts. Each analytical thread opened here merits dedicated follow-up research: the gamification of drone warfare, the Груз 200 memorial genre, the relationship between violence and engagement, the editorial divergence between Russian and Ukrainian channels.

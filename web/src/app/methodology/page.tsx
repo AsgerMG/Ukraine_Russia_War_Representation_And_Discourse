@@ -24,7 +24,7 @@ export default function MethodologyPage() {
               Methodology
             </h1>
             <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
-              A transparent account of the corpus, annotation pipeline, analytical design, and limitations behind this report — covering ten channels, five Russian and five Ukrainian, over four years of conflict.
+              The study&apos;s analytical architecture rests on a single shared foundation: a corpus of approximately 24.000+ annotated media items scored across seven dimensions. From this corpus, five complementary lenses are applied, each designed to address a distinct research sub-question.
             </p>
           </div>
         </header>
