@@ -1,3 +1,5 @@
+import React from "react";
+
 type SectionConfig = {
   href: string;
   title: string;
@@ -5,7 +7,7 @@ type SectionConfig = {
   iconBgColor: string;
   textColor: string;
   wip?: boolean;
-  Icon: () => JSX.Element;
+  Icon: () => React.ReactElement;
 };
 
 const BLUE  = "#0057b7";
