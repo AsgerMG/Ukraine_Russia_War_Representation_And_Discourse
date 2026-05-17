@@ -1,132 +1,139 @@
-import React from "react";
+import Link from "next/link";
 
-type SectionConfig = {
-  href: string;
-  title: string;
-  bgColor: string;
-  iconBgColor: string;
-  textColor: string;
-  wip?: boolean;
-  Icon: () => React.ReactElement;
-};
+const findings = [
+  {
+    value: "24,000+",
+    label: "sampled images and video thumbnails",
+    detail: "A four-year Telegram corpus spanning five Russian and five Ukrainian channels.",
+  },
+  {
+    value: "41%",
+    label: "score 6+ for implied violence",
+    detail: "Violent imagery is not episodic; it is a stable visual condition of the war feed.",
+  },
+  {
+    value: "x2.2",
+    label: "rise in gamification score",
+    detail: "Drone and targeting interfaces increasingly make violence appear operational and game-like.",
+  },
+  {
+    value: "10",
+    label: "channels compared symmetrically",
+    detail: "The project reads Russian and Ukrainian war imagery through the same annotation framework.",
+  },
+];
 
-const BLUE  = "#0057b7";
-const BLUE2 = "#004fa8"; // slightly darker for icon bg on blue tiles
-const YELL  = "#ffdd00";
-const YELL2 = "#f5d000"; // slightly darker for icon bg on yellow tiles
-
-const sections: SectionConfig[] = [
+const chapters = [
   {
     href: "/content-type",
-    title: "Channel Content",
-    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🎯</span>
-    ),
+    eyebrow: "Chapter 01",
+    title: "Channel content",
+    description:
+      "How political commentary, destruction, propaganda, combat and civilian harm shift across channels over time.",
   },
   {
     href: "/implied-violence",
+    eyebrow: "Chapter 02",
     title: "Frontline violence",
-    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff",
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>⚠️</span>
-    ),
-  },
-  {
-    href: "/gamification",
-    title: "Gamification",
-    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff", wip: true,
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🚧</span>
-    ),
-  },
-  {
-    href: "/dehumanization",
-    title: "Dehumanization",
-    bgColor: BLUE, iconBgColor: BLUE2, textColor: "#fff", wip: true,
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: BLUE2 }}>🚧</span>
-    ),
-  },
-  {
-    href: "/aestheticization",
-    title: "Aestheticization",
-    bgColor: YELL, iconBgColor: YELL2, textColor: "#111", wip: true,
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>🚧</span>
-    ),
-  },
-  {
-    href: "/narrative-framing",
-    title: "Narrative framing",
-    bgColor: YELL, iconBgColor: YELL2, textColor: "#111", wip: true,
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>🚧</span>
-    ),
+    description:
+      "The distribution, persistence and qualitative genres of violent imagery across the corpus.",
   },
   {
     href: "/technical-framing",
+    eyebrow: "Chapter 03",
     title: "Technical means",
-    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>🛠️</span>
-    ),
+    description:
+      "How drone POV, soldier POV, screenshots and professional production change the war's visual grammar.",
+  },
+  {
+    href: "/correlatory-effects",
+    eyebrow: "Cross-dimensional",
+    title: "Correlatory effects",
+    description:
+      "How gamification, dehumanization, aestheticization and violence scores move together.",
   },
   {
     href: "/methodology",
+    eyebrow: "Research design",
     title: "Methodology",
-    bgColor: YELL, iconBgColor: YELL2, textColor: "#111",
-    Icon: () => (
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: YELL2 }}>📊</span>
-    ),
+    description:
+      "Sampling, annotation, limitations and the technical pipeline behind the analysis.",
+  },
+  {
+    href: "/project-report",
+    eyebrow: "Full text",
+    title: "Project report",
+    description:
+      "The long-form report for readers who want the complete argument and literature context.",
   },
 ];
 
 export default function Home() {
   return (
     <div className="min-h-screen" style={{ color: "var(--text)" }}>
-      <div className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div className="mx-auto flex max-w-6xl flex-col gap-12 px-4 py-10 sm:px-6 lg:px-8 lg:gap-16 lg:py-20">
+        <header className="grid gap-8 rounded-[28px] border border-[color:var(--border)] bg-[color:var(--panel)] p-5 shadow-2xl shadow-black/30 sm:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:p-10">
+          <div className="flex flex-col justify-between gap-8">
+            <div className="space-y-5">
+              <p className="kicker">Conference research preview</p>
+              <div className="space-y-4">
+                <h1 className="max-w-4xl font-serif text-[clamp(2.45rem,9vw,5.8rem)] font-bold leading-[0.95] tracking-[-0.045em] text-[color:var(--text)]">
+                  Picturing the War
+                </h1>
+                <p className="max-w-2xl text-lg leading-8 text-[color:var(--text-dim)] sm:text-xl">
+                  Visual representation and discourse on Telegram, 2022-2026. A comparative study of how ten Russian and Ukrainian channels make the war visible, persuasive and repeatable.
+                </p>
+              </div>
+            </div>
 
-        {/* ── hero ── */}
-        <header className="flex flex-col gap-4 sm:max-w-3xl">
-          <p style={{ fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)" }}>
-            Research report
-          </p>
-          <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem,5vw,3.5rem)", fontWeight: 700, lineHeight: 1.15, color: "var(--accent)" }}>
-            Picturing the War
-          </h1>
-          <p style={{ color: "var(--text-dim)", fontSize: "1.05rem", lineHeight: 1.75 }}>
-            Visual representation and discourse on Telegram, 2022–2026. A
-            comparative study of ten Russian and Ukrainian channels, combining
-            channel content, frontline violence, technical means, correlatory
-            effects, and methodology in one shared analytical framework.
-          </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link className="button-primary" href="#visual-map">
+                Explore the visual map
+              </Link>
+              <Link className="button-secondary" href="/project-report">
+                Read the full report
+              </Link>
+            </div>
+          </div>
+
+          <aside className="grid content-between gap-4 rounded-3xl border border-[color:var(--border)] bg-black/25 p-5">
+            <div className="data-rule" />
+            <p className="kicker text-[color:var(--text)]">Core claim</p>
+            <p className="text-balance font-serif text-3xl font-bold leading-tight text-[color:var(--text)]">
+              Both sides share a visual language, but use it to say different things.
+            </p>
+            <p className="text-sm leading-7 text-[color:var(--text-dim)]">
+              The site is built for quick conference scanning: start with the map, then move into the finished analytical chapters.
+            </p>
+          </aside>
         </header>
 
-        {/* ── 2D Visual Map ── */}
-        <section className="space-y-4">
-          <div className="flex items-end justify-between">
-            <div className="space-y-1">
-              <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--text-dim)" }}>
-                Corpus explorer
-              </p>
-              <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.4rem", fontWeight: 700, color: "var(--accent)" }}>
-                2D visual map
-              </h2>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-dim)" }}>
-                CLIP embeddings of the 400-image sample projected into 2D via t-SNE. Drag to pan, scroll to zoom.
+        <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Key findings">
+          {findings.map((finding) => (
+            <article className="stat-card" key={finding.label}>
+              <p className="font-serif text-4xl font-bold leading-none text-[color:var(--text)]">{finding.value}</p>
+              <div className="mt-3 h-1 w-12 bg-[color:var(--ukraine-blue)]" />
+              <h2 className="mt-3 text-sm font-medium uppercase tracking-[0.16em] text-[color:var(--text)]">{finding.label}</h2>
+              <p className="mt-3 text-sm leading-6 text-[color:var(--text-dim)]">{finding.detail}</p>
+            </article>
+          ))}
+        </section>
+
+        <section id="visual-map" className="space-y-5 scroll-mt-6">
+          <div className="flex flex-col gap-4 rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 sm:p-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-2">
+              <p className="kicker">Corpus explorer</p>
+              <h2 className="font-serif text-3xl font-bold text-[color:var(--text)]">2D visual map</h2>
+              <p className="max-w-3xl text-sm leading-7 text-[color:var(--text-dim)]">
+                A 400-image sample projected with CLIP embeddings and t-SNE. On desktop, drag to pan and scroll to zoom. On mobile, open the map full screen for the best touch experience.
               </p>
             </div>
-            <a
-              href="/visual-map.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent)", border: "1px solid var(--accent-dim)", padding: "6px 16px", borderRadius: "99px", whiteSpace: "nowrap", transition: "background 0.2s" }}
-            >
-              Open full map ↗
+            <a className="button-secondary shrink-0" href="/visual-map.html" target="_blank" rel="noopener noreferrer">
+              Open map full screen
             </a>
           </div>
-          <div className="relative overflow-hidden" style={{ height: "480px", borderRadius: "16px", border: "1px solid var(--border)" }}>
+
+          <div className="relative overflow-hidden rounded-[28px] border border-[color:var(--border)] bg-black/60 shadow-2xl shadow-black/40 h-[min(68vh,620px)] min-h-[420px] max-sm:h-[52vh] max-sm:min-h-[360px]">
             <iframe
               src="/visual-map.html"
               className="absolute inset-0 h-full w-full"
@@ -136,119 +143,30 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Project report entry ── */}
-        <section style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <a
-            href="/project-report"
-            className="transition section-tile"
-            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "var(--surface)", border: "1px solid var(--accent-dim)", borderRadius: "16px", padding: "24px 40px", textDecoration: "none", minWidth: "280px" }}
-          >
-            <div className="inline-flex items-center gap-3 rounded-xl p-2" style={{ background: "var(--accent)" }}>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: "var(--accent-dim)" }}>📄</span>
-              <div className="inline-flex rounded-full px-3 py-1 text-sm font-semibold italic" style={{ background: "var(--accent)", color: "var(--bg)" }}>
-                Full report
-              </div>
+        <section className="space-y-5">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="kicker">Finished public chapters</p>
+              <h2 className="font-serif text-3xl font-bold text-[color:var(--text)]">Follow the argument</h2>
             </div>
-            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontFamily: "var(--mono)", textAlign: "center", lineHeight: 1.6 }}>
-              Picturing the War — Visual Representation on Telegram, 2022–2026
+            <p className="max-w-md text-sm leading-6 text-[color:var(--text-muted)]">
+              A short route through the strongest findings, with deeper material available when readers want it.
             </p>
-            <p style={{ fontSize: "0.75rem", color: "var(--accent-dim)", fontFamily: "var(--mono)" }}>
-              Open report →
-            </p>
-          </a>
-
-          {/* connector line down into chapters */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", marginTop: "24px" }}>
-            <div style={{ width: "1px", height: "24px", background: "var(--accent)" }} />
-            <p style={{ fontFamily: "var(--mono)", fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--accent-dim)" }}>
-              analytical chapters
-            </p>
-            <div style={{ width: "1px", height: "48px", background: "linear-gradient(to bottom, var(--accent), transparent)" }} />
           </div>
-        </section>
 
-        {/* ── Analytical section tiles ── */}
-        <section>
-          <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "20px" }}>
-            Analytical chapters
-          </p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {sections.map(({ href, title, Icon, bgColor, textColor, wip }) => (
-              <a
-                key={href}
-                href={href}
-                className="group flex flex-col justify-between transition section-tile"
-                style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "18px", textDecoration: "none" }}
-              >
-                <div className="mb-4 inline-flex items-center gap-3 rounded-xl p-2" style={{ background: bgColor }}>
-                  <Icon />
-                  <div className="inline-flex rounded-full px-3 py-1 text-sm font-semibold italic" style={{ background: bgColor, color: textColor }}>
-                    {title}
-                  </div>
-                </div>
-                {wip && (
-                  <p style={{ fontSize: "0.7rem", fontFamily: "var(--mono)", letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--accent-dim)", marginBottom: "4px" }}>
-                    🚧 Work in progress
-                  </p>
-                )}
-                <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontFamily: "var(--mono)" }}>
-                  {wip ? "Chapter coming soon →" : "Open chapter →"}
-                </p>
-              </a>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {chapters.map((chapter) => (
+              <Link className="chapter-card" href={chapter.href} key={chapter.href}>
+                <p className="kicker">{chapter.eyebrow}</p>
+                <h3 className="mt-4 font-serif text-2xl font-bold text-[color:var(--text)]">{chapter.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[color:var(--text-dim)]">{chapter.description}</p>
+                <span className="mt-6 inline-flex font-mono text-xs uppercase tracking-[0.14em] text-[color:var(--ukraine-yellow)]">
+                  Open
+                </span>
+              </Link>
             ))}
           </div>
-
         </section>
-
-        {/* ── Correlatory effects ── */}
-        <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0" }}>
-
-          {/* connector line + label */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
-            <div style={{ width: "1px", height: "48px", background: "linear-gradient(to bottom, transparent, var(--accent))" }} />
-            <p style={{ fontFamily: "var(--mono)", fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--accent-dim)" }}>
-              cross-dimensional
-            </p>
-            <div style={{ width: "1px", height: "24px", background: "linear-gradient(to bottom, var(--accent), var(--accent))" }} />
-          </div>
-
-          {/* tile */}
-          <a
-            href="/correlatory-effects"
-            className="transition section-tile"
-            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "var(--surface)", border: "1px solid var(--accent-dim)", borderRadius: "16px", padding: "24px 40px", textDecoration: "none", minWidth: "280px" }}
-          >
-            <div className="inline-flex items-center gap-3 rounded-xl p-2" style={{ background: "var(--accent)" }}>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg" style={{ background: "var(--accent-dim)" }}>📈</span>
-              <div className="inline-flex rounded-full px-3 py-1 text-sm font-semibold italic" style={{ background: "var(--accent)", color: "var(--bg)" }}>
-                Correlatory effects
-              </div>
-            </div>
-            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontFamily: "var(--mono)", textAlign: "center", lineHeight: 1.6 }}>
-              Gamification × violence · Dehumanization × violence<br />Aestheticization × narrative framing
-            </p>
-            <p style={{ fontSize: "0.75rem", color: "var(--accent-dim)", fontFamily: "var(--mono)" }}>
-              Open chapter →
-            </p>
-          </a>
-        </section>
-
-        {/* ── How to read this ── */}
-        <section style={{ maxWidth: "680px", borderTop: "1px solid var(--border)", paddingTop: "32px" }}>
-          <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "12px" }}>
-            How to read this
-          </p>
-          <p style={{ fontSize: "0.875rem", color: "var(--text-dim)", lineHeight: 1.8 }}>
-            Each chapter is self-contained but contributes to a cumulative
-            argument. For readers interested in the research design, the{" "}
-            <a href="/methodology" style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
-              Methodology
-            </a>{" "}
-            page details data sources, the annotation pipeline, and
-            limitations.
-          </p>
-        </section>
-
       </div>
     </div>
   );

@@ -31,8 +31,8 @@ export default function RootLayout({
             style={{
               gridTemplateColumns: "repeat(6, 1fr)",
               gridTemplateRows: "repeat(4, 1fr)",
-              opacity: 0.07,
-              filter: "grayscale(1) contrast(1.2)",
+              opacity: 0.18,
+              filter: "grayscale(0.82) contrast(1.25) saturate(0.75)",
             }}
           >
             {BG_IMAGES.map((img) => (
@@ -49,7 +49,7 @@ export default function RootLayout({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(to bottom, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.5) 40%, rgba(10,10,10,0.7) 100%)",
+                "radial-gradient(circle at 18% 8%, rgba(0,87,183,0.24), transparent 30%), radial-gradient(circle at 80% 10%, rgba(255,221,0,0.1), transparent 24%), linear-gradient(to bottom, rgba(8,9,11,0.74) 0%, rgba(8,9,11,0.84) 44%, rgba(8,9,11,0.93) 100%)",
             }}
           />
         </div>
