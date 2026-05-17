@@ -1,126 +1,78 @@
-import Link from "next/link";
+import PageShell from "../components/PageShell";
 import VisualAnalysis from "./VisualAnalysis";
+
+const figures = [
+  { value: "12%", label: "Drone POV at its peak in the first half of 2024, up from 3.4% in 2022" },
+  { value: "2.2×", label: "Gamification score over the study period, from 0.84 to 1.83" },
+  { value: "5.04", label: "Dehumanisation in drone footage by late 2025, against a corpus mean of 2.06" },
+];
 
 export default function TechnicalFramingPage() {
   return (
-    <div className="min-h-screen" style={{ color: "var(--text)" }}>
-      <main className="mx-auto flex max-w-5xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+    <PageShell
+      kicker="Chapter Three"
+      title="Technical means"
+      standfirst="How the way an image is made, by drone, by soldier, by civilian phone or by a studio, changes what the war looks like."
+      meta={["24,000+ images", "10 channels", "H1 2022 to H2 2025"]}
+    >
+      <div className="prose dropcap">
+        <p>
+          Early in the war the footage is raw and close to the ground. A
+          civilian films a street; a soldier films a trench. Over four years
+          that ground-level register gives way to more mediated production. Drone
+          POV roughly triples across the corpus and becomes the defining look of
+          the more militarily oriented channels, while screenshots and
+          studio-grade production take over the commentary aggregators. The
+          partial 2026 period is left out here to avoid truncation bias.
+        </p>
+      </div>
 
-        {/* ── page header ── */}
-        <header className="space-y-5">
-          <div className="flex items-center gap-3">
-            <Link href="/" style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--text-muted)", textDecoration: "none", letterSpacing: "0.05em" }}>
-              ← Overview
-            </Link>
-            <span style={{ color: "var(--border)" }}>/</span>
-            <span className="rounded-full px-3 py-1 text-xs font-semibold italic" style={{ background: "#ffdd00", color: "#111" }}>
-              Technical means
-            </span>
-          </div>
-          <div style={{ borderLeft: "3px solid var(--accent)", paddingLeft: "20px" }} className="space-y-3">
-            <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-dim)" }}>
-              Chapter 07
-            </p>
-            <h1 style={{ fontFamily: "var(--serif)", fontSize: "clamp(1.8rem,4vw,3rem)", fontWeight: 700, lineHeight: 1.2, color: "var(--accent)" }}>
-              Technical means
-            </h1>
-            <p style={{ maxWidth: "620px", fontSize: "1rem", lineHeight: 1.75, color: "var(--text-dim)" }}>
-              How image-production modes — drone POV, soldier POV, civilian recording,
-              professional production, composite/meme and screenshot — shift across ten
-              Russian and Ukrainian Telegram channels. This half-year analysis runs
-              through H2 2025; the partial 2026 period is excluded to avoid
-              truncation bias.
-            </p>
-            <div className="flex flex-wrap gap-4" style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--text-muted)" }}>
-              <span>n = 24.000+ images</span>
-              <span style={{ color: "var(--border)" }}>·</span>
-              <span>10 Telegram channels</span>
-              <span style={{ color: "var(--border)" }}>·</span>
-              <span>H1 2022 – H2 2025</span>
-              <span style={{ color: "var(--border)" }}>·</span>
-              <span>partial 2026 excluded</span>
-            </div>
-          </div>
-        </header>
-
-        {/* ── stat summary ── */}
-        <section className="grid gap-4 sm:grid-cols-3">
-          {[
-            { label: "Drone POV peak", value: "12%", sub: "H1 2024 — up from 3.4% in 2022" },
-            { label: "Gamification score", value: "×2.2", sub: "0.84 → 1.83 over the study period" },
-            { label: "Drone dehumanisation", value: "5.04", sub: "vs corpus-wide 2.06 in H2 2025" },
-          ].map(s => (
-            <div key={s.label} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "20px" }}>
-              <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)", marginBottom: "6px" }}>
-                {s.label}
-              </p>
-              <p style={{ fontFamily: "var(--serif)", fontSize: "2.4rem", fontWeight: 700, color: "var(--accent)", lineHeight: 1 }}>
-                {s.value}
-              </p>
-              <p style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--text-muted)", marginTop: "6px" }}>
-                {s.sub}
-              </p>
+      <section aria-label="Key figures">
+        <p className="kicker">Key figures</p>
+        <dl className="index-list mt-5">
+          {figures.map((f) => (
+            <div
+              key={f.value}
+              className="flex flex-col gap-1 border-b border-[color:var(--rule)] py-5 sm:flex-row sm:items-baseline sm:gap-7"
+            >
+              <dt className="stat-figure shrink-0 text-[2rem] sm:w-32 sm:text-[2.2rem]">
+                {f.value}
+              </dt>
+              <dd className="text-[1rem] leading-7 text-[color:var(--text-dim)]">
+                {f.label}
+              </dd>
             </div>
           ))}
-        </section>
+        </dl>
+      </section>
 
-        {/* ── interactive charts ── */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "12px", fontWeight: 700, color: "#fff" }}>
-              1
-            </span>
-            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-              Interactive companion
-            </h2>
-          </div>
+      <section aria-label="Interactive companion">
+        <p className="kicker">Interactive companion</p>
+        <h2 className="mt-4">Production modes over time</h2>
+        <div className="mt-7">
           <VisualAnalysis />
-        </section>
+        </div>
+      </section>
 
-        {/* ── interpretation ── */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-3">
-            <span style={{ display: "flex", width: "28px", height: "28px", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#ffdd00", fontSize: "12px", fontWeight: 700, color: "#111" }}>
-              2
-            </span>
-            <h2 style={{ fontFamily: "var(--serif)", fontSize: "1.1rem", fontWeight: 700, color: "var(--accent)" }}>
-              Report interpretation
-            </h2>
-          </div>
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px" }} className="space-y-4">
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-              The data reveal a structural shift in how the war is technically
-              framed over time. The early dominance of civilian recording — raw,
-              ground-level, often chaotic footage — gives way to a more
-              mediated set of production modes. Drone POV tripled across the
-              corpus and became the defining visual register for a subset of
-              militarily-oriented channels, while screenshot and professional
-              production grew in the commentary-aggregator channels.
-            </p>
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-              This divergence is not merely aesthetic. The annotation scores
-              show that drone footage consistently scores higher on gamification
-              and dehumanisation than any other frame type. By H2 2025, drone
-              POV images score 6.04 on gamification (out of 10) compared to a
-              corpus-wide average of ~1.7 — suggesting that the drone aesthetic
-              imports the visual grammar of first-person games into the
-              representation of lethal force.
-            </p>
-            <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "var(--text-dim)" }}>
-              The plateau of scores in 2025 may reflect content normalisation:
-              audiences — and producers — become accustomed to the register,
-              reducing its marked quality, even as its prevalence remains high.
-            </p>
-          </div>
-        </section>
-
-        <footer style={{ borderTop: "1px solid var(--border)", paddingTop: "24px", fontFamily: "var(--mono)", fontSize: "11px" }}>
-          <Link href="/" style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
-            ← Back to overview
-          </Link>
-        </footer>
-
-      </main>
-    </div>
+      <section aria-label="Interpretation">
+        <p className="kicker">Interpretation</p>
+        <h2 className="mt-4">Why the shift matters</h2>
+        <div className="prose mt-5">
+          <p>
+            The change is not only aesthetic. Drone footage scores consistently
+            higher on gamification and dehumanisation than any other frame type.
+            By the second half of 2025 drone POV images score 6.04 on
+            gamification out of ten, against a corpus-wide average near 1.7. The
+            drone aesthetic imports the visual grammar of first-person games into
+            the representation of lethal force.
+          </p>
+          <p>
+            Scores then plateau through 2025. The likeliest reading is
+            normalisation: producers and audiences grow used to the register, so
+            its marked quality fades even as its prevalence stays high.
+          </p>
+        </div>
+      </section>
+    </PageShell>
   );
 }

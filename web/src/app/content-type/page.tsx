@@ -4,24 +4,26 @@ import ContentHeatmaps from "./ContentHeatmaps";
 export default function ContentTypePage() {
   return (
     <PageShell
-      chapter="Chapter 01"
-      title="Channel content"
-      subtitle="How content categories change across ten Russian and Ukrainian Telegram channels, revealing how political commentary, destruction, propaganda and combat imagery rise or recede over time."
-      pillBg="#0057b7"
-      pillText="#fff"
+      kicker="Chapter One"
+      title="What the channels chose to show"
+      standfirst="The mix of imagery shifts steadily across ten Russian and Ukrainian Telegram channels, and the direction of that drift says as much as any single picture."
+      meta={["24,000+ sampled images", "10 channels", "Feb 2022 to Feb 2026"]}
     >
-      <section className="grid gap-4 md:grid-cols-3">
-        {[
-          ["Structural divergence", "Russian channels increasingly orient toward political commentary, while Ukrainian occupied-territory channels remain anchored in destruction, aftermath and civilian harm."],
-          ["Proportional reading", "The sampling design supports comparison of content composition over time, not absolute posting volume or total platform reach."],
-          ["Heatmap logic", "The original category and channel heatmap modes are now rendered natively in React, with filters that keep the dense monthly data readable on phones."],
-        ].map(([title, text]) => (
-          <article className="stat-card" key={title}>
-            <h2 className="font-serif text-xl font-bold text-[color:var(--text)]">{title}</h2>
-            <p className="mt-3 text-sm leading-7 text-[color:var(--text-dim)]">{text}</p>
-          </article>
-        ))}
-      </section>
+      <div className="prose dropcap">
+        <p>
+          Russian channels lean further into political commentary as the war
+          goes on. Ukrainian channels rooted in occupied territory stay fixed on
+          what is in front of them: ruined buildings, the aftermath of strikes,
+          and the people caught underneath. The two feeds use a similar visual
+          vocabulary, but they point it at different things.
+        </p>
+        <p>
+          The sampling is deliberately proportional. Up to fifty posts per
+          channel per month makes it possible to compare the composition of a
+          feed over time, though not its absolute reach or posting volume. Read
+          the heatmaps below for proportion and trend, not for headcount.
+        </p>
+      </div>
 
       <ContentHeatmaps />
     </PageShell>

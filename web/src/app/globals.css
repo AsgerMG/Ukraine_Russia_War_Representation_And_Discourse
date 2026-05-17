@@ -1,128 +1,253 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
+/* ================================================================== *
+ *  Picturing the War : editorial type system
+ *  Tone reference: The Economist / Financial Times.
+ *  Refined dark surface, running prose, no decorative boxes.
+ * ================================================================== */
+
+@theme {
+  /* next/font exposes these CSS variables (wired in layout.tsx) */
+  --font-serif: var(--font-source-serif), Georgia, Cambria, "Times New Roman", serif;
+  --font-sans:  var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:  "IBM Plex Mono", ui-monospace, monospace;
+}
+
 :root {
-  --bg:          #08090b;
-  --surface:     rgba(246, 243, 235, 0.055);
-  --surface2:    rgba(246, 243, 235, 0.09);
-  --panel:       rgba(8, 9, 11, 0.78);
-  --border:      rgba(246, 243, 235, 0.18);
-  --text:        #f6f3eb;
-  --text-dim:    #b8b2a7;
-  --text-muted:  #79736a;
-  --accent:      #f6f3eb;
-  --accent-dim:  #6fa2ff;
-  --ukraine-blue:#0057b7;
-  --ukraine-yellow:#ffdd00;
-  --focus:       #ffdd00;
-  --blue:        #0057b7;
-  --green:       #48a878;
-  --serif:       Georgia, Cambria, 'Times New Roman', Times, serif;
-  --mono:        'IBM Plex Mono', monospace;
-  --sans:        Arial, Helvetica, sans-serif;
+  /* surface */
+  --bg:          #100f0d;          /* warm ink-black */
+  --text:        #ece7da;          /* headlines and strong text */
+  --ink:         #d8d2c4;          /* body copy */
+  --text-dim:    #ada697;          /* secondary text */
+  --text-muted:  #756e61;          /* captions and labels */
+
+  /* hairlines, used in place of bordered boxes */
+  --rule:        rgba(236, 231, 218, 0.13);
+  --rule-strong: rgba(236, 231, 218, 0.28);
+
+  /* restrained accent, used sparingly like a masthead colour */
+  --accent:      #ffd700;
+  --accent-soft: rgba(255, 215, 0, 0.28);
+
+  /* data-encoding palette, for charts only */
+  --data-blue:    #005bbb;
+  --data-gold:    #ffd700;
+  --ukraine-blue:   #005bbb;
+  --ukraine-yellow: #ffd700;
+  --blue:         #005bbb;
+  --green:        #6bbf95;
+
+  /* legacy tokens kept so old class hooks flatten gracefully */
+  --surface:     transparent;
+  --surface2:    rgba(236, 231, 218, 0.035);
+  --panel:       transparent;
+  --border:      var(--rule);
+  --focus:       var(--accent);
+
+  --serif:       var(--font-serif);
+  --sans:        var(--font-sans);
+  --mono:        var(--font-mono);
+
+  --measure:     68ch;             /* readable line length */
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
   font-family: var(--serif);
   font-weight: 400;
-  line-height: 1.7;
+  font-size: 1.0625rem;
+  line-height: 1.72;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "onum", "pnum";
 }
 
-/* section tile hover */
-.section-tile:hover { border-color: var(--accent-dim) !important; }
+::selection { background: var(--accent-soft); color: var(--text); }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+/* ---- editorial typography ----------------------------------------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.011em;
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(2.1rem, 4.4vw, 3.15rem); line-height: 1.08; }
+h2 { font-size: clamp(1.55rem, 3vw, 2.05rem); line-height: 1.16; }
+h3 { font-size: clamp(1.2rem, 2vw, 1.4rem);  line-height: 1.25; }
+
+p { text-wrap: pretty; }
 
 .font-serif { font-family: var(--serif); }
+.font-sans  { font-family: var(--sans); }
+.font-mono  { font-family: var(--mono); }
 
+/* small-caps department label */
 .kicker {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.69rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--accent);
 }
+
+/* standfirst / deck beneath a headline */
+.lede {
+  font-family: var(--serif);
+  font-size: clamp(1.12rem, 1.7vw, 1.35rem);
+  line-height: 1.62;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+/* a column of running prose */
+.prose {
+  max-width: var(--measure);
+  font-size: 1.16rem;
+  line-height: 1.78;
+  color: var(--ink);
+}
+.prose > * + * { margin-top: 1.15em; }
+.prose p { margin: 0; }
+.prose strong { color: var(--text); font-weight: 700; }
+.prose em { color: var(--text-dim); }
+.prose a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-soft);
+  text-underline-offset: 3px;
+}
+.prose a:hover { text-decoration-color: var(--accent); }
+
+/* leading-paragraph drop cap, used once per article opener */
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 3.4em;
+  line-height: 0.78;
+  padding: 0.04em 0.09em 0 0;
+  color: var(--text);
+}
+
+/* thin rule that separates movements in place of a bordered box */
+.rule { height: 1px; background: var(--rule); border: 0; }
+.rule-strong { height: 2px; background: var(--rule-strong); }
+
+/* quieter Ukrainian-flag rule */
+.data-rule {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--ukraine-blue) 0 50%, var(--ukraine-yellow) 50% 100%);
+  opacity: 0.85;
+}
+
+/* a chart: framed by a top hairline and a caption, not a box */
+.figure { border-top: 1px solid var(--rule); padding-top: 1.1rem; }
+.figure-cap {
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.figure-cap strong { color: var(--text-dim); font-weight: 600; }
+
+/* a pulled-out reading note: a left rule, not a card */
+.note { border-left: 2px solid var(--accent-soft); padding-left: 1.15rem; color: var(--text-dim); }
+.note-label {
+  font-family: var(--sans);
+  font-size: 0.69rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* a lead statistic set as type, not a tile */
+.stat-figure { font-family: var(--serif); font-weight: 700; color: var(--text); line-height: 1; }
+
+/* ---- ruled index list (front-page contents, channel tables) ------- */
+
+.index-list { border-top: 1px solid var(--rule-strong); }
+.index-row {
+  display: block;
+  position: relative;
+  border-bottom: 1px solid var(--rule);
+  padding: 1.15rem 0;
+  text-decoration: none;
+  transition: background 140ms ease;
+}
+.index-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+.index-row:hover { background: rgba(236, 231, 218, 0.025); }
+.index-row:hover::before { opacity: 1; }
+
+/* ---- understated links / buttons ---------------------------------- */
 
 .button-primary,
 .button-secondary {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  border-radius: 999px;
-  padding: 0.72rem 1.1rem;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  line-height: 1;
+  gap: 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   text-decoration: none;
-  text-transform: uppercase;
-  transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease;
+  transition: color 140ms ease, border-color 140ms ease, gap 140ms ease;
 }
-
 .button-primary {
-  border: 1px solid var(--ukraine-yellow);
-  background: var(--ukraine-yellow);
-  color: #07101f;
-  font-weight: 500;
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent-soft);
+  padding-bottom: 2px;
 }
+.button-primary:hover { color: var(--text); border-color: var(--accent); gap: 0.75rem; }
+.button-secondary { color: var(--text-dim); border-bottom: 1px solid transparent; padding-bottom: 2px; }
+.button-secondary:hover { color: var(--text); border-color: var(--rule-strong); }
 
-.button-secondary {
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--text);
-}
-
-.button-primary:hover,
-.button-secondary:hover,
-.chapter-card:hover {
-  transform: translateY(-1px);
-}
-
-.button-secondary:hover,
-.chapter-card:hover {
-  border-color: var(--accent-dim);
-}
-
+/* legacy card hooks flattened to plain blocks, so older markup falls
+   back into the article flow instead of rendering as a box */
 .stat-card,
-.chapter-card {
-  border: 1px solid var(--border);
-  background:
-    linear-gradient(145deg, rgba(246, 243, 235, 0.075), rgba(246, 243, 235, 0.02)),
-    var(--surface);
-  border-radius: 22px;
-  padding: 1.25rem;
-  text-decoration: none;
-  transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
-}
-
-.data-rule {
-  height: 3px;
-  width: 100%;
-  background: linear-gradient(90deg, var(--ukraine-blue) 0 50%, var(--ukraine-yellow) 50% 100%);
-}
-
-.chapter-card {
-  display: flex;
-  min-height: 240px;
-  flex-direction: column;
+.chapter-card,
+.section-tile {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 }
 
 @media (max-width: 640px) {
-  .button-primary,
-  .button-secondary {
-    width: 100%;
-  }
-
-  .stat-card,
-  .chapter-card {
-    border-radius: 18px;
-    padding: 1rem;
-  }
+  body { font-size: 1rem; }
+  .prose { font-size: 1.08rem; }
 }
-

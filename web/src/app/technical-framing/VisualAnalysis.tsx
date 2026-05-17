@@ -12,16 +12,16 @@ const CHANNELS = ["RVvoenkor","ZA_FROHT","a_shtirlitz","donbassrealii","hyevuy_d
 const FRAMES = ["drone POV","soldier POV","civilian recording","professional production","composite/meme","screenshot","other"];
 
 const FRAME_COLORS: Record<string,string> = {
-  "drone POV":"#ef4444","soldier POV":"#f97316","civilian recording":"#3b82f6",
-  "professional production":"#8b5cf6","composite/meme":"#ec4899","screenshot":"#6b7280","other":"#a3a3a3",
+  "drone POV":"#ffd700","soldier POV":"#c98b5b","civilian recording":"#005bbb",
+  "professional production":"#8a8fb0","composite/meme":"#bf7d8e","screenshot":"#8a8478","other":"#5f5a50",
 };
 const SCORE_COLORS: Record<string,string> = {
-  implied_violence_score:"#ef4444",gamification_score:"#f97316",
-  dehumanization_score:"#8b5cf6",aestheticization_score:"#ec4899",narrative_framing_score:"#3b82f6",
+  implied_violence_score:"#ffd700",gamification_score:"#c98b5b",
+  dehumanization_score:"#8a8fb0",aestheticization_score:"#bf7d8e",narrative_framing_score:"#005bbb",
 };
 const SCORE_LABELS: Record<string,string> = {
   implied_violence_score:"Violence",gamification_score:"Gamification",
-  dehumanization_score:"Dehumanization",aestheticization_score:"Aestheticization",narrative_framing_score:"Narrative framing",
+  dehumanization_score:"Dehumanisation",aestheticization_score:"Aestheticisation",narrative_framing_score:"Narrative framing",
 };
 
 const AGG_RAW = [{"period":"2022-H1","frame":"civilian recording","n":944,"total":2317,"pct":40.74},{"period":"2022-H1","frame":"combat footage","n":1,"total":2317,"pct":0.04},{"period":"2022-H1","frame":"composite/meme","n":255,"total":2317,"pct":11.01},{"period":"2022-H1","frame":"drone POV","n":78,"total":2317,"pct":3.37},{"period":"2022-H1","frame":"other","n":230,"total":2317,"pct":9.93},{"period":"2022-H1","frame":"professional production","n":260,"total":2317,"pct":11.22},{"period":"2022-H1","frame":"screenshot","n":469,"total":2317,"pct":20.24},{"period":"2022-H1","frame":"soldier POV","n":80,"total":2317,"pct":3.45},{"period":"2022-H2","frame":"civilian recording","n":1192,"total":2959,"pct":40.28},{"period":"2022-H2","frame":"composite/meme","n":301,"total":2959,"pct":10.17},{"period":"2022-H2","frame":"drone POV","n":116,"total":2959,"pct":3.92},{"period":"2022-H2","frame":"other","n":270,"total":2959,"pct":9.12},{"period":"2022-H2","frame":"professional production","n":305,"total":2959,"pct":10.31},{"period":"2022-H2","frame":"screenshot","n":663,"total":2959,"pct":22.41},{"period":"2022-H2","frame":"soldier POV","n":112,"total":2959,"pct":3.79},{"period":"2023-H1","frame":"civilian recording","n":1125,"total":3486,"pct":32.27},{"period":"2023-H1","frame":"composite/meme","n":369,"total":3486,"pct":10.59},{"period":"2023-H1","frame":"drone POV","n":241,"total":3486,"pct":6.91},{"period":"2023-H1","frame":"other","n":337,"total":3486,"pct":9.67},{"period":"2023-H1","frame":"professional production","n":390,"total":3486,"pct":11.19},{"period":"2023-H1","frame":"screenshot","n":898,"total":3486,"pct":25.76},{"period":"2023-H1","frame":"soldier POV","n":126,"total":3486,"pct":3.61},{"period":"2023-H2","frame":"civilian recording","n":855,"total":2997,"pct":28.53},{"period":"2023-H2","frame":"combat footage","n":1,"total":2997,"pct":0.03},{"period":"2023-H2","frame":"composite/meme","n":339,"total":2997,"pct":11.31},{"period":"2023-H2","frame":"drone POV","n":326,"total":2997,"pct":10.88},{"period":"2023-H2","frame":"other","n":285,"total":2997,"pct":9.51},{"period":"2023-H2","frame":"professional production","n":288,"total":2997,"pct":9.61},{"period":"2023-H2","frame":"screenshot","n":821,"total":2997,"pct":27.39},{"period":"2023-H2","frame":"soldier POV","n":82,"total":2997,"pct":2.74},{"period":"2024-H1","frame":"civilian recording","n":988,"total":3462,"pct":28.54},{"period":"2024-H1","frame":"composite/meme","n":368,"total":3462,"pct":10.63},{"period":"2024-H1","frame":"drone POV","n":416,"total":3462,"pct":12.02},{"period":"2024-H1","frame":"other","n":306,"total":3462,"pct":8.84},{"period":"2024-H1","frame":"professional production","n":407,"total":3462,"pct":11.76},{"period":"2024-H1","frame":"screenshot","n":894,"total":3462,"pct":25.82},{"period":"2024-H1","frame":"soldier POV","n":83,"total":3462,"pct":2.4},{"period":"2024-H2","frame":"civilian recording","n":869,"total":2917,"pct":29.79},{"period":"2024-H2","frame":"combat footage","n":2,"total":2917,"pct":0.07},{"period":"2024-H2","frame":"composite/meme","n":308,"total":2917,"pct":10.56},{"period":"2024-H2","frame":"drone POV","n":336,"total":2917,"pct":11.52},{"period":"2024-H2","frame":"other","n":276,"total":2917,"pct":9.46},{"period":"2024-H2","frame":"professional production","n":329,"total":2917,"pct":11.28},{"period":"2024-H2","frame":"screenshot","n":738,"total":2917,"pct":25.3},{"period":"2024-H2","frame":"soldier POV","n":59,"total":2917,"pct":2.02},{"period":"2025-H1","frame":"civilian recording","n":976,"total":3454,"pct":28.26},{"period":"2025-H1","frame":"composite/meme","n":384,"total":3454,"pct":11.12},{"period":"2025-H1","frame":"drone POV","n":292,"total":3454,"pct":8.45},{"period":"2025-H1","frame":"other","n":278,"total":3454,"pct":8.05},{"period":"2025-H1","frame":"professional production","n":467,"total":3454,"pct":13.52},{"period":"2025-H1","frame":"screenshot","n":990,"total":3454,"pct":28.66},{"period":"2025-H1","frame":"soldier POV","n":67,"total":3454,"pct":1.94},{"period":"2025-H2","frame":"civilian recording","n":844,"total":2967,"pct":28.45},{"period":"2025-H2","frame":"combat footage","n":1,"total":2967,"pct":0.03},{"period":"2025-H2","frame":"composite/meme","n":467,"total":2967,"pct":15.74},{"period":"2025-H2","frame":"drone POV","n":181,"total":2967,"pct":6.1},{"period":"2025-H2","frame":"other","n":241,"total":2967,"pct":8.12},{"period":"2025-H2","frame":"professional production","n":373,"total":2967,"pct":12.57},{"period":"2025-H2","frame":"screenshot","n":799,"total":2967,"pct":26.93},{"period":"2025-H2","frame":"soldier POV","n":61,"total":2967,"pct":2.06}];
@@ -70,13 +70,14 @@ function droneByChannel(raw: typeof CH_RAW) {
 /* ─── shared chart styles ───────────────────────────────────────────────── */
 const tt = {
   fontSize: 11,
-  background: "#111111",
-  border: "1px solid #2a2a2a",
-  borderRadius: 6,
-  color: "#e8e8e0",
+  background: "#1a1814",
+  border: "1px solid rgba(236,231,218,0.2)",
+  borderRadius: 3,
+  color: "#ece7da",
+  fontFamily: "var(--sans)",
 };
 
-const axisProps = { tick: { fill: "#555550", fontSize: 11 } };
+const axisProps = { tick: { fill: "#ada697", fontSize: 11 } };
 
 /* ─── tab config ────────────────────────────────────────────────────────── */
 const TABS = [
@@ -90,11 +91,11 @@ type TabId = (typeof TABS)[number]["id"];
 
 /* ─── findings ──────────────────────────────────────────────────────────── */
 const FINDINGS: Record<TabId, string> = {
-  aggregate: "Civilian recording fell from ~41% in early 2022 to ~28% by 2024, while drone POV tripled from 3.4% to a peak of 12% in H1 2024. Screenshot share rose steadily from 20% to ~27%. Professional production and composite/meme remained stable at ~11% each.",
-  drone: "ZA_FROHT, voenacher and rusich_army are the drone-heavy channels, peaking at 25–31% in H1–H2 2024. In contrast, a_shtirlitz and donbassrealii never exceeded ~5% drone content — they remained meme/screenshot-heavy. The divergence maps onto a functional split between battlefield-oriented and commentary/aggregator channels.",
-  "per-channel": "Select a channel above to view its frame distribution over the study period.",
-  scores: "Gamification doubled from 0.84 (H1 2022) to 1.83 (H2 2024), tracking the drone POV rise. Dehumanization rose from 1.85 to 2.31 over the same period. All scores plateaued or slightly declined in 2025, possibly reflecting content normalisation.",
-  "drone-scores": "Within drone POV images specifically, gamification climbed from 4.19 to 6.04 — far above the corpus average of ~1.7. Dehumanization in drone footage reached 5.04 by H2 2025 vs. corpus-wide 2.06, confirming drone footage is qualitatively more gamified, dehumanising and violent than any other frame type.",
+  aggregate: "Civilian recording fell from about 41 per cent in early 2022 to roughly 28 per cent by 2024, while drone POV tripled, from 3.4 per cent to a peak of 12 per cent in the first half of 2024. Screenshot share rose steadily from 20 to about 27 per cent. Professional production and composite or meme content held stable at around 11 per cent each.",
+  drone: "ZA_FROHT, voenacher and rusich_army are the drone-heavy channels, peaking at 25 to 31 per cent across 2024. a_shtirlitz and donbassrealii never passed about 5 per cent and stayed meme and screenshot heavy. The split is functional: battlefield channels against commentary aggregators.",
+  "per-channel": "Select a channel above to see its frame distribution over the study period.",
+  scores: "Gamification doubled, from 0.84 in the first half of 2022 to 1.83 in the second half of 2024, tracking the rise of drone POV. Dehumanisation rose from 1.85 to 2.31 over the same span. Every score plateaued or eased back in 2025, which is consistent with content normalisation.",
+  "drone-scores": "Within drone POV images, gamification climbed from 4.19 to 6.04, far above the corpus average near 1.7. Dehumanisation in drone footage reached 5.04 by the second half of 2025 against a corpus-wide 2.06. Drone footage is qualitatively more gamified, more dehumanising and more violent than any other frame type.",
 };
 
 /* ─── component ─────────────────────────────────────────────────────────── */
@@ -111,23 +112,24 @@ export default function VisualAnalysis() {
     return row;
   }), [droneData]);
 
+  const chartTitle =
+    tab === "aggregate"    ? "Frame-type distribution over time, share of all images" :
+    tab === "drone"        ? "Drone POV share by channel over time" :
+    tab === "per-channel"  ? `${selChannel}: frame distribution over time` :
+    tab === "scores"       ? "Mean annotation scores over time, aggregate" :
+                             "Drone POV images: mean scores over time";
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      {/* tab bar */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+    <div className="flex flex-col gap-7">
+      <div className="flex flex-wrap gap-x-6 gap-y-2">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
+            className="border-b-2 pb-1 font-sans text-[0.8rem] font-semibold tracking-wide transition-colors"
             style={{
-              borderRadius: "99px", padding: "6px 16px",
-              fontSize: "11px", fontFamily: "var(--mono)", letterSpacing: "0.08em",
-              border: "1px solid",
-              cursor: "pointer", transition: "all 0.15s",
-              background: tab === t.id ? "var(--accent)" : "var(--surface2)",
-              color: tab === t.id ? "var(--bg)" : "var(--text-dim)",
-              borderColor: tab === t.id ? "var(--accent)" : "var(--border)",
-              fontWeight: tab === t.id ? 600 : 400,
+              color: tab === t.id ? "var(--accent)" : "var(--text-muted)",
+              borderColor: tab === t.id ? "var(--accent)" : "transparent",
             }}
           >
             {t.label}
@@ -135,92 +137,72 @@ export default function VisualAnalysis() {
         ))}
       </div>
 
-      {/* chart panel */}
-      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "24px", display: "flex", flexDirection: "column", gap: "20px" }}>
-        {/* per-channel channel selector */}
-        {tab === "per-channel" && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-            {CHANNELS.map(ch => (
-              <button
-                key={ch}
-                onClick={() => setSelChannel(ch)}
-                style={{
-                  borderRadius: "99px", padding: "4px 12px",
-                  fontSize: "11px", fontFamily: "var(--mono)",
-                  border: "1px solid",
-                  cursor: "pointer", transition: "all 0.15s",
-                  background: selChannel === ch ? "var(--accent)" : "var(--surface2)",
-                  color: selChannel === ch ? "var(--bg)" : "var(--text-dim)",
-                  borderColor: selChannel === ch ? "var(--accent)" : "var(--border)",
-                }}
-              >
-                {ch}
-              </button>
-            ))}
-          </div>
-        )}
+      {tab === "per-channel" && (
+        <div className="flex flex-wrap gap-x-5 gap-y-2">
+          {CHANNELS.map(ch => (
+            <button
+              key={ch}
+              onClick={() => setSelChannel(ch)}
+              className="font-sans text-[0.78rem] transition-colors"
+              style={{
+                color: selChannel === ch ? "var(--accent)" : "var(--text-muted)",
+                textDecoration: selChannel === ch ? "underline" : "none",
+                textUnderlineOffset: "4px",
+              }}
+            >
+              {ch}
+            </button>
+          ))}
+        </div>
+      )}
 
-        {/* chart title */}
-        <p style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-dim)" }}>
-          {tab === "aggregate"    && "Frame type distribution over time (% of all images)"}
-          {tab === "drone"        && "Drone POV share (%) by channel over time"}
-          {tab === "per-channel"  && `${selChannel} — frame distribution (%)`}
-          {tab === "scores"       && "Mean annotation scores over time (aggregate)"}
-          {tab === "drone-scores" && "Drone POV images — mean scores over time"}
-        </p>
-
-        {/* recharts */}
+      <figure className="figure m-0">
+        <figcaption className="figure-cap">{chartTitle}</figcaption>
         <ResponsiveContainer width="100%" height={380}>
           {(tab === "aggregate" || tab === "per-channel") ? (
             <AreaChart data={tab === "aggregate" ? aggData : chData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+              <CartesianGrid stroke="rgba(236,231,218,0.1)" />
               <XAxis dataKey="period" {...axisProps} />
               <YAxis domain={[0, 100]} {...axisProps} />
               <Tooltip contentStyle={tt} />
-              <Legend wrapperStyle={{ fontSize: 11, color: "#888880" }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#ada697", fontFamily: "var(--sans)" }} />
               {FRAMES.map(f => (
                 <Area key={f} type="monotone" dataKey={f} stackId="1"
-                  fill={FRAME_COLORS[f]} stroke={FRAME_COLORS[f]} fillOpacity={0.75} />
+                  fill={FRAME_COLORS[f]} stroke={FRAME_COLORS[f]} fillOpacity={0.7} />
               ))}
             </AreaChart>
           ) : tab === "drone" ? (
             <LineChart data={droneTable}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+              <CartesianGrid stroke="rgba(236,231,218,0.1)" />
               <XAxis dataKey="period" {...axisProps} />
               <YAxis domain={[0, 35]} {...axisProps} />
               <Tooltip contentStyle={tt} />
-              <Legend wrapperStyle={{ fontSize: 10, color: "#888880" }} />
+              <Legend wrapperStyle={{ fontSize: 10, color: "#ada697", fontFamily: "var(--sans)" }} />
               {CHANNELS.map((ch, i) => (
                 <Line key={ch} type="monotone" dataKey={ch}
-                  stroke={`hsl(${i * 36},65%,55%)`} strokeWidth={2} dot={{ r: 2.5 }} />
+                  stroke={`hsl(${i * 36},42%,62%)`} strokeWidth={2} dot={{ r: 2 }} />
               ))}
             </LineChart>
           ) : (
             <LineChart data={tab === "scores" ? SCORES_AGG : SCORES_FRAME}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+              <CartesianGrid stroke="rgba(236,231,218,0.1)" />
               <XAxis dataKey="period" {...axisProps} />
               <YAxis domain={[0, tab === "drone-scores" ? 8 : 7]} {...axisProps} />
               <Tooltip contentStyle={tt} />
-              <Legend wrapperStyle={{ fontSize: 11, color: "#888880" }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#ada697", fontFamily: "var(--sans)" }} />
               {Object.keys(SCORE_COLORS).map(k => (
                 <Line key={k} type="monotone" dataKey={k} name={SCORE_LABELS[k]}
-                  stroke={SCORE_COLORS[k]} strokeWidth={2} dot={{ r: 2.5 }} />
+                  stroke={SCORE_COLORS[k]} strokeWidth={2} dot={{ r: 2 }} />
               ))}
             </LineChart>
           )}
         </ResponsiveContainer>
+      </figure>
 
-        {/* finding callout */}
-        <div style={{ display: "flex", gap: "12px", background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "16px" }}>
-          <span style={{ display: "flex", width: "22px", height: "22px", flexShrink: 0, alignItems: "center", justifyContent: "center", borderRadius: "50%", background: "#0057b7", fontSize: "11px", fontWeight: 700, color: "#fff", marginTop: "1px" }}>
-            →
-          </span>
-          <p style={{ fontSize: "0.875rem", lineHeight: 1.7, color: "var(--text-dim)" }}>
-            <span style={{ fontWeight: 600, color: "var(--accent)" }}>Key finding: </span>
-            {FINDINGS[tab]}
-          </p>
-        </div>
-      </div>
+      <aside className="note">
+        <span className="note-label">What the chart shows</span>
+        <p className="text-[1.02rem] leading-7 text-[color:var(--text-dim)]">{FINDINGS[tab]}</p>
+      </aside>
     </div>
   );
 }
