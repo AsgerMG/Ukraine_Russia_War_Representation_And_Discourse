@@ -5,85 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2D Visual Map — 400-Image Sample</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@500;600&display=swap');
 
   :root {
-    --bg:      #0a0a0f;
-    --surface: #13131a;
-    --border:  #2a2a3a;
-    --accent:  #7b6cff;
-    --accent2: #ff6c9d;
-    --text:    #e8e6f0;
-    --muted:   #6b6880;
+    --bg:      #100f0d;
+    --surface: rgba(236, 231, 218, 0.04);
+    --border:  rgba(236, 231, 218, 0.18);
+    --accent:  #ffd700;
+    --accent2: #005bbb;
+    --text:    #ece7da;
+    --muted:   #ada697;
     --cell:    72px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: var(--bg); color: var(--text);
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Source Serif 4', Georgia, serif;
     overflow: hidden; height: 100vh; width: 100vw;
   }
 
-  /* ── Header ── */
-  #header {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    height: 52px;
-    background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 14px; padding: 0 20px;
+  /* ── Floating controls (search + channel filter), top-right overlay ── */
+  #controls {
+    position: fixed; top: 12px; right: 12px; z-index: 100;
+    display: flex; align-items: center; gap: 7px;
   }
-  #title {
-    font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500;
-    color: var(--accent); letter-spacing: 0.08em; white-space: nowrap;
-  }
-  #count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
 
   /* ── Channel panel toggle button ── */
   #ch-toggle {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: 6px; color: var(--text);
-    font-family: 'Space Grotesk', sans-serif; font-size: 13px;
-    padding: 5px 12px; cursor: pointer; white-space: nowrap;
+    border-radius: 2px; color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif; font-size: 12px;
+    padding: 5px 10px; cursor: pointer; white-space: nowrap;
     transition: border-color .2s, background .2s;
     display: flex; align-items: center; gap: 6px;
   }
   #ch-toggle:hover { border-color: var(--accent); }
-  #ch-toggle.active { border-color: var(--accent); background: rgba(123,108,255,0.15); }
+  #ch-toggle.active { border-color: var(--accent); background: rgba(255, 215, 0, 0.10); }
   #ch-toggle .active-count {
-    background: var(--accent); color: #fff; border-radius: 10px;
-    font-size: 10px; padding: 1px 6px; font-family: 'IBM Plex Mono', monospace;
-    display: none;
+    background: var(--accent); color: #100f0d; border-radius: 2px;
+    font-size: 10px; padding: 1px 5px; font-family: 'Inter', system-ui, sans-serif;
+    display: none; font-weight: 600;
   }
   #ch-toggle .active-count.visible { display: inline; }
 
   /* ── Search ── */
-  #search-wrap { margin-left: auto; position: relative; width: 260px; }
+  #search-wrap { position: relative; width: 190px; }
   #search {
     width: 100%; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 6px;
-    color: var(--text); font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px; padding: 6px 12px; outline: none; transition: border-color .2s;
+    border: 1px solid var(--border); border-radius: 2px;
+    color: var(--text); font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px; padding: 5px 9px; outline: none; transition: border-color .2s;
   }
   #search:focus { border-color: var(--accent); }
   #suggestions {
-    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 6px; max-height: 260px; overflow-y: auto;
-    z-index: 200; display: none;
+    position: absolute; top: calc(100% + 4px); right: 0; left: auto;
+    background: rgba(16, 15, 13, 0.98); border: 1px solid var(--border);
+    border-radius: 2px; max-height: 260px; overflow-y: auto;
+    z-index: 200; display: none; min-width: 210px;
   }
   .sug-item {
-    padding: 8px 12px; font-size: 13px; cursor: pointer; transition: background .15s;
+    padding: 7px 10px; font-size: 12px; font-family: 'Inter', system-ui, sans-serif;
+    cursor: pointer; transition: background .15s;
   }
-  .sug-item:hover { background: var(--border); }
+  .sug-item:hover { background: rgba(236, 231, 218, 0.06); }
 
-  /* ── Channel panel (drawer below header) ── */
+  /* ── Channel panel (drawer below controls) ── */
   #ch-panel {
-    position: fixed; top: 52px; left: 0; right: 0; z-index: 90;
-    background: rgba(10,10,15,0.96); backdrop-filter: blur(12px);
+    position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+    background: rgba(16, 15, 13, 0.97); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 14px 20px 16px;
+    padding: 11px 14px 13px;
     display: none;
-    flex-direction: column; gap: 12px;
+    flex-direction: column; gap: 10px;
   }
   #ch-panel.open { display: flex; }
 
@@ -91,16 +84,16 @@
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   }
   .ch-panel-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    font-family: 'Inter', system-ui, sans-serif; font-size: 11px;
     color: var(--muted); white-space: nowrap;
   }
 
   /* ── Channel pills ── */
   .ch-pill {
     display: inline-flex; align-items: center; gap: 7px;
-    border: 1.5px solid transparent; border-radius: 20px;
-    padding: 4px 12px 4px 8px; cursor: pointer; font-size: 13px;
-    font-family: 'Space Grotesk', sans-serif;
+    border: 1px solid transparent; border-radius: 2px;
+    padding: 3px 10px 3px 7px; cursor: pointer; font-size: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
     transition: opacity .15s, transform .1s, box-shadow .15s;
     opacity: 0.45; user-select: none;
   }
@@ -111,25 +104,25 @@
     background: var(--pill-color, #fff); flex-shrink: 0;
   }
   .ch-pill .pill-count {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    font-family: 'Inter', system-ui, sans-serif; font-size: 10px;
     color: var(--muted);
   }
 
   /* ── Panel action buttons ── */
   .ch-action {
-    background: none; border: 1px solid var(--border); border-radius: 5px;
-    color: var(--muted); font-size: 12px; padding: 4px 10px; cursor: pointer;
-    font-family: 'Space Grotesk', sans-serif; transition: color .15s, border-color .15s;
+    background: none; border: 1px solid var(--border); border-radius: 2px;
+    color: var(--muted); font-size: 11px; padding: 4px 9px; cursor: pointer;
+    font-family: 'Inter', system-ui, sans-serif; transition: color .15s, border-color .15s;
     white-space: nowrap;
   }
   .ch-action:hover { color: var(--text); border-color: var(--text); }
 
   /* ── Stage ── */
   #stage {
-    position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     overflow: hidden; cursor: grab; transition: top .2s;
   }
-  #stage.panel-open { top: 130px; }
+  #stage.panel-open { top: 76px; }
   #stage.panning { cursor: grabbing; }
   #world { position: absolute; transform-origin: 0 0; will-change: transform; }
 
@@ -139,7 +132,7 @@
   }
   .tile img {
     max-width: calc(var(--cell) - 6px); max-height: calc(var(--cell) - 6px);
-    border-radius: 3px; border: 2px solid transparent;
+    border-radius: 2px; border: 2px solid transparent;
     transition: border-color .15s, transform .15s, box-shadow .15s; display: block;
   }
   .tile:hover img {
@@ -148,19 +141,20 @@
 
   /* ── Tooltip ── */
   #tooltip {
-    position: fixed; z-index: 300; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 10px;
-    padding: 12px 14px; pointer-events: none; display: none;
-    max-width: 220px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    position: fixed; z-index: 300; background: rgba(16, 15, 13, 0.97);
+    border: 1px solid var(--border); border-radius: 2px;
+    padding: 11px 13px; pointer-events: none; display: none;
+    max-width: 220px; box-shadow: 0 6px 24px rgba(0,0,0,0.7);
   }
-  #tooltip img { width: 100%; border-radius: 6px; display: block; margin-bottom: 8px; }
+  #tooltip img { width: 100%; border-radius: 2px; display: block; margin-bottom: 8px; }
   #tooltip .filename {
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    font-family: 'Inter', system-ui, sans-serif; font-size: 11px;
     color: var(--muted); word-break: break-all; line-height: 1.5;
   }
   #tooltip .ch-label {
     font-size: 11px; font-weight: 600; margin-bottom: 4px;
     display: flex; align-items: center; gap: 5px;
+    font-family: 'Inter', system-ui, sans-serif;
   }
   #tooltip .ch-dot {
     width: 8px; height: 8px; border-radius: 50%; display: inline-block;
@@ -169,25 +163,22 @@
   /* ── Hint ── */
   #hint {
     position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    font-family: 'Inter', system-ui, sans-serif; font-size: 11px;
     color: var(--muted); pointer-events: none; opacity: 1; transition: opacity 1s;
   }
   #hint.hidden { opacity: 0; }
+
 </style>
 </head>
 <body>
 
-<div id="header">
-  <span id="title">VISUAL MAP</span>
-  <span id="count"></span>
-
+<div id="controls">
   <button id="ch-toggle">
-    ⬡ Channels
+    Channels
     <span class="active-count" id="active-count-badge"></span>
   </button>
-
   <div id="search-wrap">
-    <input id="search" type="text" placeholder="Search filename …" autocomplete="off">
+    <input id="search" type="text" placeholder="Search …" autocomplete="off">
     <div id="suggestions"></div>
   </div>
 </div>
@@ -212,10 +203,11 @@ const S = 26;
 const CELL = 72;
 
 // ── Channel colours (10 visually distinct on dark bg) ────────
+
+// RU channels: yellow family | UA channels: blue family
 const PALETTE = [
-  '#ff6c9d', '#7b6cff', '#00d4aa', '#ff9f43',
-  '#54a0ff', '#ff6b6b', '#ffd32a', '#0be881',
-  '#f8a5c2', '#c4e538'
+  '#ffd700', '#e0b900', '#c69f00', '#a98700', '#8c7000',
+  '#005bbb', '#1a6fc8', '#3b85d4', '#5a99dd', '#7eaee5',
 ];
 
 // Build channel list from items
@@ -262,7 +254,7 @@ ITEMS.forEach(item => {
   tileMap[item.id] = tile;
 });
 
-document.getElementById('count').textContent = ITEMS.length + ' images';
+// #count badge removed in editorial restyle; image count omitted from chrome.
 
 // ── Apply / remove channel highlights ───────────────────────
 function applyChannelHighlights() {
@@ -388,6 +380,7 @@ window.addEventListener('load', () => {
 
 stage.addEventListener('wheel', e => {
   e.preventDefault();
+  world.style.transition = '';
   const rect = stage.getBoundingClientRect();
   const mx = e.clientX - rect.left, my = e.clientY - rect.top;
   const delta = e.deltaY < 0 ? 1.1 : 0.9;
@@ -402,6 +395,7 @@ stage.addEventListener('wheel', e => {
 let dragging = false, lx = 0, ly = 0;
 stage.addEventListener('mousedown', e => {
   if (e.target.closest('.tile')) return;
+  world.style.transition = '';
   dragging = true; lx = e.clientX; ly = e.clientY;
   stage.classList.add('panning');
 });
@@ -412,7 +406,15 @@ window.addEventListener('mousemove', e => {
   [tx, ty] = clamp(tx, ty);
   applyTransform();
 });
-window.addEventListener('mouseup', () => { dragging = false; stage.classList.remove('panning'); });
+window.addEventListener('mouseup', () => {
+  dragging = false; stage.classList.remove('panning');
+  if (location.search.includes('debug')) {
+    const sw = stage.clientWidth, sh = stage.clientHeight;
+    const col = ((sw / 2 - tx) / scale - CELL / 2) / CELL;
+    const row = ((sh / 2 - ty) / scale - CELL / 2) / CELL;
+    console.log('stop: col=' + col.toFixed(1) + ' row=' + row.toFixed(1) + ' scale=' + scale.toFixed(2));
+  }
+});
 
 // ── Tooltip ──────────────────────────────────────────────────
 const tooltip = document.getElementById('tooltip');

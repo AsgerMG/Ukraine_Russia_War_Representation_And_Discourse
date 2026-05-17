@@ -6,8 +6,8 @@ export default function MethodologyPage() {
     <PageShell
       kicker="Methods"
       title="How the study was built"
-      standfirst="One shared foundation sits under everything here: a corpus of roughly 24,000 annotated media items, scored across seven dimensions, then read through five complementary lenses."
-      meta={["24,000+ items", "7 annotation dimensions", "5 analytical lenses"]}
+      standfirst="One shared foundation sits under everything here: a corpus of roughly 24,000 annotated media items, scored across seven dimensions, then read through five complementary lenses, with AI tooling at every stage of the work."
+      meta={["24,000+ items", "7 annotation dimensions", "5 analytical lenses", "AI-assisted across four stages"]}
     >
       <div className="prose dropcap">
         <p>

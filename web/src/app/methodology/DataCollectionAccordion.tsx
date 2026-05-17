@@ -26,6 +26,25 @@ const dimensions = [
   { label: "Camera frame / POV", desc: "the compositional and perspectival choices that shape viewer identification" },
 ];
 
+const aiStages = [
+  {
+    label: "Concept and design",
+    desc: "Anthropic Claude Opus and Sonnet for technical-feasibility review, scoping and formalising the approach, used through a voice model and the AskUserQuestion tool",
+  },
+  {
+    label: "Data collection",
+    desc: "Claude Opus for sampling strategy and architecture, the Cursor IDE for the Python scraping scripts, CLIP (ViT-B-32) for the pre-annotation 2D map, and GPT-5 Nano with the Claude Vision API for automated annotation",
+  },
+  {
+    label: "Data analysis",
+    desc: "Claude Opus prompted to generate interactive HTML diagnostic sites for the violence, gamification, dehumanisation, narrative-framing and content-analysis dimensions, used to interrogate the output critically; comparative and correlative passes on violence and reach, drone POV against gamification and dehumanisation, and channel-alignment differences",
+  },
+  {
+    label: "Presentation",
+    desc: "the Cursor IDE for the Next.js site that hosts these findings, and primarily frontier models, Claude Opus 4.7 and ChatGPT 5.5, for drafting the long-form report",
+  },
+];
+
 function ChannelList({ channels, side }: { channels: typeof russianChannels; side: string }) {
   return (
     <div>
@@ -72,16 +91,39 @@ function Section({
 export default function DataCollectionAccordion() {
   return (
     <div className="flex flex-col gap-12">
+      <Section label="Section 0" title="A note on AI-assisted research practice">
+        <p>
+          The methodology below was carried out with extensive AI assistance at
+          every stage. The tooling is set out plainly here so that readers can
+          weigh each finding against the instruments that produced it.
+        </p>
+        <ol className="mt-6 flex list-none flex-col gap-3 pl-0">
+          {aiStages.map((s, i) => (
+            <li key={s.label} className="flex gap-4">
+              <span className="shrink-0 font-mono text-[0.8rem] text-[color:var(--accent)]">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="text-[1.02rem] leading-7">
+                <strong className="text-[color:var(--text)]">{s.label}</strong>
+                <span className="text-[color:var(--text-dim)]">: {s.desc}.</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
       <Section label="Section I" title="Data collection">
         <p>
           The corpus was assembled with a custom Python script built on{" "}
           <span className="font-mono text-[0.92em] text-[color:var(--text)]">Telethon</span>,
           which talks to the Telegram API and pulls message metadata
-          programmatically. The pipeline collected media-bearing posts,
-          photographs, video thumbnails and documents, published between 24
-          February 2022 and 24 February 2026. For each message it recorded the
-          channel, publication date, media type, file size, view count, forward
-          count, reply count and reactions.
+          programmatically. The sampling strategy and the script architecture
+          were scoped with Claude Opus, and the script itself was authored and
+          executed inside the Cursor IDE. The pipeline collected media-bearing
+          posts, photographs, video thumbnails and documents, published between
+          24 February 2022 and 24 February 2026. For each message it recorded
+          the channel, publication date, media type, file size, view count,
+          forward count, reply count and reactions.
         </p>
         <p>
           To keep the data volume manageable while staying temporally
@@ -119,10 +161,13 @@ export default function DataCollectionAccordion() {
           ))}
         </ol>
         <p>
-          The pipeline came together in three stages. The team hand-coded fifty
-          images, fed them to the model as few-shot demonstrations to transfer
-          the codebook logic, then ran annotation at scale on{" "}
-          <span className="text-[color:var(--text)]">ChatGPT 4.5</span>. The
+          The pipeline came together in three stages. A first batch was run
+          through the{" "}
+          <span className="text-[color:var(--text)]">Claude Vision API</span> as
+          a gold-standard reference. The team then hand-coded fifty images and
+          fed them back to the model as few-shot demonstrations to transfer the
+          codebook logic. Annotation at scale was finally carried out on{" "}
+          <span className="text-[color:var(--text)]">GPT-5 Nano</span>. The
           recurring obstacle was the model&apos;s reluctance to code violent
           content under its safety constraints. Prompting it to take the role of
           an academic researcher in conflict studies produced consistent

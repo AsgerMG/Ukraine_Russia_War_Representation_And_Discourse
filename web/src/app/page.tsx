@@ -110,20 +110,31 @@ export default function Home() {
 
         <section id="visual-map" className="mt-16 scroll-mt-6">
           <p className="kicker">Corpus explorer</p>
-          <h2 className="mt-4">The two-dimensional visual map</h2>
-          <p className="prose mt-4">
+          <h2 className="mt-3">The two-dimensional visual map</h2>
+          <p className="prose mt-4 max-w-[58ch]">
             A four-hundred-image sample projected with CLIP embeddings and
-            t-SNE. On a computer, drag to pan and scroll to zoom. On a phone,
-            open the map full screen for the best touch experience.
+            t-SNE. Drag to roam, scroll to zoom. On a phone, open the map
+            full screen for the best touch experience.
           </p>
-          <div className="mt-7 overflow-hidden border border-[color:var(--rule-strong)] bg-black/40 h-[min(64vh,560px)] min-h-[380px] max-sm:h-[52vh]">
-            <iframe
-              src="/visual-map.html"
-              className="h-full w-full"
-              title="Two-dimensional visual embedding map"
-              loading="lazy"
-            />
-          </div>
+          <figure className="mt-7 figure">
+            <div className="overflow-hidden bg-black/30 h-[min(72vh,640px)] min-h-[460px] max-sm:h-[58vh]">
+              <iframe
+                src="/visual-map.html"
+                className="h-full w-full"
+                title="Two-dimensional visual embedding map"
+                loading="lazy"
+              />
+            </div>
+            <figcaption className="figure-cap mt-4">
+              <strong>Figure 1.</strong> A four-hundred-image sample of the
+              corpus, projected with CLIP embeddings and t-SNE. Russian
+              channels tend toward the lower-left; Ukrainian aftermath imagery
+              clusters along the upper edge. Drone POV gathers in the
+              west; memorial portraiture in the north-east. Approximate
+              cluster positions are labelled; use the story stops to fly
+              directly to each region.
+            </figcaption>
+          </figure>
           <p className="mt-4">
             <a
               className="button-primary"
@@ -131,7 +142,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Open the map full screen →
+              Open the map full screen &rarr;
             </a>
           </p>
         </section>

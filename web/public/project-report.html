@@ -610,7 +610,7 @@
       <div>Corpus &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>24.000+ media items</span></div>
       <div>Channels &nbsp;&nbsp; <span>10 (5 RU · 5 UA)</span></div>
       <div>Period &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Feb 2022 – Feb 2026</span></div>
-      <div>Method &nbsp;&nbsp;&nbsp;&nbsp; <span>Automated annotation (GPT)</span></div>
+      <div>Method &nbsp;&nbsp;&nbsp;&nbsp; <span>AI-assisted across the research lifecycle</span></div>
       <div>Dimensions <span>7 per image</span></div>
     </div>
   </div>
@@ -778,7 +778,7 @@
 
     <h3>I. Data Collection</h3>
     <p>
-      The corpus was assembled using a custom Python script built on the Telethon library, which interfaces with the Telegram API to retrieve message metadata programmatically. The ten channels were selected to represent a range of pro-Russian and pro-Ukrainian information ecosystems, including front-line reporting accounts, official military-linked channels, and occupied-territory outlets. The scraping pipeline was designed to collect media-bearing posts — photographs, videos (retrieved via thumbnail), and documents — published between 24 February 2022 and 24 February 2026. For each message, the following metadata was extracted: channel identifier, publication date, media type, file size, view count, forward count, reply count, and user reactions.
+      The corpus was assembled using a custom Python script built on the Telethon library, which interfaces with the Telegram API to retrieve message metadata programmatically. The sampling strategy and overall script architecture were scoped in dialogue with Claude Opus, and the script itself was authored and executed inside the Cursor IDE. The ten channels were selected to represent a range of pro-Russian and pro-Ukrainian information ecosystems, including front-line reporting accounts, official military-linked channels, and occupied-territory outlets. The scraping pipeline was designed to collect media-bearing posts — photographs, videos (retrieved via thumbnail), and documents — published between 24 February 2022 and 24 February 2026. For each message, the following metadata was extracted: channel identifier, publication date, media type, file size, view count, forward count, reply count, and user reactions.
     </p>
     <p>
       To ensure temporal representativeness while managing data volume, a systematic sampling method was applied: up to 50 evenly spaced media posts per channel per month were selected, yielding a corpus of approximately 24.000+ sampled observations. All cross-channel and cross-temporal comparisons are therefore <em>proportional</em> rather than absolute — a deliberate methodological constraint that precludes analysis of absolute publication volume but enables reliable comparative analysis of content composition over time.
@@ -804,7 +804,7 @@
     </div>
 
     <p>
-      The pipeline was developed in three stages. A first batch was annotated using the Claude API as a gold-standard reference. The research team then manually coded 50 images, which were fed into the model as few-shot demonstrations to transfer codebook logic to the automated pipeline. Final annotation at scale was carried out using GPT. A recurring challenge was the model's reluctance to code violent content due to built-in safety constraints; this was addressed by prompting the model to adopt the persona of an academic researcher in conflict studies, which proved effective in eliciting consistent annotations across the full dataset.
+      The pipeline was developed in three stages. A first batch was annotated using the Claude Vision API as a gold-standard reference. The research team then manually coded 50 images, which were fed into the model as few-shot demonstrations to transfer codebook logic to the automated pipeline. Final annotation at scale was carried out using GPT-5 Nano. A recurring challenge was the model's reluctance to code violent content due to built-in safety constraints; this was addressed by prompting the model to adopt the persona of an academic researcher in conflict studies, which proved effective in eliciting consistent annotations across the full dataset.
     </p>
 
     <h3>III. 2D Visual Map</h3>
@@ -839,6 +839,9 @@
     <h3>VII. Correlatory Effects</h3>
     <p>
       To explore correlatory effects across the five annotation dimensions, a series of bivariate ordinary least squares (OLS) regression analyses were conducted on the full annotated corpus of 24.000+ images. For each model, one score was designated the independent variable and a theoretically related score the dependent variable, drawing on prior literature on visual propaganda and conflict media to motivate each pairing. Pearson correlation coefficients, regression slopes, intercepts, and R² values were computed, and statistical significance was assessed via p-values derived from the t-distribution on the regression slope. Three targeted models were constructed: (1) gamification → implied violence; (2) dehumanization → implied violence; (3) aestheticization → narrative framing. To contextualise each relationship, mean scores per discrete score level were computed with 95% confidence intervals (±1.96 × σ/√n), and results were disaggregated by content type, frame type, and channel. A full 5×5 Pearson correlation heatmap was produced to identify second-order relationships across the score network.
+    </p>
+    <p>
+      The analytical pipelines described above were carried out with sustained AI assistance. Claude Opus was used to generate the interactive HTML diagnostics released alongside this report — the violence, gamification, dehumanization, narrative framing, and content-analysis dashboards — which allowed comparative and correlative passes (violence and reach; drone POV against gamification and dehumanization; channel-alignment differences) to be interrogated critically before any finding was committed to the text. The conceptual scoping that preceded data collection was conducted through Anthropic's Claude Opus and Sonnet, used to review the technical feasibility of the research design and formalise the analytical approach. The companion website that hosts these findings was built in the Cursor IDE; the present long-form report was drafted with frontier models, principally Claude Opus 4.7 and ChatGPT 5.5.
     </p>
   </div>
 </section>
