@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import type { ReactNode } from "react";
 
 const russianChannels = [
@@ -73,17 +75,38 @@ function ChannelList({ channels, side }: { channels: typeof russianChannels; sid
 function Section({
   label,
   title,
+  defaultOpen = false,
   children,
 }: {
   label: string;
   title: string;
+  defaultOpen?: boolean;
   children: ReactNode;
 }) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
-    <section className="border-t border-[color:var(--rule)] pt-10">
-      <p className="kicker">{label}</p>
-      <h2 className="mt-3">{title}</h2>
-      <div className="prose mt-5">{children}</div>
+    <section className="border-t border-[color:var(--rule)]">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="group flex w-full items-start gap-5 pt-10 pb-1 text-left"
+      >
+        <div className="flex-1">
+          <p className="kicker">{label}</p>
+          <h2 className="mt-3">{title}</h2>
+        </div>
+        <span
+          aria-hidden
+          className={`mt-[3.1rem] shrink-0 text-[color:var(--text-muted)] transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"}`}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 8 11 13 6" />
+          </svg>
+        </span>
+      </button>
+      {open && <div className="prose mt-5 pb-10">{children}</div>}
     </section>
   );
 }
@@ -91,7 +114,7 @@ function Section({
 export default function DataCollectionAccordion() {
   return (
     <div className="flex flex-col gap-12">
-      <Section label="Section 0" title="A note on AI-assisted research practice">
+      <Section label="Section 0" title="A note on AI-assisted research practice" defaultOpen>
         <p>
           The methodology below was carried out with extensive AI assistance at
           every stage. The tooling is set out plainly here so that readers can
